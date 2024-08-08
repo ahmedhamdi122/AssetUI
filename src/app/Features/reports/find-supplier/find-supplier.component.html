@@ -1,0 +1,138 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col">
+            <h4 class="card-title"> {{ 'Asset.SupplierCompany' | translate }} </h4>
+        </div>
+    </div>
+    <div class="row top-buffer ">
+        <div class="col-1">
+            <label for="supplierId" [translate]="'Asset.Supplier'"></label>
+        </div>
+        <div class="col-4">
+            <p-autoComplete [suggestions]="lstSuppliers" type="search" name="supplierId" id="supplierId"
+                (completeMethod)="onSupplierChanged($event)" (onSelect)="getSupplierObject($event)" field="name"
+                [dropdown]="false">
+                <ng-template let-supplierObj pTemplate="item">
+                    {{lang ==="en" ?
+                    supplierObj.name:supplierObj.nameAr}}-{{supplierObj.mobile}}-{{lang ==="en" ?
+                    supplierObj.address:supplierObj.addressAr}}
+                </ng-template>
+                <ng-template let-supplierObj pTemplate="selectedItem">
+                    {{lang ==="en" ?
+                    supplierObj.name:supplierObj.nameAr}}-{{supplierObj.mobile}}-{{lang ==="en" ?
+                    supplierObj.address:supplierObj.addressAr}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstSuppliers" name="supplierTbl"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)" [loading]="loading" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <!-- <th style="text-align: inherit;">{{'Asset.Name' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Website' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Mobile' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.EMail' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Address' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Actions' | translate }}</th>
+ -->
+                        <th style="text-align: inherit;">{{ 'Asset.Name' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Website' | translate }} <p-sortIcon
+                                id="{{'Asset.Website' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Mobile' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.EMail' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"> </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{'Asset.CountAssets' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.SumPrices' | translate }}</th>
+
+                        <th style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;"> <a [routerLink]="['/dash/suppliers/supplierAssets/',item.id]">
+                                {{lang == 'en'? item.name : item.nameAr}}</a></td>
+                        <td style="text-align: inherit;">{{item.website}}</td>
+                        <td style="text-align: inherit;">{{item.mobile}}</td>
+                        <td style="text-align: inherit;">{{item.eMail}}</td>
+                        <td style="text-align: inherit;">{{item.countAssets}}</td>
+                            <td style="text-align: inherit;">{{item.sumPrices}}</td>
+                        <td style="text-align: inherit;">
+                            <span class="viewIcon" (click)="viewSupplier(item.id)">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="displaySupplierObj" [style]="{ width: '700px' }" [closable]="false">
+    <div class="card">
+        <div class="card-header cardHeader">
+            <h4 class="card-title">
+                {{ 'Asset.ViewCompany' | translate }}
+            </h4>
+            <button (click)="close()" class="btn btn-outline-primary  btn-sm"
+                style="margin: 0px 10px; margin-top: 0px;">{{'Asset.Close' | translate}}</button>
+        </div>
+        <div class="card-body" [dir]="lang =='en' ?'ltr': 'rtl'">
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label class="lblstyle2"> {{ 'Asset.Name' | translate }}</label>
+                    {{lang=="en"?supplierObj.name:supplierObj.nameAr}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label class="lblstyle2"> {{ 'Asset.Mobile' | translate }}</label>
+                    {{supplierObj.mobile}}
+                </div>
+                <div class="col-4"> <label class="lblstyle2">{{ 'Asset.ContactPerson' | translate }}</label>
+                    {{supplierObj.contactPerson}}
+                </div>
+                <div class="col-4">
+                    <label class="lblstyle2"> {{ 'Asset.Fax' | translate }}</label>
+                    {{supplierObj.fax}}
+                </div>
+
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-6"> <label class="lblstyle2">{{ 'Asset.Website' | translate }}</label>
+                    {{supplierObj.website}}
+                </div>
+                <div class="col-6">
+                    <label class="lblstyle2"> {{ 'Asset.EMail' | translate }}</label>
+                    {{supplierObj.eMail}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-12"> <label class="lblstyle2">{{ 'Asset.Address' | translate }}</label>
+                    {{lang=="en"?supplierObj.address:supplierObj.addressAr}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12"> <label class="lblstyle2">{{ 'Asset.Notes' | translate }}</label>
+                    {{supplierObj.notes}}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</p-dialog>

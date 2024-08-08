@@ -1,0 +1,62 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-4">
+            <h1 class="card-title"> {{ 'Asset.Organizations' | translate }}</h1>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addOrg()"><i class="fa-solid fa-plus"></i> {{ 'Asset.AddOrganization' |
+                translate }}</a>
+        </div>
+        <div class="col-4">
+            <h1 class="card-title"> {{ 'Asset.SubOrganizations' | translate }}
+            </h1>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addSubOrganization()"><i class="fa-solid fa-plus"></i> {{
+                'Asset.AddSubOrganization' | translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+            <p-listbox [options]="lstOrganizations" [(ngModel)]="selectedOrgId" [filter]="true" optionLabel="name"
+                optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 190px)' }">
+                <ng-template let-org pTemplate="item">
+                    <div (click)="filterSubByOrganizationId(org.id)">
+                        {{org.code}} - {{lang =='en' ? org.name:org.nameAr}}
+                    </div>
+                    <div> <span class="editIcon" (click)="editOrg(org.id)">
+                            <i class="fa-solid fa-edit" (click)="editOrg(org.id)"></i></span>
+                        <span class="deleteIcon" (click)="deleteOrg(org.id)"> <i class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-6">
+            <p-listbox [options]="lstSubOrganizations" [(ngModel)]="selectedSubOrgId" [filter]="true" optionLabel="name"
+                optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 190px)' }">
+                <ng-template let-subOrg pTemplate="item">
+                    <div> {{subOrg.code}} - {{lang =='en' ? subOrg.name:subOrg.nameAr}} </div>
+                    <div> <span class="editIcon" (click)="editSubOrganization(subOrg.id)">
+                            <i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteSubOrganization(subOrg.id)">
+                            <i class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;"> {{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> Error </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

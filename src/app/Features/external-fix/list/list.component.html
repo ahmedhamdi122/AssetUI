@@ -1,0 +1,275 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-8">
+            <h4 class="card-title">{{ 'Asset.ExternalFix' | translate }}
+            </h4>
+        </div>
+        <div class="col-2">
+            <a class="filterbutton" (click)="toggle()">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}
+            </a>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" [routerLink]="['/externalfix/addexternalfix']"><i class="fa-solid fa-plus"></i>{{
+                'Asset.Create' |
+                translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <fieldset *ngIf="show">
+                <form (ngSubmit)="onSearch()" class="card-filter" #searchForm="ngForm">
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                            <select class="form-control" id="governorate" name="governorate" #governorate="ngModel"
+                                [value]="0" [(ngModel)]="searchObj.governorateId" [disabled]="isGov"
+                                (change)="getCitiesByGovId(searchObj.governorateId)">
+                                <option value="0"></option>
+                                <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                    {{ lang == "en" ? gov.name : gov.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                            <select class="form-control" id="city" name="city" #cityId="ngModel"
+                                [(ngModel)]="searchObj.cityId" [value]="0" [disabled]="isCity">
+                                <option value="0"></option>
+                                <option *ngFor="let city of lstCities" [value]="city.id">
+                                    {{ lang == "en" ? city.name : city.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                            <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+                                [(ngModel)]="searchObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                    {{ lang == "en" ? org.name : org.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="organization" [translate]="'Asset.SubOrganizations'">Sub
+                                Organization</label>
+                            <select class="form-control" id="suborganization" name="suborganization" [value]="0"
+                                [disabled]="isSubOrg" (change)="getHospitalsBySubOrgId()"
+                                [(ngModel)]="searchObj.subOrganizationId" #suborganization="ngModel">
+                                <option value="0"></option>
+                                <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                    {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                            <select class="form-control" id="hospitalId" [disabled]="isHospital" name="hospitalId"
+                                [(ngModel)]="searchObj.hospitalId" [value]="0" (change)="getAssetsByHospitalId($event)">
+                                <option value="0"></option>
+                                <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                    {{ lang == "en" ? host.name : host.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <label for="assetName" [translate]="'Asset.Name'"></label><br />
+                            <p-autoComplete [suggestions]="lstMasterAssets" type="search" name="masterAssetId"
+                                id="masterAssetId" (completeMethod)="onMasterSelectionChanged($event)"
+                                (onSelect)="getMasterObject($event)" field="name" [dropdown]="false">
+                                <ng-template let-masterAssetObj pTemplate="item">
+                                    {{lang ==="en" ? masterAssetObj.name:masterAssetObj.nameAr}} -
+                                    {{lang ==="en" ? masterAssetObj.brandName:masterAssetObj.brandNameAr}}
+                                    - {{masterAssetObj.model}}
+                                </ng-template>
+                                <ng-template let-masterAssetObj pTemplate="selectedItem">
+                                    {{lang=="en" ?masterAssetObj.name:masterAssetObj.nameAr}} -
+                                    {{lang ==="en" ? masterAssetObj.brandName:masterAssetObj.brandNameAr}}
+                                    - {{masterAssetObj.model}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="col-2">
+                            <label for="modelNumber" [translate]="'Asset.ModelNumber'"></label>
+                            <input type="text" class="form-control" [(ngModel)]="searchObj.modelNumber"
+                                [ngModelOptions]="{standalone: true}" />
+                        </div>
+                        <div class="col-2">
+                            <label for="brandId" [translate]="'Asset.Brands'">Brands</label>
+                            <select class="form-control" id="brandId" name="brandId" [(ngModel)]="searchObj.brandId"
+                                [value]="0">
+                                <option value="0"> </option>
+                                <option *ngFor="let brnd of lstBrands" [value]="brnd.id">
+                                    {{ lang == "en" ? brnd.name : brnd.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="barcode" [translate]="'Asset.Barcode'"> </label>
+                            <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                                [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" autoWidth="true"
+                                (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)"
+                                field="name" [dropdown]="false" showClear="true">
+                                <ng-template let-assetBarCodeObj pTemplate="item">
+                                    {{assetBarCodeObj.barCode}}
+                                </ng-template>
+                                <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                                    {{assetBarCodeObj.barCode}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <!-- <div class="col-1">
+                            <button mat-icon-button color="primary" (click)="clearAssetBarCode()" title="clear">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div> -->
+                        <div class="col-2">
+                            <label for="serialNumber" [translate]="'Asset.Serial'"></label>
+                            <p-autoComplete [(ngModel)]="assetSerailNumberObj" [ngModelOptions]="{standalone: true}"
+                                [suggestions]="lstAssetSerailNumberObj" name="serial" id="serial" autoWidth="true"
+                                (completeMethod)="onSerialNumberSelectionChanged($event)"
+                                (onSelect)="getSerialNumber($event)" field="name" [dropdown]="false" showClear="true">
+                                <ng-template let-assetSerailNumberObj pTemplate="item">
+                                    {{assetSerailNumberObj.serialNumber}}
+                                </ng-template>
+                                <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                                    {{assetSerailNumberObj.serialNumber}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="col-2">
+                            <label for="departmentId" [translate]="'Asset.Departments'">Departments</label>
+                            <select class="form-control" id="departmentId" name="departmentId"
+                                [(ngModel)]="searchObj.departmentId" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let depart of lstDepartments" [value]="depart.id">
+                                    {{ lang == "en" ? depart.name : depart.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-4">
+                            <div class="row col">
+                                <label> {{'Asset.OutDate' | translate }} : </label>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-6 d-flex flex-row">
+                                    <label class="m-2" for="start"> {{'Asset.From' | translate}}</label>
+                                    <input type="date" class="form-control" [(ngModel)]="searchObj.start"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </div>
+                                <div class="col-6 d-flex flex-row">
+                                    <label class="m-2" for="endDate"> {{'Asset.To' | translate}}</label>
+                                    <input type="date" class="form-control" [(ngModel)]="searchObj.end"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row col">
+                                <label> {{'Asset.ComingDate' | translate }} : </label>
+                            </div>
+
+                            <div class="row top-buffer">
+                                <div class="col-6 d-flex flex-row">
+                                    <label class="m-2" for="start"> {{'Asset.From' | translate }}</label>
+                                    <input type="date" class="form-control" [(ngModel)]="searchObj.commingStart"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </div>
+                                <div class="col-6 d-flex flex-row">
+                                    <label class="m-2" for="endDate"> {{'Asset.To' | translate }}</label>
+                                    <input type="date" class="form-control" [(ngModel)]="searchObj.commingEnd"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row col">
+                                <label> {{'Asset.ExpectedDate' | translate }} : </label>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-6 d-flex flex-row">
+                                    <label class="m-2" for="start"> {{'Asset.From' | translate }}</label>
+                                    <input type="date" class="form-control" [(ngModel)]="searchObj.expectedStart"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </div>
+                                <div class="col-6 d-flex flex-row">
+                                    <label class="m-2" for="endDate"> {{'Asset.To' | translate }}</label>
+                                    <input type="date" class="form-control" [(ngModel)]="searchObj.expectedEnd"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-10"></div>
+                        <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                                <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                            </button></div>
+                        <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                                <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                            </button></div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-12">
+            <p-table #dt dataKey="id" [value]="lstExternalFix"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [loading]="loading" [totalRecords]="count" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)" [rowHover]="true" [columns]="cols" [customSort]="true">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="text-align: inherit;" [sortable]="true" *ngFor="let col of columns">
+                            {{col.header}}
+                            <p-sortIcon id="{{col.header | translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-item let-columns="columns">
+                    <tr>
+                        <ng-container *ngFor="let col of cols">
+                            <td style="text-align: inherit;" *ngIf="col.field ==='outDate'">
+                                {{item.outDate | date:'dd-MM-yyyy HH:mm'}}
+                            </td>
+                            <td style="text-align: inherit;" *ngIf="col.field !=='outDate'">
+                                {{item[col.field]}}
+                            </td>
+                        </ng-container>
+                        <td style="text-align: inherit;">
+                            <span [routerLink]="['/dash/externalfix/viewexternalfix/',item.id]" class="viewIcon">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
+                            <span *ngIf="item.comingDate==null"
+                                [routerLink]="['/dash/externalfix/editexternalfix/',item.id]" class="editIcon">
+                                <i class="fa-solid fa-clock"></i>
+                            </span>
+                            <span (click)="deleteFix(item.id) " class="deleteIcon">
+                                <i class="fa-solid fa-trash"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="9" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+</div>
+<p-confirmDialog header="Are you sure you want to delete this item?">
+</p-confirmDialog>

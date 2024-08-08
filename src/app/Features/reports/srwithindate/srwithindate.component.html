@@ -1,0 +1,227 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-9">
+            <h4 class="card-title">{{'Asset.SRReport' | translate }}</h4>
+        </div>
+        <div class="col-1">
+            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="generatePDF()" pTooltip="PDF"
+                class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+        </div>
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12 row">
+            <button mat-stroked-button name="btnAll2" [matBadge]="lstMainStatuses.countAll"
+                (click)="getRequestsByStatusId(0,$event)" style="margin: 0px 15px;">{{'Asset.All'
+                |translate}}</button>
+            <div *ngFor="let sts of lstMainStatuses.listStatus" class="divbuttoninline">
+                <button mat-stroked-button *ngIf=" sts.id==1" style="margin:0px 10px;"
+                    (click)="getRequestsByStatusId(sts.id,$event)" mat-stroked-button [ngStyle]="{'color': sts.color}"
+                    autofocus [matBadge]="lstMainStatuses.countOpen">
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+
+                <button mat-stroked-button *ngIf=" sts.id==2" style="margin:0px 10px;"
+                    (click)="getRequestsByStatusId(sts.id,$event)" mat-stroked-button [ngStyle]="{'color': sts.color}"
+                    autofocus [matBadge]="lstMainStatuses.countClosed">
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+
+                <button mat-stroked-button *ngIf="sts.id==3" style="margin:0px 10px;"
+                    (click)="getRequestsByStatusId(sts.id,$event)" mat-stroked-button [ngStyle]="{'color': sts.color}"
+                    autofocus [matBadge]="lstMainStatuses.countInProgress">
+
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button mat-stroked-button *ngIf="sts.id==4" style="margin:0px 10px;"
+                    (click)="getRequestsByStatusId(sts.id,$event)" mat-stroked-button [ngStyle]="{'color': sts.color}"
+                    autofocus [matBadge]="lstMainStatuses.countSolved">
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button mat-stroked-button *ngIf="sts.id==5" style="margin:0px 10px;"
+                    (click)="getRequestsByStatusId(sts.id,$event)" mat-stroked-button [ngStyle]="{'color': sts.color}"
+                    autofocus [matBadge]="lstMainStatuses.countApproved">
+
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button mat-stroked-button *ngIf="sts.id>5" style="margin:0px 10px;"
+                    (click)="getRequestsByStatusId(sts.id,$event)" mat-stroked-button [ngStyle]="{'color': sts.color}"
+                    autofocus [matBadge]="lstMainStatuses.countOpen">
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row top-buffer"></div>
+    <div class="collapse top-buffer card-filter" id="collapseExample">
+        <div class="col-12">
+
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+                <div class="row top-buffer" *ngIf="isAdmin">
+                    <div class="col-2">
+                        <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                        <select class="form-control" id="governorate" name="governorate" #governorate="ngModel"
+                            [value]="0" [(ngModel)]="searchObj.governorateId" [disabled]="isGov"
+                            (change)="getCitiesByGovId(searchObj.governorateId)">
+                            <option value="0"></option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                        <select class="form-control" id="city" name="city" #cityId="ngModel"
+                            (change)="getHospitalsByCityId($event)" [(ngModel)]="searchObj.cityId" [value]="0"
+                            [disabled]="isCity">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let city of lstCities" [value]="city.id">
+                                {{ lang == "en" ? city.name : city.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-2">
+                        <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                        <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+                            [(ngModel)]="searchObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+                            <option value="0"></option>
+                            <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                {{ lang == "en" ? org.name : org.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-2">
+                        <label for="organization" [translate]="'Asset.SubOrganizations'">Sub
+                            Organization</label>
+                        <select class="form-control" id="suborganization" name="suborganization" [value]="0"
+                            [disabled]="isSubOrg" (change)="getHospitalsBySubOrgId($event)"
+                            [(ngModel)]="searchObj.subOrganizationId" #suborganization="ngModel">
+                            <option value="0"></option>
+                            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                        <select class="form-control" id="hospitalId" [disabled]="isHospital" name="hospitalId"
+                            [(ngModel)]="searchObj.hospitalId" [value]="0">
+                            <option value="0"></option>
+                            <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                {{ lang == "en" ? host.name : host.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <label for="icon">{{'Asset.From' | translate }}</label>
+                        <p-calendar [(ngModel)]="requestDateObj.startDate" name="startDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            [ngModelOptions]="{standalone: true}" (onSelect)="getStartDate($event)" inputId="icon"
+                            appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-2">
+                        <label for="icon">{{'Asset.To' | translate }}</label>
+                        <p-calendar [(ngModel)]="requestDateObj.endDate" name="endDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getEndDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-6"></div>
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                            <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                        </button></div>
+                </div>
+
+
+
+            </form>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p-table [value]="lstRequests" id="requestTbl" name="requestTbl"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{'Asset.Time' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Subject' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.Close' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.Status' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Periority' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Mode' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Notes' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;">{{item.elapsedTime}}</td>
+                        <td style="text-align: inherit;" field="barcode">{{item.barcode}}</td>
+                        <td style="text-align: inherit;" field="serialNumber">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">
+                            <span (click)="viewDetail(item.id)">
+                                {{lang=="en" ? item.assetName:item.assetNameAr}}
+                            </span>
+
+                            <!-- <a [routerLink]="['/dash/hospitalassets/detail/',item.assetDetailId]">{{lang=="en" ?
+                                item.assetName:item.assetNameAr}}
+                            </a> -->
+                        </td>
+                        <td style="text-align: inherit;">{{item.subject}}</td>
+                        <td style="text-align: inherit;">{{item.requestDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{item.closedDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;"> <span [ngStyle]="{'color':item.statusColor}">
+                                <span><i [ngClass]="item.statusIcon"></i></span>
+                                {{lang=="en" ? item.statusName:item.statusNameAr}}
+                            </span>
+                        </td>
+                        <td style="text-align: inherit;">
+                            <i [ngClass]="item.periorityIcon" [ngStyle]="{'color': item.periorityColor}"></i>
+                            {{lang=="en" ? item.periorityName: item.periorityNameAr}}
+                        </td>
+                        <td style="text-align: inherit;">{{lang=="en" ? item.modeName: item.modeNameAr}}</td>
+                        <td style="text-align: inherit;">{{item.description}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="11" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{errorMessage}}
+
+    </span>
+</p-dialog>

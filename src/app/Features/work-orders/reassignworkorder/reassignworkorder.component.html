@@ -1,0 +1,286 @@
+<div class="container card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 40px;color: #1683c2;font-weight: bold;">
+            {{statusName}}
+        </h4>
+    </div>
+
+    <div style="margin:10px 10px 0px 10px;">
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="close()">{{'Asset.Close' |
+            translate}}</button>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-md-3">
+            <span style="font-weight: bold;"> {{'Asset.Subject' | translate }} :
+            </span>&nbsp;{{workOrderObj?.subject}}
+        </div>
+        <div class="col-md-3">
+            <span style="font-weight: bold;"> {{'Asset.WorkOrderNumber' | translate }} :
+            </span>&nbsp;{{workOrderObj?.workOrderNumber}}
+        </div>
+        <div class="col-md-3">
+            <span style="font-weight: bold;">{{'Asset.Date' | translate }} :
+            </span>&nbsp;{{workOrderObj?.creationDate | date:'dd-MM-yyyy HH:mm'}}
+        </div>
+        <div class="col-md-3">
+            <span style="font-weight: bold;">{{'Asset.Type' | translate }} :
+            </span>&nbsp;{{lang == 'en' ? workOrderObj?.typeName:workOrderObj?.typeNameAr}}
+        </div>
+
+        <div class="col-md-3">
+            <span style="font-weight: bold;">{{'Asset.Periority' | translate }} :
+            </span>&nbsp;{{lang == 'en' ? workOrderObj?.periorityName:workOrderObj?.periorityNameAr}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-md-12">
+            <span style="font-weight: bold;"> {{'Asset.Notes' | translate }} :
+            </span>&nbsp;{{workOrderObj?.note}}
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <table class="table table-bordered table-striped" style="width: 100%;">
+                <thead>
+                    <tr style="background-color: #1683c2; color: #fff; font-size: 12px; font-weight: normal;">
+
+                        <th> {{'Asset.Status' | translate }} </th>
+                        <th>{{'Asset.Date' | translate }} </th>
+                        <th> {{'Asset.Notes' | translate }} </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lstWorkOrderTracks">
+                        <td style="text-align: inherit;">{{lang == "en" ?item.workOrderStatusName:
+                            item.workOrderStatusNameAr}}</td>
+                        <td style="text-align: inherit;">{{item.creationDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{item.notes}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <mat-radio-group [(ngModel)]="selectedItem" (change)="onItemChange($event)" name="gcat" id="gcat">
+                <mat-radio-button [value]="item" *ngFor="let item of lstRadioItems">
+                    {{item}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+
+
+    <div class="row top-buffer" *ngIf="isReviewed">
+        <div class="col-12">
+
+            <button (click)="AddworkOrderTrack()" [disabled]="isDisabled"
+                class="btn btn-primary pull-center btn-sm">{{'Asset.Save' | translate
+                }} </button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+    </div>
+
+    <div class="row top-buffer" *ngIf="isAssigned">
+        <div class="col-12">
+            <mat-horizontal-stepper [linear]="isLinear" #stepper>
+                <p-toast position="top-right" key="tr" [baseZIndex]="10000"></p-toast>
+                <mat-step [stepControl]="firstFormGroup">
+                    <ng-template matStepLabel>{{'Asset.ReAssign' | translate}} {{'Asset.WorkOrder' | translate}}
+                    </ng-template>
+
+
+                    <div class="row top-buffer">
+                        <div class="col-12">
+                            <label for="assignedTo">{{'Asset.AssignedTo' | translate }}</label>
+
+
+
+                            <select id="assignedTo" class="form-control" name="assignedTo"
+                                [(ngModel)]="creatWorkOrderTrackingObj.assignedTo" disabled="true"
+                                pTooltip="{{'Asset.AssignedTo' | translate }}" tooltipPosition="bottom">
+                                <option>{{'Asset.Select' | translate }} {{'Asset.Eng' | translate }}
+                                </option>
+                                <option *ngFor="let eng of lstEngEmployees" [value]="eng.userId">
+                                    {{eng.name}}
+                                </option>
+                            </select>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row  top-buffer">
+                        <div class="col-6">
+                            <label for="asd">{{'Asset.ActualStartDate' | translate }}</label>
+                            <input type="date" class="form-control" id="asd" name="asd" placeholder="Actual Start Date"
+                                [(ngModel)]="creatWorkOrderTrackingObj.actualStartDate"
+                                min="{{minDate | date:'yyyy-MM-dd'}}" pTooltip="Please,Enter Actual Start Date"
+                                tooltipPosition="bottom">
+                        </div>
+                        <div class="col-6">
+                            <label for="aed">{{'Asset.ActualEndDate' | translate }}</label>
+                            <input type="date" class="form-control" id="aed" name="aed" placeholder="Plannded End Date"
+                                [(ngModel)]="creatWorkOrderTrackingObj.actualEndDate"
+                                min="{{actualStartDate | date:'yyyy-MM-dd'}}" pTooltip="Please,Enter Actual End Date"
+                                tooltipPosition="bottom">
+                        </div>
+                    </div>
+
+                    <div class="row  top-buffer">
+                        <div class="col-md-3" hidden>
+                            <label for="Request Date">{{'Asset.Date' | translate }}</label>
+                            <p-calendar [(ngModel)]="creatWorkOrderTrackingObj.creationDate" [yearNavigator]="true"
+                                yearRange="1900:2030" [monthNavigator]="true" [ngModelOptions]="{standalone: true}"
+                                dateFormat="dd/mm/yy"></p-calendar>
+                        </div>
+                    </div>
+                    <div class="row  top-buffer">
+                        <div class="p-field col-md-12">
+                            <label for="description">{{'Asset.Description' | translate }}</label>
+                            <textarea class="form-control" id="Note" [(ngModel)]="creatWorkOrderTrackingObj.notes"
+                                pInputTextarea name="Note" [ngModelOptions]="{standalone: true}"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="row  top-buffer">
+                        <div class="col-md-2"> <button mat-stroked-button [disabled]="IsSaveProject"
+                                (click)="AddworkOrderTrack()" [disabled]="isDisabled" matStepperNext color="primary"
+                                mat-button>{{'Asset.Save' |
+                                translate }} </button></div>
+                        <div class="col-md-8"></div>
+                        <div class="col-md-1">
+
+                            <button mat-stroked-button [disabled]="disabledButton==false" class="ml-2" color="primary"
+                                mat-button matStepperNext>{{'Asset.Next' | translate }}</button>
+                        </div>
+                    </div>
+                </mat-step>
+
+                <mat-step [stepControl]="secondFormGroup">
+                    <ng-template matStepLabel>{{'Asset.AddDocuments' | translate }}</ng-template>
+                    <div class="row top-buffer">
+                        <div class="col-12">
+                            <label for="docmentName"> {{'Asset.DocumentTitle' | translate }}</label>
+                            <input #documentName="ngModel" class="form-control" type="text" pInputText
+                                placeholder="{{'Asset.DocumentTitle' | translate }}"
+                                [(ngModel)]="CreateWorkOrderAttachmentObj.documentName">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+
+                            <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                                style="display:none;">
+
+                            <button type="button" class="btn btn-outline-success"
+                                style="margin-top: 20px;margin-left: 10px;" (click)="file.click()"> <i
+                                    class="fa fa-upload"
+                                    style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.SelectDocument'
+                                |
+                                translate }}
+                            </button>
+                            <!-- <button class="btn btn-outline-primary" style="margin-top: 20px;float: right;"
+                                (click)="addFilesToList()" [ngStyle]="{'float': lang == 'en' ? 'right': 'left'}">
+                                <i class="fa fa-plus"
+                                    style="color: #007bff; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.AddDocumentToList'
+                                |
+                                translate }}</button> -->
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>{{'Asset.Name' | translate }}</th>
+                                        <th>{{'Asset.DocumentTitle' | translate }}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let i of lstCreateWorkOrderTracking">
+                                        <td>{{i.fileName}}</td>
+                                        <td>{{i.documentName}}</td>
+                                        <td>
+                                            <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                                                    style="color: rgb(123, 9, 9);"></i></span>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="lstCreateWorkOrderTracking.length == 0">
+                                        <td colspan="3" style="color: rgb(102, 97, 23);" [translate]="'Asset.NoData'">
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                            <button class="btn btn-primary pull-center btn-sm"
+                                [disabled]="lstCreateWorkOrderTracking.length == 0"
+                                (click)="SaveimageToDB()">{{'Asset.SaveFiles' | translate
+                                }}</button>
+                        </div>
+                    </div>
+
+
+                    <div class="row top-buffer">
+                        <div class="col-md-2">
+                            <button mat-stroked-button color="primary" mat-button matStepperPrevious>{{'Asset.Previous'
+                                |
+                                translate }}</button>
+                        </div>
+                        <div class="col-md-9"></div>
+                        <div class="col-md-1">
+                            <button mat-stroked-button color="primary" mat-button matStepperNext>{{'Asset.Next' |
+                                translate
+                                }}</button>
+                        </div>
+                    </div>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>{{'Asset.Finish' | translate }}</ng-template>
+                    <p>{{'Asset.Done' | translate }}p>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <button mat-stroked-button color="primary" mat-button matStepperPrevious>{{'Asset.Previous'
+                                |
+                                translate }}</button>
+                        </div>
+                        <div class="col-md-8"></div>
+                        <div class="col-md-2">
+                            <button mat-stroked-button (click)="CloseStepper()" color="primary"
+                                mat-button>{{'Asset.Finish' | translate }}</button>
+                        </div>
+                    </div>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{ width: '350px' }">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e; font-weight: bold; font-size: 16pt">
+            {{ "Asset.Save" | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">
+        {{ "Asset.SavedSuccess" | translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

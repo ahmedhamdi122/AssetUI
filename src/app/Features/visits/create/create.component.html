@@ -1,0 +1,125 @@
+<div class="col-12">
+  <form (ngSubmit)="onSubmit()" #AddUnitForm="ngForm">
+    <div class="row top-buffer">
+      <div class="col-12">
+        <label for="code" [translate]="'Asset.Code'">{{'Asset.Code' | translate }}
+        </label>
+        <input type="text" id="code" class="form-control" name="code" [(ngModel)]="visitObj.code" #code="ngModel"
+          [value]="0" disabled />
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-4">
+        <label for="hospitalId" [translate]="'Asset.Hospital'">
+          {{ "Asset.Hospital" | translate }}</label>
+        <select class="form-control" id="hospitalId" name="hospitalId" [(ngModel)]="visitObj.hospitalId"
+          [ngModelOptions]="{standalone: true}">
+          <option [value]="0">
+          </option>
+          <option *ngFor="let hosp of lsthosp" [value]="hosp.id">
+            {{ lang == "en" ? hosp.name : hosp.nameAr }}
+          </option>
+        </select>
+      </div>
+      <div class="col-4">
+        <label for="visitTypeId" [translate]="'Asset.VisitType'">
+          {{ "Asset.VisitType" | translate }}</label>
+        <select class="form-control" id="visitTypeId" name="visitTypeId" [(ngModel)]="visitObj.visitTypeId"
+          [ngModelOptions]="{standalone: true}">
+          <option [value]="0">
+          </option>
+          <option *ngFor="let vtype of lstvisitTypes" [value]="vtype.id">
+            {{ lang == "en" ? vtype.name : vtype.nameAr }}
+          </option>
+        </select>
+      </div>
+      <div class="col-4">
+        <label for="visitDate" [translate]="'Asset.VisitDate'">
+          {{ "Asset.VisitDate" | translate }}</label><br>
+        <input type="date" class="form-control" (onSelect)="getVisitDate($event)" [(ngModel)]="visitObj.visitDate"
+          [ngModelOptions]="{standalone: true}" appendTo="body" />
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-12">
+        <label for="vdescription" [translate]="'Asset.Description'"></label>
+        <textarea type="text" #address="ngModel" name="vdescription" id="vdescription" class="form-control"
+          [(ngModel)]="visitObj.visitDescr" [ngModelOptions]="{standalone: true}"></textarea>
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-5">
+
+        <input #documentName="ngModel" class="form-control" type="text" pInputText
+          placeholder="{{ 'Asset.DocumentTitle' | translate }}" [(ngModel)]="visitAttachmentObj.title"
+          [ngModelOptions]="{standalone: true}" />
+      </div>
+      <div class="col-3">
+        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;"
+          (click)="$event.target.value=null">
+        <button type="button" class="btn btn-outline-success" (click)="file.click()"> <i
+            class="fa fa-upload"></i> {{'Asset.SelectDocument' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="row top-buffer">
+      <div class="col-12">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ "Asset.Name" | translate }}</th>
+              <th>{{ "Asset.DocumentTitle" | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of lstCreateVisitAttachments">
+              <td>{{ i.fileName }}</td>
+              <td>{{ i.title }}</td>
+              <td>
+                <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                    style="color: rgb(123, 9, 9)"></i></span>
+              </td>
+            </tr>
+            <tr *ngIf="lstCreateVisitAttachments.length == 0">
+              <td colspan="2" style="color: rgb(102, 97, 23)" [translate]="'Asset.NoData'"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-success" value="save">
+          {{ "Asset.Save" | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+  <ng-template pTemplate="header">
+    <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}</h6>
+  </ng-template>
+  <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' | translate
+    }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+  <ng-template pTemplate="header">
+    <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+  </ng-template>
+
+  <span style="color: red;">
+    {{error.errorMessage}}
+
+  </span>
+</p-dialog>

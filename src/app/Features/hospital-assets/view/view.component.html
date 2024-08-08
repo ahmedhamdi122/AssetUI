@@ -1,0 +1,345 @@
+<div class="card">
+    <div class="col-12" id="contentToConvert" id="printable">
+        <div class="row top-buffer">
+            <div class="col-3">
+                <img src="{{imgURL}}" width="80" height="80" name="assetImg" id="assetImg" />
+            </div>
+            <div class="col-4 text-center ">
+                <img src="../../../../assets/images/{{currentUser.strLogo}}" alt="logo" width="70" height="70"
+                    alt="img" />
+                <p> {{lang =="en"?currentUser.strInsitute:currentUser.strInsituteAr}} </p>
+                <p> {{hospitalName}} </p>
+            </div>
+            <div class="col-4 " [ngStyle]="{'text-align': lang == 'en' ? 'right': 'left'}">
+                <ngx-barcode [bc-value]="assetObj.barcode" [bc-display-value]="true" height="1" width="14">
+                </ngx-barcode>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn" (click)="convetToPDF()" id="non-printable"> <i
+                        class="fa-solid fa-print fa-2xl"></i></button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{ 'Asset.AssetDetails' | translate }}
+            </h3>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="code" class="labeldetails" [translate]="'Asset.Barcode'">Code :</label>
+                    {{assetObj.barcode}}
+                </div>
+                <div class="col-4">
+                    <label for="assetName" class="labeldetails" [translate]="'Asset.Name'">Asset Name
+                        :</label>
+                    {{lang == "en" ? assetObj.assetName:assetObj.assetNameAr}}
+
+                </div>
+                <div class="col-4">
+                    <label for="serialNumber" class="labeldetails" [translate]="'Asset.Serial'">Serial
+                        Number :
+                    </label> {{assetObj.serialNumber}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="hospitalId" class="labeldetails" [translate]="'Asset.Hospital'">Hospitals</label>
+                    {{ lang == "en" ? assetObj.hospitalName:assetObj.hospitalNameAr}}
+                </div>
+                <div class="col-4">
+                    <label for="departmentId" class="labeldetails" [translate]="'Asset.Department'">Departments</label>
+                    {{ lang == "en" ? assetObj.departmentName:assetObj.departmentNameAr}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1;padding: 0px 10px;">
+                {{
+                'Asset.Location' | translate }} </h3>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="build" class="labeldetails"> {{ 'Asset.Building' | translate }}</label>
+                    {{ lang == "en" ? assetObj.buildName:assetObj.buildNameAr}}
+                </div>
+                <div class="col-4">
+                    <label for="floor" class="labeldetails"> {{ 'Asset.Floor' | translate }}</label>
+                    {{ lang == "en" ? assetObj.floorName:assetObj.floorNameAr}}
+                </div>
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.Room' | translate }} </label>
+                    {{ lang == "en" ? assetObj.roomName:assetObj.roomNameAr}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1;padding: 0px 10px;">
+                {{
+                'Asset.Contract' | translate }} </h3>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="contractDate" class="labeldetails"> {{ 'Asset.ContractDate' | translate
+                        }}</label>
+                    {{assetObj.contractDate}}
+                </div>
+                <div class="col-4">
+                    <label for="from" class="labeldetails"> {{ 'Asset.From' | translate }}</label>
+                    {{assetObj.contractStartDate}}
+                </div>
+                <div class="col-4">
+                    <label for="to" class="labeldetails"> {{ 'Asset.To' | translate }} </label>
+                    {{assetObj.contractEndDate}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{'Asset.Purchase' | translate }} </h3>
+            <div class="row top-buffer">
+
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.PONumber' | translate }}
+                    </label>
+                    {{ assetObj.poNumber }}
+                </div>
+
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.Purchase' | translate }}
+                    </label>
+                    {{assetObj.purchaseDate}}
+                </div>
+
+                <div class="col-4">
+                    <label for="receive" class="labeldetails"> {{ 'Asset.ReceivingDate' |
+                        translate
+                        }}
+                    </label>
+                    {{assetObj.receivingDate}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="install" class="labeldetails"> {{ 'Asset.InstallationDate' |
+                        translate}}
+                    </label>
+                    {{assetObj.installationDate}}
+                </div>
+                <div class="col-4">
+                    <label for="oper" class="labeldetails"> {{ 'Asset.OperationDate' | translate
+                        }}
+                    </label>
+                    {{assetObj.operationDate }}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-4" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Price' | translate }} </label>
+                    {{ assetObj.price }}
+                </div>
+
+                <div class="col-4" *ngIf="lang === 'ar'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Price' | translate }} </label>
+                    {{(+assetObj.price).toLocaleString("ar-SA")}}
+                </div>
+
+
+
+
+                <div class="col-3" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.CostCenter' | translate }}
+                    </label>
+                    {{assetObj.costCenter}}
+                </div>
+
+                <div class="col-3" *ngIf="lang === 'ar'">
+                    <label for="" class="labeldetails"> {{ 'Asset.CostCenter' | translate }}
+                    </label>
+                    {{(+assetObj.costCenter).toLocaleString("ar-SA")}}
+                </div>
+
+
+
+
+
+
+                <div class="col-3" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.DepreciationRate' | translate
+                        }}
+                    </label>
+                    {{ assetObj.depreciationRate }} %
+                </div>
+                <div class="col-3" *ngIf="lang === 'ar' && assetObj.depreciationRate != null">
+                    <label for="" class="labeldetails"> {{ 'Asset.DepreciationRate' | translate
+                        }}
+                    </label>
+                    {{ assetObj.depreciationRate.toLocaleString("ar-SA") }} %
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{'Asset.Warranty' | translate }} </h3>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.WarrantyStart' | translate }}
+                    </label>
+                    {{assetObj.warrantyStart}}
+                </div>
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.WarrantyEnd' | translate }}
+                    </label>
+                    {{assetObj.warrantyEnd}}
+                </div>
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.WarrantyExpiresEnd' | translate }}
+                    </label>
+                    {{lang=='en'? assetObj.warrantyExpires:assetObj.warrantyExpiresAr}}
+                </div>
+            </div>
+
+
+
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="" class="labeldetails"> {{ 'Asset.WarrantyExpires' | translate }}
+                    </label>
+                    {{lang=='en'? assetObj.remainWarrantyExpires:assetObj.remainWarrantyExpiresAr}}
+                </div>
+                <div class="col-4">
+
+                </div>
+                <div class="col-4">
+
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{
+                'Asset.Physical' | translate }}
+            </h3>
+            <div class="row top-buffer">
+                <div class="col-3" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Length' | translate }}
+                    </label>
+                    {{ assetObj.length}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'ar'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Length' | translate }}
+                    </label>
+                    {{(+assetObj.length).toLocaleString("ar-SA")}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Width' | translate }} </label>
+                    {{ assetObj.width}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'ar'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Width' | translate }} </label>
+                    {{(+assetObj.width).toLocaleString("ar-SA")}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Height' | translate }}
+                    </label>
+                    {{ assetObj.height}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'ar'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Height' | translate }}
+                    </label>
+                    {{(+assetObj.height).toLocaleString("ar-SA")}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'en'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Weight' | translate }}
+                    </label>
+                    {{ assetObj.weight}}
+                </div>
+                <div class="col-3" *ngIf="lang === 'ar'">
+                    <label for="" class="labeldetails"> {{ 'Asset.Weight' | translate }}
+                    </label>
+                    {{(+ assetObj.weight).toLocaleString("ar-SA")}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1;  padding: 0px 10px;">
+                {{
+                'Asset.Brand' | translate }}
+            </h3>
+
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="" class="labeldetails"> {{ 'Asset.Model' | translate }} </label>
+                    {{ assetObj.modelNumber}}
+                </div>
+                <div class="col-6">
+                    <label for="" class="labeldetails"> {{ 'Asset.Version' | translate }}
+                    </label>
+                    {{ assetObj.versionNumber}}
+                </div>
+            </div>
+
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="" class="labeldetails"> {{ 'Asset.Brand' | translate }} </label>
+                    {{ assetObj.brandName}}
+                </div>
+                <div class="col-6">
+                    <label for="" class="labeldetails"> {{ 'Asset.Supplier' | translate }}
+                    </label>
+                    {{ lang== "en"? assetObj.supplierName :assetObj.supplierNameAr}}
+                </div>
+
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="origin" class="labeldetails"> {{ 'Asset.Origin' | translate }}
+                    </label>
+                    {{ lang== "en"? assetObj.originName: assetObj.originNameAr}}
+
+                </div>
+                <div class="col-6">
+
+                </div>
+            </div>
+
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="remarks" class="labeldetails">{{ 'Asset.Remarks' | translate
+                        }}</label>{{assetObj.remarks}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1;  padding: 0px 10px;">
+                {{
+                'Asset.Attachments' | translate }}
+            </h3>
+            <table class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th [translate]="'Asset.Id'"> {{ 'Asset.Id' | translate }}</th>
+                        <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' | translate }}</th>
+                        <th [translate]="'Asset.FileName'"> {{ 'Asset.Title' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lstAttachment">
+                        <td>{{item.id}}</td>
+                        <td>
+                            {{item.fileName}}
+                        </td>
+                        <td>
+                            {{item.title}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

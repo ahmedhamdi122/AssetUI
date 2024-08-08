@@ -1,0 +1,168 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;"> {{ 'Asset.Create' | translate
+            }} {{ 'Asset.Supplier' | translate }} </h4>
+    </div>
+    <div class="card-body">
+        <form #form="ngForm" (ngSubmit)="onSubmit()">
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="code" [translate]="'Asset.Code'"> </label>
+                    <input type="text" class="form-control" id="code" name="code" pTooltip="Enter A Supplier code"
+                        [placeholder]="'Asset.Code' | translate" tooltipPosition="bottom" [(ngModel)]="supplierObj.code"
+                        #code="ngModel" disabled />
+
+
+                </div>
+                <div class="col-6">
+                    <label for="email" [translate]="'Asset.EMail'"></label>
+                    <input type="email" #email="ngModel" [(ngModel)]="supplierObj.email" name="email" id="email"
+                        class="form-control" [placeholder]="'Asset.EMail' | translate">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="name" [translate]="'Asset.Name'"></label>
+                    <input type="text" #name="ngModel" [class.is-invalid]="name.invalid && name.touched"
+                        [class.is-valid]="name.valid" [(ngModel)]="supplierObj.name" name="name" id="name"
+                        class="form-control" [placeholder]="'Asset.Name' | translate" required>
+                    <div *ngIf="(name.touched || form.submitted) && name.errors?.required">
+                        <span class="text-danger"> {{ 'Asset.Name' | translate }} {{ 'Asset.Required' |
+                            translate}}</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+                    <input type="text" #nameAr="ngModel" [class.is-invalid]="nameAr.invalid && nameAr.touched"
+                        [class.is-valid]="nameAr.valid" [(ngModel)]="supplierObj.nameAr" name="nameAr" id="nameAr"
+                        class="form-control" [placeholder]="'Asset.ArabicName' | translate" required>
+                    <div *ngIf="(nameAr.touched || form.submitted) && nameAr.errors?.required">
+                        <span class="text-danger"> {{ 'Asset.ArabicName' | translate }} {{ 'Asset.Required' |
+                            translate}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="mobile" [translate]="'Asset.Mobile'"></label>
+                    <input type="text" #mobile="ngModel" [(ngModel)]="supplierObj.mobile" name="mobile" id="mobile"
+                        class="form-control" [placeholder]="'Asset.Mobile' | translate">
+                </div>
+                <div class="col-6">
+                    <label for="website" [translate]="'Asset.Website'"></label>
+                    <input type="text" #website="ngModel" [(ngModel)]="supplierObj.website" name="website" id="website"
+                        class="form-control" [placeholder]="'Asset.Website' | translate">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="address" [translate]="'Asset.Address'"></label>
+                    <textarea #address="ngModel" [(ngModel)]="supplierObj.address" name="address" id="address"
+                        class="form-control" [placeholder]="'Asset.Address' | translate"></textarea>
+                </div>
+                <div class="col-6">
+                    <label for="addressAr" [translate]="'Asset.ArabicAddress'"></label>
+                    <textarea #addressAr="ngModel" [(ngModel)]="supplierObj.addressAr" name="addressAr" id="addressAr"
+                        class="form-control" [placeholder]="'Asset.ArabicAddress' | translate"></textarea>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="contactPerson" [translate]="'Asset.ContactPerson'"></label>
+                    <input type="text" #contactPerson="ngModel" [(ngModel)]="supplierObj.contactPerson"
+                        name="contactPerson" id="contactPerson" class="form-control"
+                        [placeholder]="'Asset.ContactPerson' | translate" />
+                </div>
+                <div class="col-6">
+                    <label for="fax" [translate]="'Asset.Fax'"></label>
+                    <input type="text" #fax="ngModel" [(ngModel)]="supplierObj.fax" name="fax" id="fax"
+                        class="form-control" [placeholder]="'Asset.Fax' | translate" />
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="notes" [translate]="'Asset.Notes'"></label>
+                    <textarea #notes="ngModel" [(ngModel)]="supplierObj.notes" name="notes" id="notes"
+                        class="form-control" [placeholder]="'Asset.Notes' | translate"></textarea>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary pull-center btn-sm" [translate]="'Asset.Save'"
+                        style="margin:0px 5px;background-color: #1483c2;border-color: #1483c2"></button>
+                </div>
+            </div>
+        </form>
+
+
+        <fieldset *ngIf="isSaved">
+            <legend>{{'Asset.Upload' | translate }}</legend>
+            <div class="row top-buffer">
+                <div class="col-10">
+                    <label for="title"> {{'Asset.DocumentName' | translate }}</label>
+                    <input #title="ngModel" class="form-control" type="text" pInputText
+                        placeholder="{{'Asset.DocumentName' | translate }}"
+                        [(ngModel)]="createSupplierAttachment.title">
+                </div>
+                <div class="col-2">
+                    <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                        style="display:none;" (click)="$event.target.value=null">
+                    <button type="button" class="btn btn-outline-success" style="margin-top: 20px;margin-left: 10px;"
+                        (click)="file.click()" [disabled]="isDisabled"> <i class=" fa fa-upload"
+                            style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.SelectDocumentTitle' |
+                        translate }}
+                    </button>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{{'Asset.Name' | translate }}</th>
+                                <th>{{'Asset.DocumentTitle' | translate }}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of lstSupplierAttachments">
+                                <td>{{i.fileName}}</td>
+                                <td>{{i.title}}</td>
+                                <td>
+                                    <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                                            style="color: rgb(123, 9, 9);"></i></span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="lstSupplierAttachments.length == 0">
+                                <td colspan="3" style="color: rgb(102, 97, 23);" [translate]="'Asset.NoData'">
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-12">
+                    <button (click)="saveFiles()" color="primary" [disabled]="isDisabled">{{'Asset.Save' |
+                        translate }}</button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

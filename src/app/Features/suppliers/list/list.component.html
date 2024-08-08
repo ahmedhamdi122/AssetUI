@@ -1,0 +1,82 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-2">
+            <h1 class="card-title"> {{ 'Asset.Suppliers' | translate }} </h1>
+        </div>
+        <button class="btn excelIcon" (click)="exportExcel()" pTooltip="{{'Asset.ExportExcel'| translate}}"
+            tooltipPosition="top"> <i class="fa-solid fa-file-excel fa-2xl"></i></button>
+        <button class="btn pdfIcon" (click)="exportPDF()" pTooltip="{{'Asset.ExportPdf'| translate}}"
+            tooltipPosition="top"> <i class="fa-solid fa-file-pdf fa-2xl"></i></button>
+        <button class="btn wordIcon" (click)="printSelectedSupplier()" pTooltip="{{'Asset.ExportWord'| translate}}"
+            tooltipPosition="top"> <i class="fa-solid fa-file-word fa-2xl"></i></button>
+        <div class="col-6"></div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addSupplier()"><i class="fa-solid fa-plus"></i> {{
+                'Asset.Create' | translate }}</a>
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table #dt dataKey="id" [value]="suppliersList"
+                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [loading]="loading" [totalRecords]="count" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;"></th>
+                        <th style="text-align: inherit;">{{ 'Asset.Code' | translate }}<p-sortIcon
+                                id="{{'Asset.Code' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Name' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Mobile' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Address' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.EMail' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"> </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.ContactPerson' | translate }} <p-sortIcon
+                                id="{{'Asset.Name' | translate }}" (click)="sort($event)"> </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-supplier>
+                    <tr>
+                        <td style="width: 5%;text-align: inherit;">
+                            <mat-checkbox id="ckbx{{supplier.id}}" name="ckbx{{supplier.id}}" style="width: 10px;"
+                                (change)="printSupplier($event, supplier.id)" [value]="supplier.id">
+                            </mat-checkbox>
+                        </td>
+                        <td style="text-align: inherit;">
+                            {{lang=="en"?supplier.code:(+supplier.code).toLocaleString("ar-SA")}}</td>
+                        <td style="text-align: inherit;">
+                            {{lang =="en"?supplier.name:supplier.nameAr}}
+                        </td>
+                        <td style="text-align: inherit;">{{supplier.mobile}}</td>
+                        <td style="text-align: inherit;">{{lang =="en" ? supplier.address:supplier.addressAr}}</td>
+                        <td style="text-align: inherit;">{{supplier.eMail}}</td>
+                        <td style="text-align: inherit;">{{supplier.contactPerson}}</td>
+                        <td style="text-align: inherit;">
+                            <span class="viewIcon" (click)="viewSupplier(supplier.id)"> <i class=" fa-solid fa-eye"></i>
+                            </span>
+                            <a (click)="editSupplier(supplier.id)" class="editIcon"><i class="fa-solid fa-edit"></i></a>
+                            <span (click)="deleteSupplier(supplier.id)" class="deleteIcon"> <i
+                                    class="fa-solid fa-trash"></i></span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="7" style="text-align: inherit;"> {{'Asset.NoData' | translate }} </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

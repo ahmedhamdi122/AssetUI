@@ -1,0 +1,159 @@
+<div class="row top-buffer" id="non-printable">
+    <div class="col-12">
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="printPage()"><i
+                class="fa-solid fa-print"></i></button>
+    </div>
+</div>
+
+
+<div class="col-12" id="printable">
+    <div class="row top-buffer">
+        <div class="col-12 viewfont">
+            <label for="types" class="viewfont" [translate]="'Asset.ExcludeType1'"></label>
+            {{lang =="en" ? hospitalExecludeAssetObj.appTypeName:hospitalExecludeAssetObj.appTypeNameAr}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12 viewfont">
+            <label for="assetId" class="viewfont" [translate]="'Asset.Asset'"></label>
+            {{lang=="en" ? hospitalExecludeAssetObj.assetName:hospitalExecludeAssetObj.assetNameAr}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-4 viewfont">
+            <label for="appNumber" class="viewfont" [translate]="'Asset.AppNumber'"></label>
+            {{hospitalExecludeAssetObj.appNumber}}
+        </div>
+        <div class="col-4 viewfont">
+            <label for="date" class="viewfont" [translate]="'Asset.Date'"></label>
+            {{ hospitalExecludeAssetObj.appDate}}
+        </div>
+
+        <div class="col-4 viewfont">
+            <label for="execludeDate" class="viewfont" [translate]="'Asset.ExecludeDate'"></label>
+            {{ hospitalExecludeAssetObj.execludeDate}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-4 viewfont">
+            <label for="assetId" class="viewfont" [translate]="'Asset.Serial'"></label>
+            {{hospitalExecludeAssetObj.serialNumber}}
+        </div>
+        <div class="col-4 viewfont">
+            <label for="assetId" class="viewfont" [translate]="'Asset.Barcode'"></label>
+            {{hospitalExecludeAssetObj.barCode}}
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12 viewfont">
+            <label for="comment" class="viewfont" [translate]="'Asset.Comment'"></label>
+            {{hospitalExecludeAssetObj.comment}}
+        </div>
+    </div>
+    <div class="row top-buffer" name="HExeclude" *ngIf="showHExeclude">
+        <div class="col-12">
+            <label for="hexeclude" [translate]="'Asset.Reasons'" class="lbltitles"
+                style="padding-bottom: 20px;"></label>
+            <ul>
+                <li *ngFor="let itm of lstTransactions">
+                    {{lang == "en" ?itm.reasonName: itm.reasonNameAr}}
+
+                    <div class="row top-buffer" style="margin-top: 15px;">
+                        <div class="col-12">
+                            <!-- <table class="table table-striped" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' | translate }}</th>
+                                        <th style="text-align: center;" [translate]="'Asset.Download'"> {{
+                                            'Asset.Download' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let attach of itm.attachments">
+                                        <td>
+                                            {{attach.fileName}}
+                                        </td>
+                                        <td style="cursor: pointer;text-align: center;" pTooltip="Download File"
+                                            tooltipPosition="top">
+                                            <a (click)="downloadFile(attach.fileName)"><i
+                                                    class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> -->
+
+
+                            <p-table [value]="itm.attachments"
+                                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="text-align: inherit;" [translate]="'Asset.FileName'"
+                                            class="viewfont">{{ 'Asset.FileName' |
+                                            translate }}</th>
+                                        <th style="text-align: inherit;" [translate]="'Asset.Download'"
+                                            id="non-printable">{{'Asset.Download' |
+                                            translate }}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-attach>
+                                    <tr>
+                                        <td class="viewfont" style="text-align: inherit;">
+                                            {{attach.fileName}}
+                                        </td>
+                                        <td style="cursor: pointer;text-align: inherit;" class="downloadIcon"
+                                            id="non-printable">
+                                            <a (click)="downloadFile(attach.fileName)"><i
+                                                    class="fa-solid fa fa-download" id="non-printable"></i></a>
+
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row top-buffer" name="HHold" *ngIf="showHHold">
+        <div class="col-12">
+            <label for="reasons" [translate]="'Asset.Reasons'" class="lbltitles" style="padding-bottom: 20px;"></label>
+            <ul>
+                <li *ngFor="let itm of lstTransactions">
+                    {{lang == "en" ?itm.reasonName:itm.reasonNameAr}}
+
+                    <div class="row top-buffer" style="margin-top: 15px;">
+                        <div class="col-12">
+                            <p-table [value]="itm.attachments"
+                                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th [translate]="'Asset.FileName'" class="viewfont">{{ 'Asset.FileName' |
+                                            translate }}</th>
+                                        <th [translate]="'Asset.Download'" id="non-printable">{{'Asset.Download' |
+                                            translate }}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-attach>
+                                    <tr>
+                                        <td class="viewfont">
+                                            {{attach.fileName}}
+                                        </td>
+                                        <td style="cursor: pointer;text-align: center;" class="downloadIcon"
+                                            id="non-printable">
+                                            <a (click)="downloadFile(attach.fileName)"><i
+                                                    class="fa-solid fa fa-download" id="non-printable"></i></a>
+
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

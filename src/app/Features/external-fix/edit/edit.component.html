@@ -1,0 +1,186 @@
+<div class="row" [dir]="textDir">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    {{ 'Asset.ViewExternalFix' | translate }}
+                </h4>
+
+                <div class="row top-buffer"></div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="name">{{'Asset.Name' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.assetName:externalFixObj.assetNameAr}}
+                    </div>
+                    <div class="col-6">
+                        <label for="model">{{'Asset.Model' | translate }}</label>
+                        {{externalFixObj.modelNumber}}
+                    </div>
+                    <div class="col-6">
+                        <label for="barcode">{{'Asset.Barcode' | translate }}</label>
+                        {{externalFixObj.barcode}}
+                    </div>
+                    <div class="col-6">
+                        <label for="Long">{{'Asset.Serial' | translate }}</label>
+                        {{externalFixObj.serialNumber}}
+                    </div>
+                    <div class="col-6">
+                        <label for="supplier">{{'Asset.Supplier' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.supplierName:externalFixObj.supplierNameAr}}
+                    </div>
+                    <div class="col-6">
+                        <label for="nameAr">{{'Asset.Brand' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.brandName:externalFixObj.brandNameAr}}
+                    </div>
+                    <div class="col-6">
+                        <label for="Adress">{{'Asset.Department' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.departmentName:externalFixObj.departmentNameAr}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="outNumber">{{'Asset.OutNumber' | translate }}</label>
+                        {{externalFixObj.outNumber}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-4">
+                        <label for="outDate">{{'Asset.OutDate' | translate }}</label>
+                        {{externalFixObj.outDate | date:'yyyy-MM-dd HH:mm:ss'}}
+                    </div>
+                    <div class="col-4">
+                        <label for="outDate">{{'Asset.OutDate' | translate }}</label>
+                        {{externalFixObj.outDate | date:'yyyy-MM-dd HH:mm:ss'}}
+                    </div>
+                    <div class="col-4">
+                        <label for="expectedDate">{{'Asset.ExpectedDate' | translate }}</label>
+                        {{externalFixObj.expectedDate | date:'yyyy-MM-dd HH:mm:ss'}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label> هل الجهاز يعمل
+                            <mat-checkbox [(ngModel)]="editExternalFixVMObj.isChecked"
+                                [ngModelOptions]="{standalone: true}">
+                            </mat-checkbox>
+                        </label>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="notes">{{'Asset.Notes' | translate }}</label>
+                        <br />
+                        {{externalFixObj.notes}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="outDate" [translate]="'Asset.ComingDate'"> </label>
+                        <br />
+                        <p-calendar appendTo="body" [(ngModel)]="editExternalFixVMObj.comingDate"
+                            [ngModelOptions]="{standalone: true}" dateFormat="dd/mm/yy" [yearNavigator]="true"
+                            yearRange="1900:2030" [monthNavigator]="true">
+                        </p-calendar>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="comingNotes" [translate]="'Asset.ComingNotes'"></label>
+                        <textarea class="form-control" id="comingNotes" [(ngModel)]="editExternalFixVMObj.comingNotes"
+                            pInputTextarea name="comingNotes" [ngModelOptions]="{standalone: true}"></textarea>
+                    </div>
+                </div>
+                <div class="row top-buffer" *ngIf="externalFixObj.listExternalFixFiles.length >0">
+                    <div class="col-12">
+                        <p-table #dt dataKey="id" [value]="externalFixObj.listExternalFixFiles" [rowHover]="true"
+                            styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                            responsiveLayout="scroll">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>{{ 'Asset.FileName' | translate }}<p-sortIcon id="{{'Asset.Name' | translate }}"
+                                            (click)="sort($event)"></p-sortIcon>
+                                    </th>
+                                    <th>{{ 'Asset.Title' | translate }} <p-sortIcon id="{{'Asset.Name' | translate }}"
+                                            (click)="sort($event)"></p-sortIcon>
+                                    <th>{{ 'Asset.Download' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item>
+                                <tr>
+                                    <td>{{item.fileName}}</td>
+                                    <td>{{item.title}}</td>
+                                    <td>
+                                        <a (click)="downloadFile(item.fileName)">
+                                            <i class="fa-solid fa fa-download"></i></a>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-10">
+                        <label for="title"> {{'Asset.DocumentName' | translate }}</label>
+                        <input #title="ngModel" class="form-control" type="text" pInputText
+                            [(ngModel)]="createExternalFixFile.title">
+                    </div>
+                    <div class="col-2">
+                        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                            (click)="$event.target.value=null">
+                        <button type="button" class="btn btn-outline-success" (click)="file.click()"> <i
+                                class="fa fa-upload"></i>{{'Asset.SelectDocumentTitle' | translate }}
+                        </button>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>{{'Asset.Name' | translate }}</th>
+                                    <th>{{'Asset.DocumentTitle' | translate }}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let i of lstCreateExternalFixFiles">
+                                    <td>{{i.fileName}}</td>
+                                    <td>{{i.title}}</td>
+                                    <td>
+                                        <span (click)="removeFileFromObjectArray(i)"><i
+                                                class="fa-solid fa-times-circle"></i></span>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="lstCreateExternalFixFiles.length == 0">
+                                    <td colspan="3" [translate]="'Asset.NoData'">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class=" row top-buffer">
+                    <div class="col-offset-3 col-6 col-offset-3">
+                        <button class="btn btn-success" value="save" type="button" (click)="onSubmit()">{{ 'Asset.Save'
+                            | translate }} </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+    <br />
+    <br />
+    <button class="btn btn-primary" (click)="closeDialogue()"> {{'Asset.Close' | translate }}</button>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4>{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span> {{error.errorMessage}} </span>
+</p-dialog>

@@ -1,0 +1,20 @@
+<div>
+    <h1 style="font-size: 2em;color: #2674a8;margin-left:-10px">Create Work Order Tasks "{{subject}}"
+    </h1>
+</div>
+<br />
+<h2>Choose tasks for work order</h2>
+<div style="margin-bottom:10px;" class="p-field-checkbox"
+    *ngFor="let task of lstAssetWorkOrderTask; let i = index">
+    <div class="row">
+        <div class="col-md-12">
+            <p-checkbox name="group2[i]" value="task" [value]="task" [(ngModel)]="lstSelectedCreateTasks"
+                [inputId]="task.id"></p-checkbox>
+            <label [for]="task.id">{{task.name}}</label>
+            <input type="text" value="task" [value]="task" name="group[i]"
+                [(ngModel)]="lstSelectedCreateComments[i]" class="form-control"
+                placeholder="write your comment" />
+        </div>
+    </div>
+</div>
+<button class="btn btn-primary" (click)="AddTasksToDB()">Submit</button>

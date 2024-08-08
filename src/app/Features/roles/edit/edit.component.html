@@ -1,0 +1,65 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;">
+            {{ 'Asset.Edit' | translate }} {{ 'Asset.Role' | translate }}
+        </h4>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="frm">
+            <div class="form-group">
+
+                <label for="name" [translate]="'Asset.RoleCategory'"></label>
+
+
+                <select class="form-control" name="roleCategoryId" id="roleCategoryId"
+                    class="form-control ng-dirty ng-invalid p-mr-2" [value]="0" (change)="changeRoleCategoryId($event)"
+                    [value]="0" [(ngModel)]="roleObj.roleCategoryId">
+                    <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.Role' | translate }}</option>
+                    <option *ngFor="let item of lstRoleCategories" [value]="item.id"
+                        [selected]="item.id==roleObj.roleCategoryId">
+                        {{ item.name }}
+                    </option>
+                </select>
+
+
+
+                <label for="name" [translate]="'Asset.Name'"></label><span class="text-danger"
+                    style="font-size:10px; font-weight:bold">*</span>
+                <input type="text" class="form-control" formControlName="name" placeholder="Enter name"
+                    [(ngModel)]="roleObj.name" autofocus required />
+                <div *ngIf=" frm.controls['name'].touched && frm.controls['name'].hasError('required')">
+                    <span class="text-danger" style="font-size:10px; font-weight:bold"> Name is required</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="name" [translate]="'Asset.DisplayName'"></label><span class="text-danger"
+                    style="font-size:10px; font-weight:bold">*</span>
+                <input type="text" class="form-control" formControlName="displayName" placeholder="Enter displayName"
+                    [(ngModel)]="roleObj.displayName" autofocus required />
+                <div *ngIf=" frm.controls['displayName'].touched && frm.controls['displayName'].hasError('required')">
+                    <span class="text-danger" style="font-size:10px; font-weight:bold">Arabic Name is required</span>
+                </div>
+
+            </div>
+            <button class="btn btn-primary pull-center btn-sm" value="Save" type="button" (click)="onSubmit()"
+                style="margin:0px 5px;background-color: #1483c2;border-color: #1483c2">{{ 'Asset.Save' | translate
+                }}</button>
+            <!-- <button mat-button (click)="reset()" class="btn btn-primary pull-center btn-sm"
+                style="margin: 0px 5px;background-color: #fe7f83 !important;border-color:#fe7f83">{{ 'Asset.Reset' | translate }}</button>
+         -->
+
+            <button class="btn btn-primary pull-center btn-sm" (click)="back()"
+                style="margin: 0px 5px;background-color: #7e8083 !important;border-color:#7e8083">{{ 'Asset.Back' |
+                translate }}</button>
+
+
+        </form>
+    </div>
+</div>
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> [translate]="'Asset.Error'" </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

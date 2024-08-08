@@ -1,0 +1,126 @@
+<div>
+    <div class="row">
+        <div class="col-12 barcodediv" [ngStyle]="{'text-align': lang == 'en' ? 'right': 'left'}">
+            <ngx-barcode [bc-value]="viewWNPMAssetTimeObj.barCode" [bc-display-value]="true" width="15" height="3">
+            </ngx-barcode>
+        </div>
+        <div class="col-12 headerdiv">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row top-buffer">
+                        <div class="col-6">
+                            <label for="assetName" class="labeldetails" [translate]="'Asset.Name'">Asset Name
+                                :</label>
+                            {{lang == "en" ? viewWNPMAssetTimeObj.assetName:viewWNPMAssetTimeObj.assetNameAr}}
+                        </div>
+                        <div class="col-6">
+                            <label for="code" class="labeldetails" [translate]="'Asset.Barcode'">Code :</label>
+                            {{viewWNPMAssetTimeObj.barCode}}
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-6" [ngStyle]="{'direction': lang == 'en' ? 'ltr': 'ltr'}">
+                            {{viewWNPMAssetTimeObj.serialNumber}}
+                            <label for="serialNumber" class="labeldetails" [translate]="'Asset.Serial'">Serial
+                                Number :
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <label for="pmdate" class="labeldetails" [translate]="'Asset.Date'">
+                                :</label>
+                            {{viewWNPMAssetTimeObj.pmDate | date:'dd-MM-yyyy HH:mm:ss'}}
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-12">
+                            <label for="isDone" class="labeldetails" [translate]="'Asset.IsDone'">
+                                :</label>
+                            {{viewWNPMAssetTimeObj.isDone}}
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-6" [ngStyle]="{'direction': lang == 'en' ? 'ltr': 'ltr'}">
+                            {{viewWNPMAssetTimeObj.doneDate | date:'dd-MM-yyyy HH:mm:ss'}}
+                            <label for="serialNumber" class="labeldetails" [translate]="'Asset.DoneDate'">Serial
+                                Number :
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <label for="dueDate" class="labeldetails" [translate]="'Asset.DueDate'">
+                                :</label>
+                            {{viewWNPMAssetTimeObj.dueDate | date:'dd-MM-yyyy HH:mm:ss'}}
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-6">
+                            <label for="departmentId" class="labeldetails"
+                                [translate]="'Asset.Department'">Departments</label>
+                            {{ lang == "en" ?viewWNPMAssetTimeObj.departmentName:viewWNPMAssetTimeObj.departmentNameAr}}
+                        </div>
+                        <div class="col-6">
+                            <label for="agencyId" class="labeldetails" [translate]="'Asset.Agency'">Agency</label>
+                            {{ lang == "en" ? viewWNPMAssetTimeObj.supplierName:viewWNPMAssetTimeObj.supplierNameAr}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+
+            <p-table class="table" [value]="listWNPMAssetTimeAttachments"
+                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;"> {{'Asset.Name' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Title' | translate }}</th>
+                        <th style="text-align: center;"> {{'Asset.Download' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-doc>
+                    <tr>
+                        <td style="text-align: inherit;"> {{doc.fileName}}</td>
+                        <td style="text-align: inherit;">{{doc.title}}</td>
+                        <td style="text-align: center;">
+                            <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files" tooltipPosition="bottom">
+                                <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 style="font-size: 20px;color: #1683c2;font-weight: bold;">{{ 'Asset.PMTasks' | translate }}
+                    </h4>
+                </div>
+                <div class="card-body">
+
+                    <p-table [value]="viewWNPMAssetTimeObj.listMasterAssetTasks"
+                        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="text-align: inherit;">{{ 'Asset.Name' | translate }}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item>
+                            <tr>
+                                <td style="text-align: inherit;">{{lang=="en" ?item.taskName:item.taskNameAr}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,917 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-10">
+            <h1 class="card-title"> {{assetName}}</h1>
+            <div class="row top-buffer">
+
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <span> <b> {{'Asset.Status' | translate}}</b> : {{applicationStatus}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card" (click)="displayRequestsInDialog()" style="cursor: pointer;">
+                        <div class="card-header">
+                            <span> <b> {{'Asset.RequestBox' | translate}}</b> : {{ lang== "en"? totalAssetRequests:
+                                (+totalAssetRequests).toLocaleString("ar-SA")}} </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <span> <b> {{'Asset.WorkOrders' | translate}}</b> : {{ lang== "en"? totalAssetWorkOrders:
+                                (+totalAssetWorkOrders).toLocaleString("ar-SA")}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <mat-nav-list class="list-horizontal">
+                <mat-list-item [ngClass]="{detailmenubg: clickedItem === 'detail'}" (click)="highlightMenu('detail')">
+                    <span class="linkcolor"> {{ 'Asset.Details' | translate }}
+                    </span>
+                </mat-list-item>
+                <mat-list-item [ngClass]="{detailmenubg: clickedItem === 'status'}" (click)="highlightMenu('status')">
+                    <span class="linkcolor" routerLinkActive="active" (click)="openStatus()"> {{
+                        'Asset.Status' | translate }} </span>
+                </mat-list-item>
+                <mat-list-item [ngClass]="{detailmenubg: clickedItem === 'depreciation'}"
+                    (click)="highlightMenu('depreciation')">
+                    <span class="linkcolor" routerLinkActive="active" (click)="openDepreciation()">
+                        {{ 'Asset.Depreciation' | translate }}</span>
+                </mat-list-item>
+            </mat-nav-list>
+            <hr>
+        </div>
+        <!-- <div class="col-2">
+                <ngx-qrcode id="qrcode" [elementType]="elementType" [width]="width"
+                    [errorCorrectionLevel]="correctionLevel" [value]="assetObj.qrFilePath"></ngx-qrcode>
+            </div> -->
+        <div class="col-2">
+            <img src="{{imgURL}}" width="100" height="100" />
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="container">
+            <div class="row">
+                <div class="col" *ngIf="showDetails">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                {{ 'Asset.AssetDetails' | translate }}
+                            </h3>
+                            <div class="row top-buffer">
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Governorate' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.governorateName: assetObj.governorateNameAr}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.City' | translate }} </label>
+                                    {{ lang== "en"? assetObj.cityName: assetObj.cityNameAr}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Organization' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.orgName:assetObj.orgNameAr}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.SubOrganization' | translate
+                                        }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.subOrgName : assetObj.subOrgNameAr}}
+                                </div>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Category' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.categoryName:assetObj.categoryNameAr}}
+                                </div>
+
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.SubCategory' | translate }}
+                                    </label>
+                                    {{ assetObj.subCategoryName}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Periority' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.periorityName:assetObj.periorityNameAr}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Department' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.departmentName:assetObj.departmentNameAr}}
+                                </div>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Barcode' | translate }}
+                                    </label>
+                                    {{assetObj.barcode}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Serial' | translate }} </label>
+                                    {{assetObj.serialNumber}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.ModelNumber' | translate }}
+                                    </label>
+                                    {{assetObj.modelNumber}}
+                                </div>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Brand' | translate }} </label>
+                                    {{ assetObj.brandName}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Supplier' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.supplierName :assetObj.supplierNameAr}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Origin' | translate }}
+                                    </label>
+                                    {{ lang== "en"? assetObj.originName: assetObj.originNameAr}}
+                                </div>
+                                <div class="col-3">
+                                    <label for="" class="labeldetails"> {{ 'Asset.Version' | translate }}
+                                    </label>
+                                    {{ assetObj.versionNumber}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{'Asset.Location' | translate }} </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Building' | translate }}
+                                        </label>
+                                        {{ lang=='en' ? assetObj.buildName : assetObj.buildNameAr}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Floor' | translate }} </label>
+                                        {{ lang=='en' ? assetObj.floorName : assetObj.floorNameAr}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Room' | translate }} </label>
+                                        {{ lang=='en' ? assetObj.roomName : assetObj.roomNameAr}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{'Asset.Warranty' | translate }} </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.WarrantyStart' | translate }}
+                                        </label>
+                                        {{assetObj.warrantyStart}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.WarrantyEnd' | translate }}
+                                        </label>
+                                        {{assetObj.warrantyEnd}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.WarrantyExpiresEnd' | translate }}
+                                        </label>
+                                        {{lang =='en' ?assetObj.warrantyExpires :assetObj.warrantyExpiresAr}}
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row top-buffer">
+                                    <div class="col-4">
+                                        <label for="" class="labeldetails"> {{ 'Asset.WarrantyExpires' | translate }}
+                                        </label>
+
+                                        {{lang =='en'
+                                        ?assetObj.remainWarrantyExpires:assetObj.remainWarrantyExpiresAr}}
+                                    </div>
+                                    <div class="col-4">
+
+                                    </div>
+                                    <div class="col-4">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{ 'Asset.Contract' | translate }} </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-4">
+                                        <label for="contractDate" class="labeldetails"> {{ 'Asset.ContractDate' |
+                                            translate
+                                            }}</label>
+                                        {{assetObj.contractDate}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="from" class="labeldetails"> {{ 'Asset.From' | translate }}</label>
+                                        {{assetObj.contractStartDate}}
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="to" class="labeldetails"> {{ 'Asset.To' | translate }} </label>
+                                        {{assetObj.contractEndDate}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{'Asset.Purchase' | translate }} </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Purchase' | translate }}
+                                        </label>
+                                        {{assetObj.purchaseDate}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="receive" class="labeldetails"> {{ 'Asset.ReceivingDate' |
+                                            translate
+                                            }}
+                                        </label>
+                                        {{assetObj.receivingDate}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="install" class="labeldetails"> {{ 'Asset.InstallationDate' |
+                                            translate}}
+                                        </label>
+                                        {{assetObj.installationDate}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="oper" class="labeldetails"> {{ 'Asset.OperationDate' | translate
+                                            }}
+                                        </label>
+                                        {{assetObj.operationDate }}
+                                    </div>
+                                </div>
+                                <div class="row top-buffer">
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.PONumber' | translate }}
+                                        </label>
+                                        {{ assetObj.poNumber }}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Price' | translate }} </label>
+                                        {{lang === 'en' ? assetObj.price : (+assetObj.price).toLocaleString("ar-SA")}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.CostCenter' | translate }}
+                                        </label>
+                                        {{lang === 'en' ?
+                                        assetObj.costCenter:(+assetObj.costCenter).toLocaleString("ar-SA")}}
+                                    </div>
+                                    <div class="col-3" *ngIf="assetObj.depreciationRate != null">
+                                        <label for="" class="labeldetails"> {{ 'Asset.DepreciationRate' | translate}}
+                                        </label>
+                                        {{lang === 'en' ? assetObj.depreciationRate :
+                                        (+assetObj.depreciationRate).toLocaleString("ar-SA")}} %
+                                    </div>
+                                </div>
+                                <div class="row top-buffer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{ 'Asset.Physical' | translate }}
+                                </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Length' | translate }}
+                                        </label>
+                                        {{lang=="en" ? assetObj.length :(+assetObj.length).toLocaleString("ar-SA")}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Width' | translate }} </label>
+                                        {{lang=="en" ? assetObj.width:(+assetObj.width).toLocaleString("ar-SA")}}
+                                    </div>
+                                    <div class="col-3" *ngIf="lang === 'en'">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Height' | translate }}
+                                        </label>
+                                        {{ assetObj.height}}
+                                    </div>
+
+                                    <div class="col-3" *ngIf="lang === 'ar'">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Height' | translate }}
+                                        </label>
+                                        {{(+assetObj.height).toLocaleString("ar-SA")}}
+                                    </div>
+                                    <div class="col-3" *ngIf="lang === 'en'">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Weight' | translate }}
+                                        </label>
+                                        {{ assetObj.weight}}
+                                    </div>
+                                    <div class="col-3" *ngIf="lang === 'ar'">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Weight' | translate }}
+                                        </label>
+                                        {{(+ assetObj.weight).toLocaleString("ar-SA")}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{'Asset.ElectricRequirement' | translate }}
+                                </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Power' | translate }}
+                                        </label>
+                                        {{ assetObj.power}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Voltage' | translate }}
+                                        </label>
+                                        {{ assetObj.voltage}}
+                                    </div>
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Ampair' | translate }}
+                                        </label>
+                                        {{ assetObj.ampair}}
+                                    </div>
+
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.Frequency' | translate }}
+                                        </label>
+                                        {{ assetObj.frequency}}
+                                    </div>
+
+
+                                    <div class="col-3">
+                                        <label for="" class="labeldetails"> {{ 'Asset.ElectricRequirement' | translate
+                                            }}
+                                        </label>
+                                        {{ assetObj.electricRequirement}}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{'Asset.Remarks' | translate }}
+                                </h3>
+                                <div class="row top-buffer">
+                                    <div class="col-12">
+                                        {{assetObj.remarks}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top-buffer">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    {{ 'Asset.Attachments' | translate }}
+                                </h3>
+                                <table class="table table-striped" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th [translate]="'Asset.Id'"> {{ 'Asset.Id' | translate }}</th>
+                                            <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' | translate }}</th>
+
+                                            <th [translate]="'Asset.FileName'"> {{ 'Asset.Title' | translate }}</th>
+
+                                            <th style="text-align: center;" [translate]="'Asset.Download'"> {{
+                                                'Asset.Download' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of lstAttachment">
+                                            <td>{{item.id}}</td>
+                                            <td>
+                                                {{item.fileName}}
+                                            </td>
+                                            <td>
+                                                {{item.title}}
+                                            </td>
+
+                                            <td style="cursor: pointer;text-align: center;" pTooltip="Download File"
+                                                tooltipPosition="bottom">
+                                                <a (click)="downloadFile(item.fileName)"><i
+                                                        class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10" *ngIf="showLocations" style="width: 100%;">
+                    <div class="card">
+                        <div class="card-header cardHeader">
+                            <h4 class="card-title" [translate]="'Asset.Location'"></h4>
+                            <div class="row top-buffer">
+                                <div class="col-12">
+                                    <span class="hrefbutton1" (click)="addLocation()" style="float: right;"><i
+                                            class="fa-solid fa-plus" style="margin: 0px 10px 0px 0px;"></i> {{
+                                        'Asset.Create'
+                                        | translate }} </span>
+                                </div>
+                            </div>
+                            <div class="row top-buffer">
+                                <div class="col-12">
+                                    <div *ngIf="showAddLocations">
+
+                                        <mat-radio-group [(ngModel)]="selectedMovementItem"
+                                            (change)="onMovementItemChange($event)" name="gmove" id="gmove">
+                                            <mat-radio-button [value]="item.id" *ngFor="let item of lstShiftMovements">
+                                                {{lang=='en'?item.name:item.nameAr}}
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+
+
+
+
+                                        <div *ngIf="isExternal">
+                                            <form (ngSubmit)="addExternalLocation()" #addExternalLocationForm="ngForm">
+                                                <div class="row top-buffer">
+                                                    <div class="col-12">
+                                                        <label for="hospitalName"> {{ 'Asset.Name' | translate }}
+                                                        </label>
+                                                        <input type="text" class="form-control" id="hospitalName"
+                                                            name="hospitalName" [ngModelOptions]="{standalone: true}"
+                                                            placeholder="{{'Asset.Name' | translate}}"
+                                                            [(ngModel)]="externalAssetMovementObj.hospitalName"
+                                                            #hospitalName="ngModel">
+                                                    </div>
+                                                </div>
+                                                <div class="row top-buffer">
+                                                    <div class="col-12">
+                                                        <label for="notes"> {{ 'Asset.Note' | translate }}
+                                                        </label>
+                                                        <textarea class="form-control" id="notes" name="notes"
+                                                            placeholder="{{'Asset.Notes' | translate}}"
+                                                            [(ngModel)]="externalAssetMovementObj.notes"
+                                                            #notes="ngModel">
+                                                    </textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="row top-buffer">
+                                                    <div class="col-10">
+                                                        <label for="movementDate"> {{ 'Asset.MoveDate' | translate }}
+                                                        </label>
+                                                        <input type="datetime-local" dir="rtl" class="form-control"
+                                                            id="movementDate" name="movementDate"
+                                                            placeholder="{{'Asset.Date' | translate}}"
+                                                            [(ngModel)]="externalAssetMovementObj.movementDate"
+                                                            #movementDate="ngModel"
+                                                            [ngModelOptions]="{standalone: true}">
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button class="btn btn-primary pull-center btn-sm" value="save"
+                                                            type="submit"
+                                                            style="width: 100px;margin: 30px 5px;background-color: #1483c2;border-color: #1483c2;">
+                                                            {{ 'Asset.Save' | translate }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row top-buffer">
+                                                    <div class="col-10">
+                                                        <label for="docmentName"> {{'Asset.DocumentTitle' | translate
+                                                            }}</label>
+                                                        <input #documentName="ngModel" class="form-control" type="text"
+                                                            pInputText [ngModelOptions]="{standalone: true}"
+                                                            placeholder="{{'Asset.DocumentTitle' | translate }}"
+                                                            [(ngModel)]="createExternalAssetMovementAttachmentObj.title">
+                                                    </div>
+
+                                                    <div class="col-2">
+                                                        <input type="file" #file placeholder="Choose file"
+                                                            (change)="uploadFile(file.files)" style="display:none;">
+                                                        <button type="button" class="btn btn-outline-success"
+                                                            style="margin-top: 15px;margin-left: 3px;"
+                                                            (click)="file.click()"> <i class="fa fa-upload"
+                                                                style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.SelectDocument'
+                                                            |
+                                                            translate }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="row top-buffer">
+                                                    <div class="col-6">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>{{'Asset.Name' | translate }}</th>
+                                                                    <th>{{'Asset.DocumentTitle' | translate }}</th>
+                                                                    <th></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr
+                                                                    *ngFor="let i of lstCreateExternalAssetMovementFiles">
+                                                                    <td>{{i.fileName}}</td>
+                                                                    <td>{{i.title}}</td>
+                                                                    <td>
+                                                                        <span (click)="removeFileFromObjectArray(i)"><i
+                                                                                class="fa-solid fa-times-circle"
+                                                                                style="color: rgb(123, 9, 9);"></i></span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr
+                                                                    *ngIf="lstCreateExternalAssetMovementFiles.length == 0">
+                                                                    <td colspan="4" style="color: rgb(102, 97, 23);"
+                                                                        [translate]="'Asset.NoData'">
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+
+                                            </form>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-7" style="margin: 0px 5px;">
+                                                        <table class="table table-bordered table-striped table-hover"
+                                                            style="width: 100%;" id="firstTable">
+                                                            <thead>
+                                                                <tr
+                                                                    style="background-color: #1683c2; color: #fff; font-size: 14px; font-weight: normal;">
+                                                                    <th> {{ 'Asset.Date' | translate }} </th>
+                                                                    <th> {{ 'Asset.Name' | translate }} </th>
+                                                                    <th> {{ 'Asset.Notes' | translate }} </th>
+                                                                    <th> {{ 'Asset.Download' | translate }} </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let item of lstExternalMovements">
+                                                                    <td>{{item.movementDate | date:'dd/MM/yyyy HH:mm'}}
+                                                                    </td>
+                                                                    <td>{{item.hospitalName }}</td>
+                                                                    <td>{{item.notes }}</td>
+                                                                    <td>
+                                                                        <a (click)="getDocuments(item.id)"
+                                                                            pTooltip="View Files"
+                                                                            tooltipPosition="bottom">
+                                                                            <i class="fa-solid fa-file"
+                                                                                style="color: #d58308; cursor: pointer;margin: 0px 5px;"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-3" *ngIf="isShowFiles" style="margin: 0px 5px;">
+                                                        <p-table [value]="lstDocuments" [rowHover]="true"
+                                                            responsiveLayout="stack"
+                                                            styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                                                            <ng-template pTemplate="header">
+                                                                <tr>
+                                                                    <th style="text-align: inherit;"> {{'Asset.Name' |
+                                                                        translate }}</th>
+                                                                    <th style="text-align: inherit;"> {{'Asset.Title' |
+                                                                        translate }}</th>
+                                                                    <th style="text-align: center;">{{'Asset.Download' |
+                                                                        translate }}</th>
+                                                                </tr>
+                                                            </ng-template>
+                                                            <ng-template pTemplate="body" let-doc>
+                                                                <tr>
+                                                                    <td style="text-align: inherit;">{{doc.fileName}}
+                                                                    </td>
+                                                                    <td style="text-align: inherit;">{{doc.title}}
+                                                                    </td>
+                                                                    <td style="text-align: center;">
+                                                                        <a (click)="downloadExternalAssetMovementFile(doc.fileName)"
+                                                                            pTooltip="View Files"
+                                                                            tooltipPosition="bottom">
+                                                                            <i class="fa-solid fa fa-download"
+                                                                                style="color: #61bb20;"></i></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </ng-template>
+                                                        </p-table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="isInternal">
+                                            <form (ngSubmit)="onLocationSubmit()" #addLocatioForm="ngForm">
+                                                <div class="row top-buffer">
+                                                    <div class="col-4">
+                                                        <label for="buildingId"> {{ 'Asset.Buildings' | translate }}
+                                                        </label>
+                                                        <select class="form-control" id="buildingId" name="buildingId"
+                                                            #buildingId="ngModel" [value]="0"
+                                                            [(ngModel)]="assetMovementObj.buildingId"
+                                                            pTooltip="{{'Asset.Building' | translate}}"
+                                                            tooltipPosition="top" (change)="getFloorsByBuildId($event)">
+                                                            <option value="0">-- {{ 'Asset.Select' | translate }} {{
+                                                                'Asset.Building' | translate }} --</option>
+                                                            <option *ngFor="let build of lstBuildings"
+                                                                [value]="build.id">
+                                                                {{ lang == "en" ? build.name:build.nameAr}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <label for="floor"> {{ 'Asset.Floors' | translate }} </label>
+                                                        <select class="form-control" id="floorId" name="floorId"
+                                                            #floorId="ngModel" [value]="0"
+                                                            [(ngModel)]="assetMovementObj.floorId"
+                                                            pTooltip="{{'Asset.Floor' | translate}}"
+                                                            tooltipPosition="top" (change)="getRoomsByfloorId($event)">
+                                                            <option value="0">-- {{ 'Asset.Select' | translate }} {{
+                                                                'Asset.Floor' | translate }} --</option>
+                                                            <option *ngFor="let floor of lstFloors" [value]="floor.id">
+                                                                {{ lang == "en" ? floor.name:floor.nameAr}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-4">
+                                                        <label for="roomId"> {{ 'Asset.Rooms' | translate }}
+                                                        </label>
+                                                        <select class="form-control" id="roomId" name="roomId"
+                                                            #roomId="ngModel" [value]="0"
+                                                            [(ngModel)]="assetMovementObj.roomId"
+                                                            pTooltip="{{'Asset.Room' | translate}}"
+                                                            tooltipPosition="top">
+                                                            <option value="0">-- {{ 'Asset.Select' | translate }} {{
+                                                                'Asset.Room' | translate }} --</option>
+                                                            <option *ngFor="let room of lstRooms" [value]="room.id">
+                                                                {{ lang == "en" ? room.name:room.nameAr}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row top-buffer">
+
+                                                    <div class="col-12">
+                                                        <label for="description"> {{ 'Asset.Description' | translate }}
+                                                        </label>
+                                                        <textarea class="form-control" id="MoveDesc" name="moveDesc"
+                                                            placeholder="{{'Asset.Description' | translate}}"
+                                                            [(ngModel)]="assetMovementObj.moveDesc"
+                                                            #movementDate="ngModel">
+                                                    </textarea>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="row top-buffer">
+
+                                                    <div class="col-10">
+                                                        <label for="movementDate"> {{ 'Asset.MoveDate' | translate }}
+                                                        </label>
+                                                        <input type="datetime-local" dir="rtl" class="form-control"
+                                                            id="movementDate" name="movementDate"
+                                                            placeholder="{{'Asset.Date' | translate}}"
+                                                            [(ngModel)]="assetMovementObj.movementDate"
+                                                            #movementDate="ngModel">
+                                                    </div>
+
+
+                                                    <div class="col-2">
+                                                        <button class="btn btn-primary pull-center btn-sm" value="save"
+                                                            type="submit" style="width: 100px;
+                                            margin: 30px 5px;
+                                            background-color: #1483c2;
+                                            border-color: #1483c2;">
+                                                            {{ 'Asset.Save' | translate }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+
+
+                                            </form>
+                                            <table class="table table-bordered table-striped table-hover"
+                                                style="width: 100%;" id="firstTable">
+                                                <thead>
+                                                    <tr
+                                                        style="background-color: #1683c2; color: #fff; font-size: 18px; font-weight: normal;">
+                                                        <th> {{ 'Asset.Building' | translate }} </th>
+                                                        <th> {{ 'Asset.Floor' | translate }} </th>
+                                                        <th> {{ 'Asset.Room' | translate }} </th>
+                                                        <th> {{ 'Asset.Date' | translate }} </th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+
+                                                    <tr *ngFor="let item of lstMovements">
+
+                                                        <td>{{ lang=='en' ? item.buildingName :
+                                                            item.buildingNameAr}}
+                                                        </td>
+                                                        <td>{{ lang=='en' ? item.floorName : item.floorNameAr}}</td>
+                                                        <td>{{ lang=='en' ? item.roomName : item.roomNameAr}}</td>
+                                                        <td>{{item.movementDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                                        <td>
+                                                            <span (click)="deleteMovement(item.id)">
+                                                                <i class="fa-solid fa-trash"></i>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-10" *ngIf="showStatus" style="width: 100%;">
+                    <div class="card">
+                        <div class="card-header cardHeader">
+                            <h4 class="card-title" [translate]="'Asset.AssetStatus'"></h4>
+                            <div class="row top-buffer">
+                                <div class="col-12">
+                                    <table class="table table-bordered table-striped table-hover" style="width: 100%;"
+                                        id="firstTable">
+                                        <thead>
+                                            <tr>
+                                                <th> {{ 'Asset.Name' | translate }} </th>
+                                                <th> {{ 'Asset.StatusDate' | translate }} </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of lstAssetStatusTansaction">
+                                                <td> {{ lang == "en" ? item.statusName :item.statusNameAr }}
+                                                </td>
+                                                <td>{{item.statusDate}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-10" *ngIf="showDepreciation">
+                    <div class="card">
+                        <div class="card-header cardHeader">
+                            <h4 class="card-title" [translate]="'Asset.Depreciation'">
+                            </h4>
+                            <div class="card-body">
+                                <table class="table table-bordered table-striped table-hover" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th> {{ 'Asset.Year' | translate }} </th>
+                                            <th> {{ 'Asset.DepericiationAmount' | translate }} </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of this.lstYears">
+                                            <td>{{item.year}}</td>
+                                            <td>{{(+item.amount).toFixed(2)}}</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-10" *ngIf="showPM">
+                    <div class="card">
+                        <div class="card-header cardHeader">
+                            <h4 class="card-title" [translate]="'Asset.PreventiveMaintainance'">
+                            </h4>
+                            <div class="card-body">
+                                <form>
+                                    <mat-expansion-panel hideToggle *ngFor="let eq of assettasks; let i = index;">
+                                        <mat-expansion-panel-header name="groupdate[i]">
+                                            <mat-panel-title> {{i}} -
+                                                {{eq.pmDate|date:'dd-MM-yyyy'}}
+                                            </mat-panel-title>
+                                            <mat-panel-description (click)="$event.stopPropagation();">
+                                                <input type="date" name="dt{{i}}" class="form-control"
+                                                    style="width: 150px;" [(ngModel)]="pmAssetDateObj.pmDate" />
+                                                <span (click)="changePMDate(eq.id)" style="margin-top: 10px;">
+                                                    <i class="fa-solid fa-save"></i>
+                                                </span>
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+
+                                        <table class="table table-striped table-bordered" name="table{{i}}">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{'Asset.Name'| translate}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let task of eq.assetSchduleList">
+                                                    <td>
+                                                        <p-checkbox name="groupname[idx]" [value]="task.id"
+                                                            [checked]="checked"
+                                                            (onChange)="addToList($event,task.pmAssetTaskId,task.pmAssetTimeId)">
+                                                        </p-checkbox> {{lang =='en'
+                                                        ?task.taskName:task.taskNameAr}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </mat-expansion-panel>
+                                    <div *ngIf="isVisible">
+                                        <button (click)="ontasksSubmit()" value="submit"
+                                            class="btn btn-primary btn-sm">{{
+                                            'Asset.Save' | translate }}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<p-confirmDialog [style]="{width: '35vw'}" rejectLabel="{{rejectLabel}}" acceptLabel={{acceptLabel}}
+    header="Are you sure you want to delete this Item">
+</p-confirmDialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;"> {{ 'Asset.Save'
+            |
+            translate }} </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{
+        'Asset.SavedSuccess' |
+        translate }} </span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+
+<p-dialog [(visible)]="displayRequest" [style]="{width: '70%'}" appendTo="body" [dir]="direction">
+    <h4 class="card-title">{{ 'Asset.RequestsAndWO' | translate }} </h4>
+    <p-table [value]="assetDetailObj.listRequests" id="timeLine" name="timeLine" [dir]="direction"
+        styleClass="p-datatable-sm  p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>{{'Asset.SRNumber' | translate}}</th>
+                <th>{{'Asset.SRDate' | translate}}</th>
+                <th>{{'Asset.Subject' | translate}}</th>
+                <th>{{'Asset.WONumber' | translate}}</th>
+                <th>{{'Asset.WODate' | translate}}</th>
+                <th>{{'Asset.Subject' | translate}}</th>
+                <th>{{'Asset.Status' | translate}}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td>{{item.requestCode}}</td>
+                <td>{{item.requestDate | date:'dd-MM-yyyy'}}</td>
+                <td>{{item.subject}}</td>
+                <td>{{item.listWorkOrders[0].workOrderNumber}}</td>
+                <td>{{item.listWorkOrders[0].actualStartDate | date:'dd-MM-yyyy'}}</td>
+                <td>{{item.listWorkOrders[0].subject}}</td>
+                <td>{{lang == 'en' ?item.listWorkOrders[0].statusName:item.listWorkOrders[0].statusNameAr}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

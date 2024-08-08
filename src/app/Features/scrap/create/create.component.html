@@ -1,0 +1,235 @@
+<div class="container card">
+  <div class="card-header cardHeader">
+    <h5 class="card-title" style="font-size: 30px; color: #1683c2; font-weight: bold" [translate]="'Asset.AddScrap'">
+    </h5>
+  </div>
+  <div class="card-body">
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+      <div class="row top-buffer">
+        <div class="col-12">
+          <label for="code" [translate]="'Asset.Code'">{{ "Asset.ScrapNo" | translate }}
+          </label>
+          <input type="text" id="code" class="form-control" name="code" [(ngModel)]="scrapObj.scrapNo" #code="ngModel"
+            [value]="0" disabled />
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-12">
+          <label for="scrapDate" [translate]="'Asset.ScrapDate'">
+            {{ "Asset.ScrapDate" | translate }}</label><br>
+          <p-calendar [clearButtonStyleClass]="'hideClearButton'" [(ngModel)]="scrapObj.scrapDate" name="scrapDate"
+            [showIcon]="true" [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+            [ngModelOptions]="{standalone: true}" (onSelect)="getScrapDate($event)" inputId="icon" appendTo="body"
+            showButtonBar="true" dateFormat="dd/mm/yy" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}">
+          </p-calendar>
+        </div>
+      </div>
+
+
+
+
+      <div class="row top-buffer">
+        <div class="col-4">
+          <label for="masterAssetId" [translate]="'Asset.Name'"></label>
+          <!-- <p-autoComplete [(ngModel)]="masterAssetObj" [ngModelOptions]="{standalone: true}"
+            [suggestions]="lstMasterAssets" name="masterAssetId" #masterAssetId="ngModel" id="masterAssetId"
+            [autoWidth]="true" (completeMethod)="onMasterSelectionChanged($event)" (onSelect)="getMasterObject($event)"
+            field="master" placeholder="{{'Asset.AssetName' |  translate}}" [dropdown]="false" [showClear]="true">
+            <ng-template let-masterAssetObj pTemplate="item">
+              {{masterAssetObj.name}}
+            </ng-template>
+            <ng-template let-masterAssetObj pTemplate="selectedItem">
+              {{masterAssetObj.name}}
+            </ng-template>
+          </p-autoComplete> -->
+
+
+          <p-autoComplete [(ngModel)]="masterAssetObj" appendTo="body" [ngModelOptions]="{standalone: true}"
+            [suggestions]="lstMasterAssets" name="assetDetailId" id="assetDetailId"
+            (completeMethod)="onMasterAssetSelectionChanged($event)" (onSelect)="getMasterObject($event)" field="name"
+            placeholder="{{'Asset.AssetName' |  translate}}" [dropdown]="false">
+            <ng-template let-masterAssetObj pTemplate="item">
+              {{lang=="en"?masterAssetObj.name:masterAssetObj.nameAr}} - {{lang ==="en" ?
+              masterAssetObj.brandName:masterAssetObj.brandNameAr}} - {{masterAssetObj.model}}
+              - {{masterAssetObj.serialNumber}}
+            </ng-template>
+            <ng-template let-masterAssetObj1 pTemplate="selectedItem">
+              {{lang=="en" ?masterAssetObj.name:masterAssetObj.nameAr}} - {{lang ==="en" ?
+              masterAssetObj.brandName:masterAssetObj.brandNameAr}} - {{masterAssetObj.model}} -
+              {{masterAssetObj.serialNumber}}
+            </ng-template>
+          </p-autoComplete>
+        </div>
+        <div class="col-4">
+          <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+          <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+            [suggestions]="lstassetDetailBarcodes" name="barcode" #barcode="ngModel" id="barcode" [autoWidth]="true"
+            (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="barCode"
+            placeholder="{{'Asset.Barcode' |  translate}}" [dropdown]="false" [showClear]="true">
+            <ng-template let-assetBarCodeObj pTemplate="item">
+              {{assetBarCodeObj.barCode}}
+            </ng-template>
+            <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+              {{assetBarCodeObj.barCode}}
+            </ng-template>
+          </p-autoComplete>
+        </div>
+
+        <div class="col-4">
+          <label for="serial" [translate]="'Asset.Serial'">Serial</label>
+          <p-autoComplete [(ngModel)]="assetSerialObj" [ngModelOptions]="{standalone: true}" [suggestions]="lstSerials"
+            name="serialNumber" #serialNumber="ngModel" id="serialNumber" [autoWidth]="true"
+            (completeMethod)="onSerialSelectionChanged($event)" (onSelect)="getSerial($event)" field="serialNumber"
+            placeholder="{{'Asset.Serial' |  translate}}" [dropdown]="false" [showClear]="true">
+            <ng-template let-assetSerialObj pTemplate="item">
+              {{assetSerialObj.serialNumber}}
+            </ng-template>
+            <ng-template let-assetSerialObj pTemplate="selectedItem">
+              {{assetSerialObj.serialNumber}}
+            </ng-template>
+          </p-autoComplete>
+        </div>
+      </div>
+
+      <div class="row top-buffer" *ngIf="assetBarCodeObj != null || assetBarCodeObj != undefined">
+        <div class="col-4">
+          <label for="brandId" [translate]="'Asset.Brand'"></label>
+          {{ lang =='en'? scrapObj.brandName:scrapObj.brandNameAr}}
+        </div>
+        <div class="col-4">
+          <label for="model" [translate]="'Asset.ModelNumber'"></label>
+          {{scrapObj.model}}
+        </div>
+        <div class="col-4">
+          <label for="model" [translate]="'Asset.Department'"></label>
+          {{scrapObj.departmentName}}
+        </div>
+      </div>
+
+
+      <div class="row top-buffer" *ngIf="assetBarCodeObj != null || assetBarCodeObj != undefined">
+        <div class="col-4">
+          <label> {{ 'Asset.Building' | translate }}
+          </label>
+          {{ lang=='en' ? assetBarCodeObj.buildName : assetBarCodeObj.buildNameAr}}
+        </div>
+        <div class="col-4">
+          <label> {{ 'Asset.Floor' | translate }} </label>
+          {{ lang=='en' ? assetBarCodeObj.floorName : assetBarCodeObj.floorNameAr}}
+        </div>
+        <div class="col-4">
+          <label> {{ 'Asset.Room' | translate }} </label>
+          {{ lang=='en' ? assetBarCodeObj.roomName : assetBarCodeObj.roomNameAr}}
+        </div>
+      </div>
+
+
+      <div class="row top-buffer">
+        <div class="col-12">
+          <label for="comment"> {{ "Asset.Comment" | translate }}</label>
+          <textarea class="form-control" type="text" name="comment" #comment="ngModel"
+            [ngModelOptions]="{standalone: true}" pInputText [(ngModel)]="scrapObj.comment"
+            placeholder="{{ 'Asset.Comment' | translate }}"></textarea>
+        </div>
+
+
+      </div>
+
+      <div class="row top-buffer">
+        <div class="col-6">
+          <label for="exreasons" [translate]="'Asset.Reasons'"></label>
+          <ul>
+            <li *ngFor="let itm of lstReasons;let idx= index">
+              <mat-checkbox id="ckbx{{idx}}" name="ckbx{{idx}}" (change)="selectedHEReasons($event, itm.id)"
+                [value]="itm.id">
+                {{lang == "en" ?itm.name: itm.nameAr}}
+              </mat-checkbox>
+              <div name="{{itm.id}}" id="{{itm.id}}">
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row top-buffer">
+        <div class="col-10">
+          <label for="title"> {{'Asset.DocumentName' | translate }}</label>
+          <input #title="ngModel" name="title" class="form-control" type="text" pInputText
+            placeholder="{{'Asset.DocumentName' | translate }}" [(ngModel)]="createScrapAttachment.title"
+            [disabled]="isDisabled">
+        </div>
+        <div class="col-2">
+          <input type="file" #file name="file" placeholder="Choose file" (change)="uploadFile(file.files)"
+            style="display:none;" (click)="$event.target.value=null">
+          <button type="button" class="btn btn-outline-success" style="margin-top: 20px;margin-left: 10px;"
+            (click)="file.click()" [disabled]="isDisabled"> <i class="fa fa-upload"
+              style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.SelectDocumentTitle' |
+            translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="row top-buffer">
+        <div class="col-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{'Asset.Name' | translate }}</th>
+                <th>{{'Asset.DocumentTitle' | translate }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of lstCreateScrapAttachment">
+                <td>{{i.fileName}}</td>
+                <td>{{i.title}}</td>
+                <td>
+                  <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                      style="color: rgb(123, 9, 9);"></i></span>
+                </td>
+              </tr>
+              <tr *ngIf="lstCreateScrapAttachment.length == 0">
+                <td colspan="3" style="color: rgb(102, 97, 23);" [translate]="'Asset.NoData'">
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+
+      <div class="row top-buffer">
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary pull-center btn-sm" [translate]="'Asset.Save'"
+            style="margin:0px 5px;background-color: #1483c2;border-color: #1483c2"></button>
+
+
+          <button class="btn btn-primary pull-center btn-sm" (click)="back()"
+            style="margin: 0px 5px;background-color: #7e8083 !important;border-color:#7e8083">{{
+            'Asset.Back' | translate }}</button>
+        </div>
+      </div>
+
+
+    </form>
+  </div>
+</div>
+
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+  <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+  <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+  <ng-template pTemplate="header">
+    <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+  </ng-template>
+  <span style="color: red;">
+    {{error.errorMessage}}
+  </span>
+</p-dialog>

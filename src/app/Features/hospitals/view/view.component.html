@@ -1,0 +1,125 @@
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{ 'Asset.Main' | translate }}</h3>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="code">{{'Asset.Code' | translate }}</label>
+                    {{hospitalObj.code}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="name">{{'Asset.Name' | translate }}</label>
+                    {{hospitalObj.name}}
+                </div>
+
+                <div class="col-6">
+                    <label for="nameAr">{{'Asset.ArabicName' | translate }}</label>
+                    {{hospitalObj.nameAr}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="governorate">{{'Asset.Governorate' | translate }}</label>
+                    {{lang == "en" ? hospitalObj.governorateName:hospitalObj.governorateNameAr}}
+                </div>
+                <div class="col-6">
+                    <label for="city">{{'Asset.City' | translate }}</label>
+                    {{lang == "en" ? hospitalObj.cityName:hospitalObj.cityNameAr}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="organization">{{'Asset.Organization' | translate }}</label>
+                    {{lang == "en" ? hospitalObj.organizationName:hospitalObj.organizationNameAr}}
+                </div>
+                <div class="col-6">
+                    <label for="organization">{{'Asset.SubOrganization' | translate }}</label>
+                    {{lang == "en" ? hospitalObj.subOrganizationName:hospitalObj.subOrganizationNameAr}}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{ 'Asset.Location' | translate }}</h3>
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="Lat">{{'Asset.Latitude' | translate }}</label>
+                    {{hospitalObj.latitude}}
+                </div>
+                <div class="col-3">
+                    <label for="Long">{{'Asset.Longtitude' | translate }}</label>
+                    {{hospitalObj.longtitude}}
+                </div>
+                <div class="col-3">
+                    <label for="Adress">{{'Asset.Address' | translate }}</label>
+                    {{hospitalObj.address}}
+                </div>
+                <div class="col-3">
+                    <label for="Adress">{{'Asset.ArabicAddress' | translate }}</label>
+                    {{hospitalObj.addressAr}}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{ 'Asset.Details' | translate }}</h3>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="mobile"> {{ 'Asset.Mobile' | translate }}</label>
+                    {{hospitalObj.mobile}}
+                </div>
+                <div class="col-6">
+                    <label for="Email"> {{ 'Asset.EMail' | translate }}</label>
+                    {{hospitalObj.email}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="manager"> {{ 'Asset.Manager' | translate }}</label>
+                    {{hospitalObj.managerName}}
+                </div>
+                <div class="col-6">
+                    <label for="manager"> {{ 'Asset.ArabicManager' | translate }}</label>
+                    {{hospitalObj.managerNameAr}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{ 'Asset.Contract' | translate }}</h3>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="contractName"> {{ 'Asset.Name' | translate }}</label>
+                    {{hospitalObj.contractName}}
+                </div>
+                <div class="col-4">
+                    <label for="start"> {{ 'Asset.StartDate' | translate }}</label>
+                    {{hospitalObj.strContractStart}}
+                </div>
+
+                <div class="col-4">
+                    <label for="end"> {{ 'Asset.EndDate' | translate }}</label>
+                    {{hospitalObj.strContractEnd}}
+                </div>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{ 'Asset.Departments' | translate }}</h3>
+            <ul>
+                <li *ngFor="let depart of lstDepartments">
+                    {{lang == "en" ? depart.name:depart.nameAr}}
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+</div>

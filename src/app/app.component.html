@@ -1,0 +1,7 @@
+<div class="col-12" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+ 
+
+    <ngx-ui-loader text="{{'Waiting' |translate}}" fgsColor="rgb(22, 131, 194)"></ngx-ui-loader>
+    <router-outlet></router-outlet>
+
+</div>

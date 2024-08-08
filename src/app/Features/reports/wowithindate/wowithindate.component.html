@@ -1,0 +1,225 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-9">
+            <h4 class="card-title"> {{'Asset.WOReport' | translate }} </h4>
+        </div>
+        <div class="col-1">
+            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="generatePDF()" pTooltip="PDF"
+                class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+        </div>
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12 row">
+            <button mat-stroked-button [matBadge]="woStatusObj.countAll" (click)="getWOByStatusId(0,$event)"
+                style="margin: 0px 5px;">{{'Asset.All'
+                | translate }}</button>
+
+            <div *ngFor="let sts of woStatusObj.listStatus" class="divbuttoninline">
+                <button *ngIf="sts.id===1" mat-stroked-button [matBadge]="woStatusObj.countAssigned"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===2" mat-stroked-button [matBadge]="woStatusObj.countInProgress"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===6" mat-stroked-button [matBadge]="woStatusObj.countPending"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===7" mat-stroked-button [matBadge]="woStatusObj.countDone"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===8" mat-stroked-button [matBadge]="woStatusObj.countReview"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===9" mat-stroked-button [matBadge]="woStatusObj.countReAssigned"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===10" mat-stroked-button [matBadge]="woStatusObj.countTechApprove"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+                <button *ngIf="sts.id===11" mat-stroked-button [matBadge]="woStatusObj.countUserApprove"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+
+                <button *ngIf="sts.id===12" mat-stroked-button [matBadge]="woStatusObj.countClosed"
+                    (click)="getWOByStatusId(sts.id,$event)" style="margin: 0px 5px;" [ngStyle]="{'color': sts.color}">
+                    <span><i [ngClass]="sts.icon"></i></span>
+                    {{lang=="en"?sts.name:sts.nameAr}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <form #form="ngForm" (ngSubmit)="onSubmit()" class="collapse card-filter" id="collapseExample">
+                <div class="row top-buffer" *ngIf="isAdmin">
+                    <div class="col-2">
+                        <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                        <select class="form-control" id="governorate" name="governorate" #governorate="ngModel"
+                            [value]="0" [(ngModel)]="woDateObj.governorateId" [disabled]="isGov"
+                            (change)="getCitiesByGovId(woDateObj.governorateId)">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                        <select class="form-control" id="city" name="city" #cityId="ngModel"
+                            (change)="getHospitalsByCityId($event)" [(ngModel)]="woDateObj.cityId" [value]="0"
+                            [disabled]="isCity">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let city of lstCities" [value]="city.id">
+                                {{ lang == "en" ? city.name : city.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                        <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+                            [(ngModel)]="woDateObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+                            <option value="0"></option>
+                            <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                {{ lang == "en" ? org.name : org.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="organization" [translate]="'Asset.SubOrganizations'">Sub
+                            Organization</label>
+                        <select class="form-control" id="suborganization" name="suborganization" [value]="0"
+                            [disabled]="isSubOrg" (change)="getHospitalsBySubOrgId($event)"
+                            [(ngModel)]="woDateObj.subOrganizationId" #suborganization="ngModel">
+                            <option value="0"></option>
+                            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                        <select class="form-control" id="hospitalId" [disabled]="isHospital" name="hospitalId"
+                            [(ngModel)]="woDateObj.hospitalId" [value]="0">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                {{ lang == "en" ? host.name : host.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <label for="icon">{{'Asset.From' | translate }}</label>
+                        <p-calendar [(ngModel)]="woDateObj.startDate" name="startDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getStartDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-2">
+                        <label for="icon">{{'Asset.To' | translate }}</label>
+                        <p-calendar [(ngModel)]="woDateObj.endDate" name="endDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getEndDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-6"></div>
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                            <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                        </button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="row ">
+        <div class="col-12">
+            <p-table [value]="lstWorkOrders" id="workOrderTbl" name="workOrderTbl"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)" [columns]="selectedColumns" [rowHover]="true">
+                <ng-template pTemplate="header" let-cols>
+                    <tr>
+                        <th style="width: 10%;text-align: inherit;">{{'Asset.Time' | translate }}</th>
+                        <th style="text-align: inherit;" [sortable]="true" style="text-align: inherit;"
+                            *ngFor="let col of cols">
+                            {{col.header}}
+                            <p-sortIcon id="{{col.header | translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-columns="columns">
+                    <tr>
+                        <td style="text-align: inherit;">{{item.elapsedTime}}</td>
+                        <ng-container *ngFor="let col of columns">
+                            <td style="text-align: inherit;" *ngIf="col.field !== 'actualEndDate' && col.field !== 'creationDate' && col.field !== 'statusName' && col.field !== 'statusNameAr'
+                         && col.field !='requestSubject'">
+                                {{item[col.field]}}
+                            </td>
+                            <td style="text-align: inherit;" *ngIf="col.field =='creationDate'">
+                                {{item.creationDate | date:'dd-MM-yyyy HH:mm'}}
+                            </td>
+
+                            <td style="text-align: inherit;" *ngIf="col.field =='actualEndDate' && item.statusId== 12">
+                                {{item.actualEndDate | date:'dd-MM-yyyy HH:mm'}}
+                            </td>
+                            <td style="text-align: inherit;" *ngIf="col.field =='actualEndDate' && item.statusId != 12">
+
+                            </td>
+                            <td style="text-align: inherit;" *ngIf="col.field =='statusNameAr'">
+                                <span [ngStyle]="{'color':item.statusColor}">
+                                    <span><i [ngClass]="item.statusIcon"></i></span>
+                                    {{lang=="en" ? item.statusName:item.statusNameAr}}
+                                </span>
+                            </td>
+                            <td style="text-align: inherit;" *ngIf="col.field =='statusName'">
+                                <span [ngStyle]="{'color':item.statusColor}">
+                                    <span><i [ngClass]="item.statusIcon"></i></span>
+                                    {{lang=="en" ? item.statusName:item.statusNameAr}}
+                                </span>
+                            </td>
+                            <td style="text-align: inherit;" *ngIf="col.field =='requestSubject'">
+                                {{item.requestSubject}}</td>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">{{errorMessage}}</span>
+</p-dialog>

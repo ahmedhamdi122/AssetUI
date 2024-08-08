@@ -1,0 +1,310 @@
+<div class="col-12">
+
+    <div class="  top-buffer">
+        <form (ngSubmit)="onUpdate()" #form="ngForm">
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="subject" [translate]="'Asset.Subject'">Subject :</label>
+                    <input type="text" [(ngModel)]="contractObj.subject" class="form-control" name="subject" />
+                </div>
+                <div class="col-2">
+                    <label for="cost" [translate]="'Asset.Cost'">Cost :</label>
+                    <input type="number" [(ngModel)]="contractObj.cost" class="form-control" name="cost" />
+                </div>
+                <div class="col-2">
+                    <label for="serial" [translate]="'Asset.ContractNumber'">Contract Number : </label>
+                    <input type="text" [(ngModel)]="contractObj.serial" class="form-control" name="serial" />
+                </div>
+                <div class="col-2">
+                    <label for="totalVisits" [translate]="'Asset.TotalVisits'">Total Visits</label>
+                    <input type="number" [(ngModel)]="contractObj.totalVisits" class="form-control"
+                        name="totalVisits" />
+                </div>
+                <div class="col-2">
+                    <label for="supId" [translate]="'Asset.Supplier'">Suppliers</label>
+                    <br />
+                    <select class="form-control" id="supId" name="supId" [(ngModel)]="contractObj.supplierId"
+                        [value]="0">
+                        <option value="0"> </option>
+                        <option *ngFor="let supply of lstSuppliers" [value]="supply.id"
+                            [selected]="supply.id == contractObj.supplierId">
+                            {{ lang == "en" ? supply.name : supply.nameAr }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="contractDate" [translate]="'Asset.ContractDate'">Contract Date: </label>
+                    
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <input matInput [matDatepicker]="picker1" [value]="contractObj.contractDate | date:'yyyy-MM-dd'"
+                            (dateChange)="changeContractDate($event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-4">
+                    <label for="from" [translate]="'Asset.From'">From :</label>
+                    <br />
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <input matInput [matDatepicker]="picker2" [value]="contractObj.from | date:'yyyy-MM-dd'"
+                            (dateChange)="changeFromDate($event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-4">
+                    <label for="to" [translate]="'Asset.To'">To : </label>
+                    <br />
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <input matInput [matDatepicker]="picker3" [value]="contractObj.to | date:'yyyy-MM-dd'"
+                            (dateChange)="changeToDate($event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="notes"> {{'Asset.Notes' | translate }}</label>
+                    <textarea #notes="ngModel" class="form-control" [(ngModel)]="contractObj.notes"
+                        [ngModelOptions]="{standalone: true}"></textarea>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <button class="btn btn-success" value="save" type="submit">
+                        {{ 'Asset.Save' | translate }}
+                    </button>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th> {{'Asset.Name' | translate }}</th>
+                            <th> {{'Asset.Title' | translate }}</th>
+                            <th> {{'Asset.Actions' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let doc of lstContractAttachment">
+                            <td>{{doc.fileName}}</td>
+                            <td>{{doc.documentName}}</td>
+                            <td>
+                                <a (click)="downloadFile(doc.fileName)">
+                                    <i class="fa-solid fa fa-download"></i></a>
+                                <a (click)="deleteFile(doc.id)" [translate]="'Asset.Delete'"> <i
+                                        class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <div class="row top-buffer">
+            <div class="col-10">
+                <label for="docmentName"> {{'Asset.DocumentTitle' | translate }}</label>
+                <input #documentName="ngModel" class="form-control" type="text" pInputText
+                    [(ngModel)]="contractAttachmentObj.documentName" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="col-2">
+                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" />
+
+                <button type="button" class="btn btn-outline-success" (click)="file.click()"> <i
+                        class="fa fa-upload"></i>{{'Asset.SelectDocument'| translate }}
+                </button>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{'Asset.Name' | translate }}</th>
+                            <th>{{'Asset.DocumentTitle' | translate }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let i of lstContractAttachments">
+                            <td>{{i.fileName}}</td>
+                            <td>{{i.documentName}}</td>
+                            <td>
+                                <span (click)="removeFileFromObjectArray(i)"><i
+                                        class="fa-solid fa-times-circle"></i></span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="lstContractAttachments.length == 0">
+                            <td colspan="2" [translate]="'Asset.NoData'">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row top-buffer">
+            <div class="col-4">
+                <p-listbox [options]="lstAssetsHospital" [(ngModel)]="hospitalId" optionLabel="name" optionValue="id">
+                    <ng-template pTemplate="header">
+                        {{ "Asset.Hospitals" | translate }}
+                    </ng-template>
+                    <ng-template let-hospital pTemplate="item">
+                        <div (click)="getContractAssetsByHospitalId(hospital.id)">
+                            {{ hospital.code }} - {{ lang == "en" ? hospital.name : hospital.nameAr }}
+                        </div>
+
+                        <span class="example-spacer"></span>
+                    </ng-template>
+                </p-listbox>
+            </div>
+            <div class="col-8 top">
+                <table class="table table-bordered table-striped table-hover" datatable [dtOptions]="dtOptions"
+                    [dtTrigger]="dtTrigger" id="contracttbl">
+                    <thead>
+                        <tr>
+                            <th>{{ 'Asset.AssetName' | translate }}</th>
+                            <th>{{ 'Asset.Barcode' | translate }}</th>
+                            <th>{{ 'Asset.Serial' | translate }}</th>
+                            <th>{{ 'Asset.Brand' | translate }}</th>
+                            <th>{{ 'Asset.Department' | translate }}</th>
+                            <th>{{ 'Asset.ResponseTime' | translate }}</th>
+                            <th>{{ 'Asset.SpareParts' | translate }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of lstContracts; let i = index;">
+                            <td>{{lang == "en" ? item.assetName:item.assetNameAr}}</td>
+                            <td>{{item.barCode}}</td>
+                            <td>{{item.serialNumber}}</td>
+                            <td>{{lang=='en'?item.brandName:item.brandNameAr}}</td>
+                            <td>{{lang=='en'?item.departmentName:item.departmentNameAr}}</td>
+                            <td>{{item.responseTime}} </td>
+                            <td>{{item.hasSpareParts}}
+                            </td>
+                            <td>
+                                <span (click)="deleteContract(item.id)">
+                                    <i class="fa-solid fa-trash"></i>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <span class="hrefbutton1" (click)="addAssetToContract()"><i class="fa-solid fa-plus"></i>{{
+                    'Asset.Create' |
+                    translate }}</span>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12" *ngIf="showAddNewAssetToContract">
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="hospitalIds" [translate]="'Asset.Hospitals'"></label>
+                        <p-multiSelect appendTo="body" [options]="hospitals" [(ngModel)]="selectedHospitals"
+                            [ngModelOptions]="{standalone: true}" optionLabel="nameAr" optionValue="id"
+                            autoWidth="false" name="msHospitals" (onChange)="AddAssets($event)" [disabled]="isDisabled">
+                        </p-multiSelect>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="barcode" [translate]="'Asset.Barcode'"> </label>
+                        <p-autoComplete type="search" [(ngModel)]="assetBarCodeObj"
+                            [ngModelOptions]="{standalone: true}" [suggestions]="lstassetDetailBarcodes" name="barcode"
+                            id="barcode" autoWidth="true" (completeMethod)="onSelectionChanged($event)"
+                            (onSelect)="getBarCode($event)" field="name" [dropdown]="false" showClear="true">
+                            <ng-template let-assetBarCodeObj pTemplate="item">
+                                {{assetBarCodeObj.barCode}}
+                            </ng-template>
+                            <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                                {{assetBarCodeObj.barCode}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-6">
+                        <label for="serialNumber" [translate]="'Asset.Serial'"></label>
+                        <p-autoComplete type="search" [(ngModel)]="assetSerailNumberObj"
+                            [ngModelOptions]="{standalone: true}" [suggestions]="lstAssetSerailNumberObj" name="serial"
+                            id="serial" autoWidth="true" (completeMethod)="onSerialNumberSelectionChanged($event)"
+                            (onSelect)="getSerialNumber($event)" field="serialNumber" [dropdown]="false"
+                            showClear="true">
+                            <ng-template let-assetSerailNumberObj pTemplate="item">
+                                {{assetSerailNumberObj.serialNumber}}
+                            </ng-template>
+                            <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                                {{assetSerailNumberObj.serialNumber}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12"></div>
+                </div>
+                <form (ngSubmit)="onSubmit()" #EditAssetForm="ngForm">
+                    <p-pickList [source]="lstAssets" [target]="selectedAsset" [dragdrop]="true">
+                        <ng-template let-asset pTemplate="item">
+                            <div>
+                                <label>
+                                    {{lang == "en" ?asset.hospitalName:asset.hospitalNameAr}}
+                                </label>
+                                <br />
+                                <label>
+                                    {{lang == "en" ?asset.assetName: asset.assetNameAr}}
+                                </label>
+                                <br />
+                                <label>
+                                    {{asset.barcode}}
+                                </label>
+                                <br />
+                                <label>
+                                    {{asset.serialNumber}}
+                                </label>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="spare">{{ 'Asset.SpareParts' | translate }}:
+                                        </label> <input type="checkbox" class="checkbox"
+                                            [(ngModel)]="asset.hasSpareParts" name="sparepart"
+                                            [value]="asset.hasSpareParts" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="restime">{{'Asset.ResponseTime' | translate }}
+                                            (Per Hour): </label> <input type="text" class="form-control"
+                                            [(ngModel)]="asset.responseTime" name="responsetime" />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                        </ng-template>
+                    </p-pickList>
+                    <div class="row top-buffer">
+                        <div class="col-6">
+                            <button class="btn btn-success" value="save" type="submit">
+                                {{ 'Asset.Save' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<p-confirmDialog header="Are you sure you want to delete this item?">
+</p-confirmDialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{errorMessage}}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6> {{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>

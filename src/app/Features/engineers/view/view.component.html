@@ -1,0 +1,54 @@
+<div class="row" [dir]="textDir">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">
+          {{ 'Asset.Main' | translate }}</h3>
+        <div class="row top-buffer">
+          <div class="col-4">
+            <label for="name">
+              {{'Asset.Name' | translate }}
+            </label>
+            {{lang == "en" ? engObj.name : engObj.nameAr}}
+          </div>
+          <div class="col-4">
+            <label for="address">{{'Asset.Address' | translate }}</label>
+            {{lang == "en" ? engObj.address : engObj.addressAr}}
+          </div>
+        </div>
+
+        <div class="row top-buffer">
+          <div class="col-4">
+            <label for="CardId">{{'Asset.CardId' | translate }}</label>
+            {{engObj.cardId }}
+          </div>
+          <div class="col-4">
+            <label for="dob">{{'Asset.DOB' | translate }}</label>
+            {{engObj.dob | date:'yyyy-MM-dd'}}
+          </div>
+          <div class="col-4">
+            <label for="gender">{{'Asset.Gender' | translate }}</label>
+            {{engObj.gender }}
+          </div>
+        </div>
+        <br><br>
+        <h3 class="card-title">
+          {{ 'Asset.ContactInfo' | translate }}</h3>
+        <div class="row top-buffer">
+          <div class="col-4">
+            <label for="email">{{'Asset.EMail' | translate }}</label>
+            {{engObj.email }}
+          </div>
+          <div class="col-4">
+            <label for="phone">{{'Asset.Phone' | translate }}</label>
+            {{engObj.phone}}
+          </div>
+          <div class="col-4">
+            <label for="whatsApp">{{'Asset.WhatsApp' | translate }}</label>
+            {{engObj.whatsApp }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

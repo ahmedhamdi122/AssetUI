@@ -1,0 +1,67 @@
+<div class="row" [dir]="textDir">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title" style="
+            font-weight: bold;
+            background-color: #cedef1;
+            padding: 0px 10px;
+          ">
+          {{ "Asset.Main" | translate }}
+        </h3>
+
+        <div class="row top-buffer">
+          <div class="col-6">
+            <label for="hospital">
+              {{ "Asset.Hospital" | translate }}
+            </label>
+            {{ lang == "en" ? visitObj.hospitalName : visitObj.hospitalNameAr }}
+          </div>
+
+          <div class="col-6">
+            <label for="visitType">{{ "Asset.VisitType" | translate }}</label>
+            {{
+            lang == "en" ? visitObj.visitTypeName : visitObj.visitTypeNameAr
+            }}
+          </div>
+        </div>
+
+        <div class="row top-buffer">
+          <div class="col-6">
+            <label for="visitDate">{{ "Asset.VisitDate" | translate }}</label>
+            {{ visitObj.visitDate | date: "yyyy-MM-dd" }}
+          </div>
+          <div class="col-6">
+            <label for="visitDescr">{{
+              "Asset.Description" | translate
+              }}</label>
+            {{ visitObj.visitDescr }}
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <table class="table table-bordered table-striped table-hover" style="width: 100%">
+            <thead>
+              <tr>
+                <th>{{ "Asset.Name" | translate }}</th>
+                <th>{{ "Asset.Title" | translate }}</th>
+                <th style="text-align: center">
+                  {{ "Asset.Download" | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let doc of lstVisitAttachment">
+                <td>{{ doc.fileName }}</td>
+                <td>{{ doc.title }}</td>
+                <td style="text-align: center">
+                  <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files" tooltipPosition="bottom">
+                    <i class="fa-solid fa fa-download" style="color: #61bb20"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

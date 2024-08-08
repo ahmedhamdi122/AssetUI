@@ -1,0 +1,142 @@
+<div class="card">
+
+    <div class="card-body">
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="notes" [translate]="'Asset.Comment'"></label>
+                <textarea #comment="ngModel" name="comment" id="comment" class="form-control"
+                    [ngModelOptions]="{standalone: true}" [(ngModel)]="wnpmAssetTaskObj.comment"></textarea>
+            </div>
+            <div class="col-4" *ngIf="isAgency">
+                <label for="agencyId" [translate]="'Asset.Agency'"></label>
+                <select class="form-control" id="agencyId" name="agencyId" [(ngModel)]="wnpmAssetTaskObj.agencyId"
+                    [value]="0">
+                    <option value="0"></option>
+                    <option *ngFor="let supplier of lstSuppliers" [value]="supplier.id">
+                        {{ lang == "en" ? supplier.name : supplier.nameAr }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-4" *ngIf="isDoneDate">
+                <label for="duedate" [translate]="'Asset.Date'"></label>
+                <p-calendar #dueDate="ngModel" [ngModelOptions]="{standalone: true}" dateFormat="d/m/yy"
+                    [showIcon]="true" inputId="icon" appendTo="body" yearRange="1900:2050" [monthNavigator]="true"
+                    [yearNavigator]="true" [(ngModel)]="wnpmAssetTaskObj.doneDate"
+                    [defaultDate]="wnpmAssetTaskObj.doneDate">
+                </p-calendar>
+            </div>
+            <div class="col-4" *ngIf="isDelay">
+                <label for="duedate" [translate]="'Asset.Date'"></label>
+                <p-calendar #dueDate="ngModel" [ngModelOptions]="{standalone: true}" dateFormat="d/m/yy"
+                    [showIcon]="true" inputId="icon" appendTo="body" yearRange="1900:2050" [monthNavigator]="true"
+                    [yearNavigator]="true" [(ngModel)]="wnpmAssetTaskObj.dueDate"
+                    [defaultDate]="wnpmAssetTaskObj.dueDate">
+                </p-calendar>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <button mat-stroked-button class="ml-2" (click)="onSubmit()" color="primary" mat-button>{{'Asset.Save' |
+                    translate }}</button>
+            </div>
+        </div>
+
+        <div class="row top-buffer">
+            <div class="col-10">
+                <label for="title"> {{'Asset.Title' | translate }}</label>
+                <input #title="ngModel" class="form-control" type="text" pInputText
+                    placeholder="{{'Asset.Title' | translate }}" [(ngModel)]="createWNPMAssetTimeAttachment.title">
+            </div>
+            <div class="col-2">
+                <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                    style="display:none;" (click)="$event.target.value=null">
+                <button type="button" class="btn btn-outline-success" style="margin-top: 20px;margin-left: 10px;"
+                    (click)="file.click()"> <i class="fa fa-upload"
+                        style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.SelectDocumentTitle' |
+                    translate }}
+                </button>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{'Asset.Name' | translate }}</th>
+                            <th>{{'Asset.DocumentTitle' | translate }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let i of lstCreateWNPMAssetTimeAttachments">
+                            <td>{{i.fileName}}</td>
+                            <td>{{i.title}}</td>
+                            <td>
+                                <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                                        style="color: rgb(123, 9, 9);"></i></span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="lstCreateWNPMAssetTimeAttachments.length == 0">
+                            <td colspan="3" style="color: rgb(102, 97, 23);" [translate]="'Asset.NoData'">
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+
+
+        <div class="col-12">
+
+            <p-table class="table" [value]="listWNPMAssetTimeAttachments"
+                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;"> {{'Asset.Name' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Title' | translate }}</th>
+                        <th style="text-align: center;"> {{'Asset.Download' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-doc>
+                    <tr>
+                        <td style="text-align: inherit;"> {{doc.fileName}}</td>
+                        <td style="text-align: inherit;">{{doc.title}}</td>
+                        <td style="text-align: center;">
+                            <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files" tooltipPosition="bottom">
+                                <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+
+
+    </div>
+</div>
+<p-dialog [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;">{{errorMessage}}</span>
+</p-dialog>
+
+
+
+
+<p-dialog [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate
+        }}</span>
+
+    <br />
+    <br />
+    <button class="btn btn-primary pull-center btn-md"
+        style="margin: 0px 5px;background-color: #fe7f83 !important;border-color:#fe7f83" (click)="closeDialogue()"> {{
+        'Asset.Close' | translate }}</button>
+</p-dialog>

@@ -1,0 +1,329 @@
+<div class="col-12">
+    <div class="row top-buffer ">
+        <div class="col-12">
+            <h4 class="card-title">{{ 'Asset.MemberAction' | translate }}
+            </h4>
+        </div>
+    </div>
+    <div class="row col-12 top-buffer" [ngClass]="lang == 'en' ? 'rbdir': 'rbdirar'">
+        <label for="statusId" [translate]="'Asset.ApplicationType'"></label>
+        <div class="col-4  top-buffer" *ngIf="isMember  && (lang == 'en')">
+            <mat-radio-group [(ngModel)]="selectedItem" (change)="onItemChange($event)" name="gcat" id="gcat">
+                <mat-radio-button [value]="item" *ngFor="let item of lstRadioItems">
+                    {{item}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="col-4" *ngIf="isMember  && (lang == 'ar')">
+            <mat-radio-group [(ngModel)]="selectedItem" (change)="onItemChange($event)" name="gcat" id="gcat">
+                <mat-radio-button [value]="item" *ngFor="let item of lstArabicRadioItems">
+                    {{item}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+
+        <label for="statusId" [translate]="'Asset.ExcludeType'"></label>
+        <div class="col-4  ">
+            <mat-radio-group [(ngModel)]="selectedAppType" (change)="onTypeChange($event)" name="ghtype" id="ghtype"
+                [ngModelOptions]="{standalone: true}">
+                <mat-radio-button [value]="item.id" *ngFor="let item of lstTypes">{{lang =="en"
+                    ?item.name:item.nameAr}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div *ngIf="isSupplier">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <mat-list class="mat-list-test" dense name="lstStatusItems">
+                    <mat-list-item class="mat-list-item-test">
+                        <button mat-stroked-button color="" name="btnAll" (click)="getAllByStatus(0)"
+                            style="margin: 0px 15px;" class="btnclicked">{{'Asset.All' | translate }}</button>
+                    </mat-list-item>
+                    <mat-list-item class="mat-list-item-test" *ngFor="let sts of statusObj.listStatus">
+                        <button *ngIf="sts.id == 1" [matBadge]="sts.id==1 ? statusObj.openStatus:0" mat-stroked-button
+                            name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)" [ngStyle]="{'color': sts.color}"
+                            class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id == 2" [matBadge]="sts.id==2 ? statusObj.approveStatus:0"
+                            mat-stroked-button name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)"
+                            [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id == 3" [matBadge]="sts.id==3?statusObj.rejectStatus:0" mat-stroked-button
+                            name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)" [ngStyle]="{'color': sts.color}"
+                            class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id == 4" [matBadge]="sts.id==4? statusObj.systemRejectStatus:0"
+                            mat-stroked-button name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)"
+                            [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+
+                    </mat-list-item>
+                </mat-list>
+
+            </div>
+
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <p-table [value]="lstSupplierExecludeAssets"
+                    styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+                    [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="supplierCount" pageLinks="10"
+                    (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AssetName' | translate }}
+                                <p-sortIcon id="{{ 'Asset.AssetName' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Barcode' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Barcode' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Serial' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Serial' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Model' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Model' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.ExNumber' | translate }}
+                                <p-sortIcon id="{{ 'Asset.ExNumber' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Date' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Date' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Status' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Status' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.ExecludeDate' | translate }}
+                                <p-sortIcon id="{{ 'Asset.ExecludeDate' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Reasons' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Reasons' | translate }}" (click)="sort($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="width: 12%;text-align: inherit;">{{'Asset.Actions' | translate }}</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-supplier>
+                        <tr>
+                            <td style="text-align: inherit;">
+                                <span (click)="viewAssetDetail(supplier.assetId)" class="spanpopup">
+                                    {{ lang=="en" ? supplier.assetName: supplier.assetNameAr}}
+                                </span>
+                            </td>
+                            <td style="text-align: inherit;">{{ supplier.barCode}}</td>
+                            <td style="text-align: inherit;">{{ supplier.serialNumber}}</td>
+                            <td style="text-align: inherit;">{{ supplier.modelNumber}}</td>
+                            <td style="text-align: inherit;">{{supplier.exNumber}}</td>
+                            <td style="text-align: inherit;">{{supplier.date | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                            <td style="text-align: inherit;" [ngStyle]="{'color': supplier.statusColor}">
+                                <i [ngClass]="supplier.statusIcon"></i>
+                                {{lang=="en" ? supplier.statusName: supplier.statusNameAr}}
+                            </td>
+                            <td style="text-align: inherit;">{{supplier.execludeDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                            <td style="text-align: inherit;">
+                                <div *ngIf="supplier.appTypeId == 1">
+                                    {{lang =="en" ? supplier.reasonExTitles:supplier.reasonExTitlesAr}}
+                                </div>
+                                <div *ngIf="supplier.appTypeId == 2">
+                                    {{lang =="en" ? supplier.reasonHoldTitles:supplier.reasonHoldTitlesAr}}
+                                </div>
+                            </td>
+                            <td style="text-align: inherit;">
+                                <a [routerLink]="['/supplierexecludes/viewsupplierexeclude',supplier.id,'supplier']"
+                                    pTooltip="{{'Asset.View' | translate}}" tooltipPosition="top">
+                                    <i class="fa-solid fa-eye"
+                                        style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>
+                                </a>
+                                <a [routerLink]="['/memberexecludes/assetdetail',supplier.assetId]"
+                                    pTooltip="{{'Asset.Details' | translate}}" tooltipPosition="top">
+                                    <i class="fa fa-info-circle"
+                                        style="color: #7d8874; cursor: pointer;margin: 0px 5px;"></i>
+                                </a>
+
+                                <span pTooltip="Take action" tooltipPosition="top"
+                                    (click)="updateExecludeDate(supplier.id)"
+                                    *ngIf="isMember && supplier.execludeDate == ''">
+                                    <i class="fa fa-ban" aria-hidden="true" style="color: #d38b48;margin: 0px 5px;"></i>
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isHospital">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                <select class="form-control" id="hospitalId" name="hospitalId" [value]="0"
+                    (change)="getExcludedAssetsByHospitalId($event)" [(ngModel)]="selectedHospitalId">
+                    <option value="0"></option>
+                    <option *ngFor="let hospital of lstHospitals" [value]="hospital.id">
+                        {{ lang == "en" ? hospital.name:hospital.nameAr}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <mat-list class="mat-list-test" dense name="lstStatusItems2">
+                    <button mat-stroked-button color="" name="btnAll" (click)="getAllHospitalByStatus(0)"
+                        style="margin: 0px 15px;" class="btnclicked">{{'Asset.All' | translate }}</button>
+
+                    <mat-list-item class="mat-list-item-test" *ngFor="let sts of statusObj.listStatus">
+                        <button *ngIf="sts.id == 1" [matBadge]="sts.id==1 ? statusObj.openStatus:0" mat-stroked-button
+                            name="btn{{sts.id}}" (click)="getAllHospitalByStatus(sts.id)" style="margin: 0px 20px;"
+                            [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id == 2" [matBadge]="sts.id==2 ? statusObj.approveStatus:0"
+                            mat-stroked-button name="btn{{sts.id}}" (click)="getAllHospitalByStatus(sts.id)"
+                            style="margin: 0px 20px;" [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id == 3" [matBadge]="sts.id==3?statusObj.rejectStatus:0" mat-stroked-button
+                            name="btn{{sts.id}}" (click)="getAllHospitalByStatus(sts.id)" style="margin: 0px 20px;"
+                            [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id == 4" [matBadge]="sts.id==4? statusObj.systemRejectStatus:0"
+                            mat-stroked-button name="btn{{sts.id}}" (click)="getAllHospitalByStatus(sts.id)"
+                            style="margin: 0px 20px;" [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                        <button *ngIf="sts.id > 4" [matBadge]="0" mat-stroked-button name="btn{{sts.id}}"
+                            (click)="getAllHospitalByStatus(sts.id)" style="margin: 0px 20px;"
+                            [ngStyle]="{'color': sts.color}" class="btnclicked">
+                            <span><i [ngClass]="sts.icon"></i></span>
+                            {{lang=="en"?sts.name:sts.nameAr}}
+                        </button>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+
+                <p-table [value]="lstHospitalApplications"
+                    styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                    [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="hospitalCount" pageLinks="10"
+                    (onLazyLoad)="clickHospital($event)" [rowHover]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AssetName' | translate }}
+                                <p-sortIcon id="{{ 'Asset.AssetName' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Barcode' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Barcode' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Serial' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Serial' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Model' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Model' | translate }}" (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AppNumber' | translate }}
+                                <p-sortIcon id="{{ 'Asset.AppNumber' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true" style="width: 10%">{{ 'Asset.Date' |
+                                translate }}
+                                <p-sortIcon id="{{ 'Asset.Date' | translate }}" (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true" style="width: 12%">{{ 'Asset.Status' |
+                                translate }}
+                                <p-sortIcon id="{{ 'Asset.Status' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true" style="width: 10%">{{
+                                'Asset.ExecludeDate' | translate }}
+                                <p-sortIcon id="{{ 'Asset.ExecludeDate' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Reasons' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Reasons' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="width: 10%;text-align: inherit;">{{'Asset.Actions' | translate}}</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-host>
+                        <tr>
+                            <td style="text-align: inherit;">
+                                <span (click)="viewAssetDetail(host.assetId)" class="spanpopup">
+                                    {{ lang=="en" ? host.assetName: host.assetNameAr}}</span>
+                            </td>
+                            <td style="text-align: inherit;">{{ host.barCode}}</td>
+                            <td style="text-align: inherit;">{{ host.serialNumber}}</td>
+                            <td style="text-align: inherit;">{{ host.modelNumber}}</td>
+                            <td style="text-align: inherit;">{{host.appNumber}}</td>
+                            <td style="text-align: inherit;">{{host.date | date:'dd-MM-yyyy'}}</td>
+                            <td style="text-align: inherit;" [ngStyle]="{'color': host.statusColor}">
+                                <i [ngClass]="host.statusIcon"></i>
+                                {{lang=="en" ? host.statusName: host.statusNameAr}}
+                            </td>
+                            <td style="text-align: inherit;">{{host.dueDate}}</td>
+                            <td style="text-align: inherit;">
+                                <div *ngIf="host.appTypeId == 1"> {{lang =="en" ?
+                                    host.reasonExTitles:host.reasonExTitlesAr}}
+                                </div>
+                                <div *ngIf="host.appTypeId == 2">
+                                    {{lang =="en" ? host.reasonHoldTitles:host.reasonHoldTitlesAr}}
+                                </div>
+                            </td>
+                            <td style="text-align: inherit;">
+                                <a [routerLink]="['/hospitalexecludes/viewhospitalexeclude',host.id]" class="viewIcon">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <a [routerLink]="['/memberexecludes/assetdetail',host.assetId]"
+                                    pTooltip="{{'Asset.View' | translate}}" tooltipPosition="top">
+                                    <i class="fa fa-info-circle"
+                                        style="color: #7d8874; cursor: pointer;margin: 0px 5px;"></i>
+                                </a>
+                                <span pTooltip="Take action" tooltipPosition="top" (click)="updateExecludeDate(host.id)"
+                                    *ngIf="isMember  && (host.dueDate === '' || host.dueDate === null)">
+                                    <i class="fa fa-ban" aria-hidden="true" style="color: #387e72;margin: 0px 5px;"></i>
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

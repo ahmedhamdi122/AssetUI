@@ -1,0 +1,119 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" [translate]="'Asset.View'">View Contract </h4>
+    </div>
+    <div class="card-body">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="serial" [translate]="'Asset.ContractNumber'">Contract Number : </label>
+                {{contractObj.serial}}
+            </div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="contractDate" [translate]="'Asset.ContractDate'">Contract Date: </label>
+                <br />
+                {{contractObj.contractDate | date:'yyyy-MM-dd'}}
+            </div>
+            <div class="col-4">
+                <label for="from" [translate]="'Asset.From'">From :</label>
+                <br />
+                {{contractObj.from | date:'yyyy-MM-dd'}}
+            </div>
+            <div class="col-4">
+                <label for="to" [translate]="'Asset.To'">To : </label>
+                <br />
+                {{contractObj.to | date:'yyyy-MM-dd'}}
+            </div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="subject" [translate]="'Asset.Subject'">Subject :</label>
+                <br />
+                {{contractObj.subject}}
+            </div>
+            <div class="col-4">
+                <label for="cost" [translate]="'Asset.Cost'">Cost :</label>
+                <br />
+                {{contractObj.cost}}
+            </div>
+            <div class="col-4">
+                <label for="totalVisits" [translate]="'Asset.TotalVisits'">Total Visits</label>
+                <br />
+                {{contractObj.totalVisits}}
+            </div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="supId" [translate]="'Asset.Supplier'">Suppliers</label>
+                <br />
+                <select class="form-control" id="supId" name="supId" disabled [(ngModel)]="contractObj.supplierId">
+                    <option value="0"></option>
+                    <option *ngFor="let supply of lstSuppliers" [value]="supply.id">
+                        {{ lang == "en" ? supply.name : supply.nameAr }}
+                    </option>
+                </select>`
+            </div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="notes"> {{'Asset.Notes' | translate }}</label>
+                <br />
+                {{contractObj.notes}}
+            </div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th> {{'Asset.Name' | translate }}</th>
+                            <th> {{'Asset.Title' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let doc of lstContractAttachments">
+                            <td>{{doc.fileName}}</td>
+                            <td>{{doc.documentName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <table class="table table-bordered table-striped table-hover" datatable
+                    [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" id="contracttbl">
+                    <thead>
+                        <tr >
+                            <th>{{ 'Asset.AssetName' | translate }}</th>
+                            <th>{{ 'Asset.Barcode' | translate }}</th>
+                            <th>{{ 'Asset.Serial' | translate }}</th>
+                            <th>{{ 'Asset.Brand' | translate }}</th>
+                            <th>{{ 'Asset.Department' | translate }}</th>
+                            <th>{{ 'Asset.ResponseTime' | translate }}</th>
+                            <th>{{ 'Asset.SpareParts' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of contractObj.listDetails; let i = index;">
+                            <td>{{lang == "en" ? item.assetName:item.assetNameAr}}</td>
+                            <td>{{item.barCode}}</td>
+                            <td>{{item.serialNumber}}</td>
+                            <td>{{lang=='en'?item.brandName:item.brandNameAr}}</td>
+                            <td>{{lang=='en'?item.departmentName:item.departmentNameAr}}</td>
+                            <td>{{item.responseTime}} </td>
+                            <td>{{item.hasSpareParts}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

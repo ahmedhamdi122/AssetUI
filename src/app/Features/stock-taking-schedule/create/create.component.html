@@ -1,0 +1,54 @@
+<div class="card">
+    <div class="card-body">
+        <form (ngSubmit)="onSubmit()" #EditAssetForm="ngForm">
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="hospitalIds" [translate]="'Asset.Hospitals'"></label>
+                    <p-multiSelect appendTo="body" [(ngModel)]="selectedHospitals" [options]="hospitals"
+                        [ngModelOptions]="{standalone: true}" optionLabel="{{lang=='en'?'name':'nameAr'}}"
+                        optionValue="id" autoWidth="true" name="msEmployees" [disabled]="isDisabled"
+                        >
+                    </p-multiSelect>
+                </div>
+            </div>
+            <div class="row top-buffer">
+
+                <div class="col-6">
+                    <label for="from" [translate]="'Asset.From'">From</label>
+                    <input type="date" [(ngModel)]="stockTakingScheduleObj.startDate" class="form-control"
+                        name="from" />
+                </div>
+                <div class="col-6">
+                    <label for="to" [translate]="'Asset.To'">To</label>
+                    <input type="date" [(ngModel)]="stockTakingScheduleObj.endDate" class="form-control" name="to" />
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12 text-center">
+                    <button class="btn btn-success" value="save" type="submit">
+                        {{ 'Asset.Save' | translate }}
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+        <ng-template pTemplate="header">
+            <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+            </h6>
+        </ng-template>
+        <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+            translate }}</span>
+    </p-dialog>
+
+    <p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+        <ng-template pTemplate="header">
+            <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+        </ng-template>
+        <span style="color: red;">
+            {{error.errorMessage}}
+
+        </span>
+    </p-dialog>

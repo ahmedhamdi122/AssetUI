@@ -1,0 +1,83 @@
+<div class="col-12">
+  <form class="form-horizontal" (ngSubmit)="onSubmit()" #form="ngForm">
+    <div class="row">
+      <div class="col-4">
+        <label for="code" [translate]="'Asset.Code'"></label>
+        <input type="text" class="form-control" [ngModelOptions]="{standalone: true}" [(ngModel)]="subOrgObj.code"
+          name="code" required #code="ngModel" [class.is-invalid]="(code.touched && code.errors) || form.submitted"
+          [class.is-valid]="code.valid && form.submitted" />
+      </div>
+      <div class="col-4">
+        <label for="name" [translate]="'Asset.Name'"></label>
+        <input type="text" class="form-control" [(ngModel)]="subOrgObj.name" name="orgname" required #name="ngModel"
+          [class.is-invalid]="(name.touched && name.errors) || form.submitted"
+          [class.is-valid]="name.valid && form.submitted" />
+      </div>
+      <div class="col-4">
+        <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+        <input type="text" class="form-control" name="nameAr" [(ngModel)]="subOrgObj.nameAr" required #nameAr="ngModel"
+          [class.is-invalid]="(nameAr.touched && nameAr.errors) || form.submitted"
+          [class.is-valid]="nameAr.valid && form.submitted" />
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-4">
+        <label for="org" [translate]="'Asset.Organization'">Organization</label>
+        <select [(ngModel)]="subOrgObj.organizationId" class="form-control" [ngModelOptions]="{standalone: true}"
+          (change)="onOrgChange($event)" [value]="0">
+          <option value="0"> </option>
+          <option *ngFor="let item of lstOrganizations" [value]="item.id">
+            {{lang =='en' ? item.name:item.nameAr}}</option>
+        </select>
+      </div>
+      <div class="col-4">
+        <label for="mobile" [translate]="'Asset.Mobile'"></label>
+        <input type="tel" class="form-control" [(ngModel)]="subOrgObj.mobile" name="mobile" />
+      </div>
+      <div class="col-4">
+        <label for="email" [translate]="'Asset.EMail'"></label>
+        <input type="email" class="form-control" [(ngModel)]="subOrgObj.email" name="email" />
+        <div *ngIf="isValidEMail" style="color: red;">Invalid E-mail</div>
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-6">
+        <label for="directorName" [translate]="'Asset.DirectorName'"></label>
+        <input type="text" class="form-control" [(ngModel)]="subOrgObj.directorName" name="directorName" />
+      </div>
+      <div class="col-6">
+        <label for="directorNameAr" [translate]="'Asset.ArabicDirectorName'"></label>
+        <input type="text" class="form-control" [(ngModel)]="subOrgObj.directorNameAr" name="directorNameAr" />
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-6">
+        <label for="address" [translate]="'Asset.Address'"></label>
+        <textarea type="text" rows="2" cols="30" class="form-control" [(ngModel)]="subOrgObj.address"
+          name="address"></textarea>
+      </div>
+      <div class="col-6">
+        <label for="email" [translate]="'Asset.ArabicAddress'"></label>
+        <textarea type="text" rows="2" cols="30" class="form-control" [(ngModel)]="subOrgObj.addressAr"
+          name="addressAr"></textarea>
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-12 text-center">
+        <button class="btn btn-success" value="Save" type="submit"> {{ 'Asset.Save' | translate }}</button>
+      </div>
+    </div>
+  </form>
+</div>
+<p-dialog [(visible)]="display">
+  <ng-template pTemplate="header">
+    <h6 [translate]="'Asset.Save'"></h6>
+  </ng-template>
+  {{ 'Asset.SavedSuccess' | translate }}
+</p-dialog>
+
+
+<p-dialog [(visible)]="errorDisplay" [style]="{width: '350px'}">
+  <p-header style="color: rgb(181, 4, 4);"> Error </p-header>
+  <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

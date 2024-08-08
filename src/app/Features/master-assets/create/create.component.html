@@ -1,0 +1,539 @@
+<div class=" col-12" [dir]="textDir">
+  <form #AddAssetForm="ngForm">
+    <mat-tab-group mat-align-tabs="start">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-database"></i>
+          {{ "Asset.Identification" | translate }}
+        </ng-template>
+        <div class="row top-buffer">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2">
+                <h5 for="Main">{{ "Asset.Main" | translate }}:</h5>
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="code" name="code" #code="ngModel"
+                  [(ngModel)]="masterAssetObj.code" disabled placeholder="{{'Asset.Code' | translate}}" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="name" name="name" [(ngModel)]="masterAssetObj.name"
+                  #name="ngModel" [class.is-invalid]=" (name.touched && name.errors) || AddAssetForm.submitted
+                  " [class.is-valid]="name.valid && AddAssetForm.submitted" placeholder="{{'Asset.Name' | translate}}"
+                  autofocus required />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="nameAr" name="nameAr" #nameAr="ngModel"
+                  [(ngModel)]="masterAssetObj.nameAr" autofocus required [class.is-invalid]=" (nameAr.touched && nameAr.errors) || AddAssetForm.submitted
+                " [class.is-valid]="nameAr.valid && AddAssetForm.submitted"
+                  placeholder="{{'Asset.ArabicName' | translate}}" />
+              </div>
+              <div class="col-2">
+                <select class="form-control" id="ecriId" name="ecriId" #ecriId="ngModel"
+                  [(ngModel)]="masterAssetObj.ecriId">
+                  <option selected [value]="null">{{ "Asset.ECRI" | translate }}</option>
+                  <option *ngFor="let ecri of lstECRIs" [value]="ecri.id">
+                    {{ lang == "en" ? ecri.name : ecri.nameAr }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-2"></div>
+          <div class="col-2">
+            <select class="form-control" id="categorytype" name="categorytype"
+              (change)="GetCategoriesByCategoryTypeId($event)">
+              <option>{{ "Asset.Type" | translate }}</option>
+              <option *ngFor="let item of lstTypes" [value]="item.id">
+                {{ lang == "en" ? item.name : item.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <select class="form-control" id="category" name="category" #category="ngModel" [value]="null"
+              [(ngModel)]="masterAssetObj.categoryId" (change)="GetSubCategoryByCategoryId($event)">
+              <option value="null">{{ "Asset.Category" | translate }}</option>
+              <option *ngFor="let cat of lstCategories" [value]="cat.id">
+                {{ lang == "en" ? cat.name : cat.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <select class="form-control" id="subCategory" name="subCategory" #subCategory="ngModel" [value]="null"
+              [(ngModel)]="masterAssetObj.subCategoryId">
+              <option value="null">{{ "Asset.SubCategory" | translate }}</option>
+              <option *ngFor="let sub of lstSubCategories" [value]="sub.id">
+                {{ lang == "en" ? sub.name : sub.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2 ">
+
+            <div class="justify-content-center ">
+              <label for="upFile" class="btn btn-secondary"> {{ "Asset.AssetImage" | translate }}
+                <i class="pi pi-upload"></i>
+              </label>
+            </div>
+            <input id="upFile" type="file" class="file-input" style="visibility:hidden;"
+              (change)="onFileSelected($event)" #fileUpload />
+          </div>
+          <div class="col-2 mt-n5 text-center" *ngIf="imagePath.includes('png') || imagePath.includes('jpg')">
+            <img src="{{imagePath}}" width="80" height="80" [hidden]="imgVisible" />
+
+            <button type="button" class="btn reset " (click)="resetFile()" [hidden]="btnHidden">
+              <i class="fa-solid fa-circle-xmark  "></i>
+            </button>
+          </div>
+        </div>
+        <div class="row top-buffer mt-n4">
+          <div class="col-2"> </div>
+          <div class="col-4">
+            <textarea type="text" class="form-control" id="description" name="description"
+              [(ngModel)]="masterAssetObj.description" #description="ngModel"
+              placeholder="{{'Asset.Description' | translate}}"></textarea>
+          </div>
+          <div class="col-4">
+            <textarea type="text" class="form-control" id="descriptionAr" name="descriptionAr" #descriptionAr="ngModel"
+              [(ngModel)]="masterAssetObj.descriptionAr"
+              placeholder="{{'Asset.ArabicDescription' | translate}}"></textarea>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2">
+                <h5 for="IndustryData">{{ "Asset.IndustryData" | translate }}:</h5>
+              </div>
+              <div [ngClass]="(isHospitalManager && canAddBrand) == true ? 'col-1': 'col-2'">
+                <select class="form-control" id="brandId" #brandId="ngModel" name="brandId"
+                  [(ngModel)]="masterAssetObj.brandId" [value]="0">
+                  <option selected value="null">{{ "Asset.Brand" | translate }}</option>
+                  <option *ngFor="let brand of lstBrands" [value]="brand.id">
+                    {{ lang == "en" ? brand.name : brand.nameAr }}
+                  </option>
+                </select>
+              </div>
+              <div [ngClass]="(isHospitalManager && canAddBrand) == true ? 'col-1': ''"
+                *ngIf="(isHospitalManager && canAddBrand)" style="margin-top: 25px;">
+                <span (click)="addBrand()">
+                  <i class="fa fa-plus" style="margin-top: 30px;"></i>
+                </span>
+              </div>
+              <div class="col-2">
+                <select class="form-control" id="origin" #origin="ngModel" name="origin"
+                  [(ngModel)]="masterAssetObj.originId">
+                  <option selected value="null">{{ "Asset.Origin" | translate }} </option>
+                  <option *ngFor="let orgn of lstOrigins" [value]="orgn.id">
+                    {{ orgn.code }} - {{ lang == "en" ? orgn.name : orgn.nameAr }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-2">
+                <input type="text" pInputText id="versionNumber" class="form-control"
+                  [ngModelOptions]="{ standalone: true }" [(ngModel)]="masterAssetObj.versionNumber"
+                  placeholder="{{'Asset.Version' | translate}}" />
+              </div>
+              <div class="col-2">
+                <input type="text" pInputText id="modelNumber" class="form-control"
+                  [ngModelOptions]="{ standalone: true }" [(ngModel)]="masterAssetObj.modelNumber"
+                  placeholder="{{'Asset.Model' | translate}}" />
+              </div>
+              <div class="col-2">
+                <input type="number" pInputText id="ExpectedLifeTime" [ngModelOptions]="{ standalone: true }"
+                  class="form-control" [(ngModel)]="masterAssetObj.expectedLifeTime"
+                  placeholder="{{'Asset.ExpectedLifeTime' | translate}}" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2">
+                <h5 for="Technical">{{ "Asset.Technical" | translate }}:</h5>
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="power" name="power" [(ngModel)]="masterAssetObj.power"
+                  #power="ngModel" placeholder="{{'Asset.Power' | translate}} ({{'Asset.PowerUnit' | translate}})" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="voltage" name="voltage" [(ngModel)]="masterAssetObj.voltage"
+                  #voltage="ngModel"
+                  placeholder="{{'Asset.Voltage' | translate}} ({{'Asset.VoltageUnit' | translate}})" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="ampair" name="ampair" [(ngModel)]="masterAssetObj.ampair"
+                  #ampair="ngModel" placeholder="{{'Asset.Ampair' | translate}} ({{'Asset.AmpairUnit' | translate}})" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="frequency" name="frequency"
+                  [(ngModel)]="masterAssetObj.frequency" #frequency="ngModel"
+                  placeholder="{{'Asset.Frequency' | translate}} ({{'Asset.FrequencyUnit' | translate}})" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="electricRequirement" name="electricRequirement"
+                  [(ngModel)]="masterAssetObj.electricRequirement" #electricRequirement="ngModel"
+                  placeholder="{{'Asset.ElectricRequirement' | translate}}" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2">
+                <h5 for="Physical">{{ "Asset.Physical" | translate }}:</h5>
+              </div>
+              <div class="col-2">
+                <input type="number" class="form-control" id="height" name="height" [(ngModel)]="masterAssetObj.height"
+                  #height="ngModel" placeholder="{{'Asset.Height' | translate}}" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="width" name="width" #width="ngModel"
+                  [(ngModel)]="masterAssetObj.width" placeholder="{{'Asset.Width' | translate}}" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="length" name="length" [(ngModel)]="masterAssetObj.length"
+                  #length="ngModel" placeholder="{{'Asset.Length' | translate}}" />
+              </div>
+              <div class="col-2">
+                <input type="text" class="form-control" id="weight" name="weight" #weight="ngModel"
+                  [(ngModel)]="masterAssetObj.weight" placeholder="{{'Asset.Weight' | translate}}" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row top-buffer">
+          <div class="col-2">
+            <h5 for="priority">{{ "Asset.Periority" | translate }}:</h5>
+          </div>
+          <div class="col-10"> <mat-radio-group [(ngModel)]="radioPerioritySelected" (change)="getSelecteditem()"
+              [ngModelOptions]="{ standalone: true }">
+              <mat-radio-button value="{{ item.id }}" name="priority{{ i }}"
+                *ngFor="let item of lstPeriorities; let i = index">
+                {{ lang == "en" ? item.name : item.nameAr }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-12">
+
+          </div>
+        </div>
+
+
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="fa fa-paperclip" style="margin: 0px 20px"></i>
+          {{ 'Asset.Attachments' | translate }}
+        </ng-template>
+
+        <div class="row top-buffer" style="margin-top: 10px;">
+          <div class="col-9" style="display: none;">
+            <div class="p-inputgroup">
+              <input #title="ngModel" class="form-control" type="text" name="title" placeholder="Document Name"
+                [(ngModel)]="masterAssetDocument.title">
+            </div>
+          </div>
+          <div class="col-3">
+            <input type="file" multiple #file placeholder="Choose file" (change)="uploadMultipleFile($event)"
+              style="display: none;">
+            <button type="button" name="btnUpload" class="btn btnUpload" style="margin:0px 10px" (click)="file.click()">
+              <i class="fa fa-upload"></i> {{'Asset.SelectUploadFiles' |translate }}
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 top-buffer">
+            <p-table [value]="lstMasterAssetDocuments" dataKey="id">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>{{ 'Asset.FileName' | translate }}</th>
+                  <th>{{ 'Asset.Title' | translate }}</th>
+                  <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-masterAssetDocument let-rowIndex="rowIndex" let-editing="editing">
+                <tr>
+                  <td>{{masterAssetDocument.fileName}}</td>
+                  <td [pEditableColumn]="masterAssetDocument.title" pEditableColumnField="title"
+                    [pEditableColumnRowIndex]="rowIndex">
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input pInputText [(ngModel)]="masterAssetDocument.title"
+                          [ngModelOptions]="{standalone: true}" />
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{masterAssetDocument.title}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+                  <td>
+                    <span (click)="removeFileFromObjectArray(rowIndex)"><i class="fa-solid fa-times-circle"
+                        style="color: rgb(123, 9, 9);"></i></span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+
+          <i class="fa-solid fa-wrench"></i>
+          {{'Asset.PreventiveMaintainance' | translate}}
+        </ng-template>
+        <div class="row top-buffer">
+          <div class="col-12">
+            <label for="pmtime" [translate]="'Asset.PMTime'"></label>
+            <mat-radio-group [(ngModel)]="selectedPMTime" (change)="onTimeChange($event)" name="gcat" id="gcat"
+              [ngModelOptions]="{standalone: true}">
+              <mat-radio-button [value]="item.id" *ngFor="let item of lstPMTimes">
+                {{ lang == "en" ? item.name : item.nameAr }}
+              </mat-radio-button>
+            </mat-radio-group>
+
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-5">
+
+            <label> {{ "Asset.Name" | translate }}</label>
+            <input class="form-control" #taskname="ngModel" [(ngModel)]="pmTaskObj.taskname" placeholder="task name"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-5">
+
+
+            <label> {{ "Asset.ArabicName" | translate }}</label>
+            <input class="form-control" #tasknameAr="ngModel" [(ngModel)]="pmTaskObj.tasknameAr" placeholder="task name"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+
+          <div class="col-2">
+            <span (click)="addTaskToList()" matTooltip="Add">
+              <i class="fa-solid fa-plus" style="margin-top: 30px;"></i>
+            </span>
+          </div>
+        </div>
+
+
+        <div class="row top-buffer">
+          <div class="col-12">
+            <table class="table table-stripped">
+              <thead>
+                <tr>
+                  <th>{{ "Asset.Name" | translate }}</th>
+                  <th>{{ "Asset.ArabicName" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of lstPMTasks">
+                  <td>{{ i.taskname }}</td>
+                  <td>{{ i.tasknameAr }}</td>
+                </tr>
+                <tr *ngIf="lstPMTasks.length == 0">
+                  <td colspan="4" style="color: rgb(102, 97, 23)" translate="No data found"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- <button class="btn btn-primary pull-center btn-sm" [disabled]="lstPMTasks.length == 0"
+              (click)="saveTaskToDB()">
+              <i class="fa-solid fa-save"></i>{{ "Asset.Save" | translate }}
+            </button> -->
+          </div>
+        </div>
+
+      </mat-tab>
+
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-sitemap"></i>
+          {{ "Asset.Components" | translate }}
+        </ng-template>
+        <div class="row top-buffer">
+          <div class="col-4">
+            <label> {{ "Asset.Code" | translate }}</label>
+            <input class="form-control" #compCode="ngModel" [(ngModel)]="compObj.compCode"
+              placeholder="{{'Asset.Code' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-4">
+            <label> {{ "Asset.Name" | translate }}</label>
+            <input class="form-control" #compname="ngModel" [(ngModel)]="compObj.compName"
+              placeholder="{{'Asset.Name' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-4">
+            <label> {{ "Asset.ArabicName" | translate }}</label>
+            <input class="form-control" #compnameAr="ngModel" [(ngModel)]="compObj.compNameAr"
+              placeholder="{{'Asset.ArabicName' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+
+        </div>
+        <div class="row top-buffer">
+          <div class="col-6">
+            <label> {{ "Asset.Price" | translate }}</label>
+            <input class="form-control" #price="ngModel" [(ngModel)]="compObj.price"
+              placeholder="{{'Asset.Price' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-6">
+            <label> {{ "Asset.PartNo" | translate }}</label>
+            <input class="form-control" #partNo="ngModel" [(ngModel)]="compObj.partNo"
+              placeholder="{{'Asset.PartNo' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-6">
+            <label> {{ "Asset.Description" | translate }}</label>
+            <input class="form-control" #description="ngModel" [(ngModel)]="compObj.compDescription"
+              placeholder="{{'Asset.Description' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-6">
+            <label> {{ "Asset.ArabicDescription" | translate }}</label>
+            <input class="form-control" #taskname="ngModel" [(ngModel)]="compObj.compDescriptionAr"
+              placeholder="{{'Asset.ArabicDescription' |  translate}}" [ngModelOptions]="{standalone: true}">
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-2">
+            <span (click)="addComponentToList()" matTooltip="Add">
+              <i class="fa-solid fa-plus" style="color: #04527e;"></i>{{'Asset.AddComponent'
+              |translate}}
+            </span>
+          </div>
+        </div>
+
+
+        <div class="row top-buffer">
+          <div class="col-12">
+            <table class="table table-stripped">
+              <thead>
+                <tr>
+                  <th>{{ "Asset.Name" | translate }}</th>
+                  <th>{{ "Asset.ArabicName" | translate }}</th>
+                  <th>{{ "Asset.Price" | translate }}</th>
+                  <th>{{ "Asset.PartNo" | translate }}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of lstComponents">
+                  <td>{{ i.compName }}</td>
+                  <td>{{ i.compNameAr }}</td>
+                  <td>{{ i.price }}</td>
+                  <td>{{ i.partNo }}</td>
+                  <td>
+                    <span (click)="removeComponentItem(i)"><i class="fa-solid fa-times-circle"
+                        style="color: rgb(123, 9, 9);"></i></span>
+                  </td>
+                </tr>
+                <tr *ngIf="lstComponents.length == 0">
+                  <td colspan="4" style="color: rgb(102, 97, 23)" translate="No data found"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label> <i class="fa-solid fa-tasks"></i>{{ "Asset.WOTask" |
+          translate }}</ng-template>
+        <div class="row top-buffer">
+          <div class="col-5">
+
+            <label> {{ "Asset.Name" | translate }}</label>
+            <input class="form-control" #name="ngModel" [(ngModel)]="woTaskObj.name" placeholder="task name"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="col-5">
+
+
+            <label> {{ "Asset.ArabicName" | translate }}</label>
+            <input class="form-control" #nameAr="ngModel" [(ngModel)]="woTaskObj.nameAr" placeholder="task name"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+
+          <div class="col-2">
+            <span (click)="addWOTaskToList()" matTooltip="Add">
+              <i class="fa-solid fa-plus" style="margin-top: 30px;"></i>
+            </span>
+          </div>
+        </div>
+
+
+        <div class="row top-buffer">
+          <div class="col-12">
+            <table class="table table-stripped">
+              <thead>
+                <tr>
+                  <th>{{ "Asset.Name" | translate }}</th>
+                  <th>{{ "Asset.ArabicName" | translate }}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tsk of lstWOTasks; let i= inedx">
+                  <td>{{ tsk.name }}</td>
+                  <td>{{ tsk.nameAr }}</td>
+                  <td>
+                    <span (click)="removeItemFromTasks(tsk)"><i class="fa-solid fa-times-circle"
+                        style="color: rgb(123, 9, 9);"></i></span>
+                  </td>
+                </tr>
+                <tr *ngIf="lstWOTasks.length == 0">
+                  <td colspan="4" style="color: rgb(102, 97, 23)" [translate]="'Asset.NoData'"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <div class="row top-buffer">
+      <div class="col-12 text-center">
+        <button type="submit" (click)="onSubmit()" class="btn btn-success" value="save">
+          {{ "Asset.Save" | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+
+
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="savedfilesdisplay">
+  <ng-template pTemplate="header">
+    <h6 style="color: #04527e; font-weight: bold; font-size: 16pt">
+      {{ "Asset.Save" | translate }}
+    </h6>
+  </ng-template>
+  <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">{{ "Asset.SavedFiles" | translate
+    }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{ width: '350px' }">
+  <ng-template pTemplate="header">
+    <h6 [translate]="''" style="color: #04527e; font-weight: bold; font-size: 16pt">
+      {{ "Asset.Save" | translate }}
+    </h6>
+  </ng-template>
+  <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">
+    {{ "Asset.SavedSuccess" | translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)">
+    {{ "Asset.Error" | translate }}
+  </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>

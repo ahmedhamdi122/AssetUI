@@ -1,0 +1,140 @@
+<div class="col-12">
+  <div class="row top-buffer">
+    <div class="col-8">
+      <h4 class="card-title"> {{ 'Asset.Hospitals' | translate }} </h4>
+    </div>
+    <div class="col-2">
+      <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+        aria-controls="collapseExample" class="filterbutton">
+        <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+    </div>
+    <div class="col-2">
+      <a class="addbutton" *ngIf="isAdmin" (click)="addHospital()"><i class="fa-solid fa-plus"></i> {{ 'Asset.Create' |
+        translate }}</a>
+    </div>
+  </div>
+
+  <div class="col-12 top-buffer">
+    <div class="collapse  row card-filter" id="collapseExample">
+      <form (ngSubmit)="onSearch()" #searchForm="ngForm">
+        <div class=" row top-buffer ">
+          <div class="col-2">
+            <label for="code" [translate]="'Asset.Code'"> {{'Asset.Code' | translate }}</label>
+            <input type="text" class="form-control" [(ngModel)]="searchObj.code"
+              [ngModelOptions]="{standalone: true}" />
+          </div>
+          <div class="col-2" *ngIf="lang=='en'">
+            <label for="name" [translate]="'Asset.Name'"> {{'Asset.Name' | translate }}</label>
+            <input type="text" class="form-control" [(ngModel)]="searchObj.name"
+              [ngModelOptions]="{standalone: true}" />
+          </div>
+          <div class="col-2" *ngIf="lang == 'ar'">
+            <label for="nameAr" [translate]="'Asset.ArabicName'"> {{'Asset.ArabicName' | translate }}</label>
+            <input type="text" class="form-control" [(ngModel)]="searchObj.nameAr"
+              [ngModelOptions]="{standalone: true}" />
+          </div>
+          <div class="col-2">
+            <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+            <select class="form-control" id="governorate" [disabled]="isGov" name="governorate" #governorate="ngModel"
+              [value]="0" [(ngModel)]="searchObj.governorateId" (change)="getCitiesByGovId($event)">
+              <option value="0"></option>
+              <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                {{ lang == "en" ? gov.name : gov.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label for="cityId" [translate]="'Asset.Cities'">City</label>
+            <select class="form-control" id="city" [disabled]="isCity" name="city" #cityId="ngModel"
+              [(ngModel)]="searchObj.cityId" [value]="0">
+              <option value="0"></option>
+              <option *ngFor="let city of lstCities" [value]="city.id">
+                {{ lang == "en" ? city.name : city.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+            <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+              [(ngModel)]="searchObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+              <option value="0"></option>
+              <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                {{ lang == "en" ? org.name : org.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label for="suborganization" [translate]="'Asset.SubOrganizations'">Sub Organization</label>
+            <select class="form-control" id="suborganization" [disabled]="isSubOrg" name="suborganization" [value]="0"
+              [(ngModel)]="searchObj.subOrganizationId" #suborganization="ngModel">
+              <option value="0"></option>
+              <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                {{ lang == "en" ? suborg.name : suborg.nameAr }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-10"></div>
+          <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+              <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+            </button></div>
+          <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+              <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+            </button></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <p-table [value]="lstHospitals" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+        [paginator]="true" [lazy]="true" [rows]="10" [loading]="loading" [totalRecords]="count" pageLinks="10"
+        (onLazyLoad)="clicktbl($event)" [columns]="selectedColumns" [rowHover]="true">
+        <ng-template pTemplate="caption">
+          <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+            selectedItemsLabel="{0} {{columnsSelected}}" [style]="{minWidth: '200px'}"
+            [placeholder]="'Asset.ChooseColumns' |translate">
+          </p-multiSelect>
+        </ng-template>
+        <ng-template pTemplate="header" let-cols>
+          <tr>
+            <th  style="text-align: inherit;" [sortable]="true" *ngFor="let col of cols">
+              {{col.header}}
+              <p-sortIcon id="{{col.header | translate}}" (click)="sort($event)">
+              </p-sortIcon>
+            </th>
+            <th  style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-columns="columns">
+          <tr>
+            <td  style="text-align: inherit;" *ngFor="let col of columns">
+              {{item[col.field]}}
+            </td>
+            <td  style="text-align: inherit;">
+              <span class="viewIcon" (click)="viewHospital(item.id)" pTooltip="{{'Asset.View' |  translate}}"
+                tooltipPosition="top">
+                <i class="fa-solid fa-eye"></i> </span>
+              <span class="editIcon" *ngIf="isAdmin" (click)="editHospital(item.id)"
+                pTooltip="{{'Asset.Edit' |  translate}}" tooltipPosition="top">
+                <i class="fa-solid fa-edit"></i>
+              </span>
+              <span class="deleteIcon" *ngIf="isAdmin" (click)="deleteHospital(item.id)"
+                pTooltip="{{'Asset.Delete' |  translate}}" tooltipPosition="top">
+                <i class="fa-solid fa-trash"></i>
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>

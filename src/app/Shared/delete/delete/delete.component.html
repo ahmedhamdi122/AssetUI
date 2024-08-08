@@ -1,0 +1,20 @@
+<div [dir]="textDir" class="card-delete">
+    <div class="row ">
+      <h3>{{'Asset.DeleteConfirmation' | translate}}
+      </h3>
+    </div>
+    <div class="row top-buffer">
+      <p> {{'Asset.DeleteAlertMessage' | translate}} <b> {{name}} </b>{{'Asset.?' | translate}}</p>
+    </div>
+    <div class="row top-buffer" [ngStyle]="lang =='en' ? {'text-align': 'right'} : {  'text-align': 'left'}">
+      <div class="col-6"></div>
+      <div class="col-3">
+        <button type="button" class="btn btn-outline-dark " (click)="closeFunc()">
+          {{'Asset.Cancel' | translate}}</button>
+      </div>
+      <div class="col-3">
+        <button type="button" class="btn btn-danger btn-delete" (click)="deleteFunc()">
+          {{'Asset.Delete' | translate}}</button>
+      </div>
+    </div>
+  </div>

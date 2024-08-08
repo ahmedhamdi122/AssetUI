@@ -1,0 +1,27 @@
+<button (click)="download()" class="btn btn-primary">Download PDF</button>
+
+
+<form>
+    <div>
+
+        <table>
+            <tbody *ngFor="let assetObj of lstAssets">
+                <td>
+                    <p-checkbox name="groupname" [value]="assetObj.qrFilePath"
+                        (click)="checked(assetObj.assetName,assetObj.qrFilePath)" [(ngModel)]="selectedQrFilePath">
+                    </p-checkbox>
+                </td>
+                <td style="width: 30%;">
+                    <ngx-qrcode [value]="assetObj.qrFilePath" [elementType]="img" id="{{assetObj.qrFilePath}}"
+                        width="100" [errorCorrectionLevel]="correctionLevel"></ngx-qrcode>
+                </td>
+                <td style="width: 50%;">
+                    AssetName: {{assetObj.assetName}}<br />
+                    Model: {{assetObj.model}}<br />
+                    Serial: {{assetObj.serial}}<br /></td>
+            </tbody>
+        </table>
+
+
+    </div>
+</form>

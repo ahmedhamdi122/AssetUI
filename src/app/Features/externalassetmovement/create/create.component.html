@@ -1,0 +1,157 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title">
+            {{'Asset.ExternalAssetMovement' | translate }}
+        </h4>
+    </div>
+    <div class="card-body">
+        <form (ngSubmit)="addExternalLocation()" #addExternalLocationForm="ngForm">
+            
+        <div class="row top-buffer" *ngIf="isAdmin">
+            <div class="col-12">
+                <label for="hospitalId" [translate]="'Asset.Hospitals'">{{'Asset.Hospitals' | translate }}
+                </label>
+                <select id="hospitalId" class="form-control" name="hospitalId" [(ngModel)]="externalAssetMovementObj.hospitalId"
+                #hospitalId="ngModel" [value]="0" (change)="getBuildingByHospitalId($event)">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.Hospital' | translate}}
+                </option>
+                <option *ngFor="let host of lstHospitals" [value]="host.id">
+                    {{lang == "en" ? host.name: host.nameAr}}
+                </option>
+            </select>
+            </div>
+        </div>
+
+
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+                    <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                        [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode"
+                        (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                        [dropdown]="false">
+                        <ng-template let-assetBarCodeObj pTemplate="item">
+                            {{assetBarCodeObj.barCode}}
+                        </ng-template>
+                        <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                            {{assetBarCodeObj.barCode}}
+                        </ng-template>
+                    </p-autoComplete>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="showBarcode">
+                <div class="col-3">
+                    <label for="model" [translate]="'Asset.Department'"></label>
+                    <br />
+                    {{departmentName}}
+                </div>
+                <div class="col-3">
+                    <label for="model" [translate]="'Asset.Serial'"></label>
+                    <br />
+                    {{serialNumber}}
+                </div>
+
+                <div class="col-3">
+                    <label for="brandId" [translate]="'Asset.Brand'"></label>
+                    <br />
+                    {{brandName}}
+                </div>
+                <div class="col-3">
+                    <label for="model" [translate]="'Asset.Model'"></label>
+                    <br />
+                    {{modelNumber}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="hospitalName"> {{ 'Asset.ExternalHospital' | translate }}
+                    </label>
+                    <input type="text" class="form-control" id="hospitalName" name="hospitalName"
+                        [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="externalAssetMovementObj.hospitalName" #hospitalName="ngModel">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="notes"> {{ 'Asset.Note' | translate }}
+                    </label>
+                    <textarea class="form-control" id="notes" name="notes"
+                        [(ngModel)]="externalAssetMovementObj.notes" #notes="ngModel">
+            </textarea>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="movementDate"> {{ 'Asset.MoveDate' | translate }}
+                    </label>
+                    <input type="datetime-local" dir="rtl" class="form-control" id="movementDate" name="movementDate"
+                        [(ngModel)]="externalAssetMovementObj.movementDate"
+                        #movementDate="ngModel" [ngModelOptions]="{standalone: true}">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-10">
+                    <label for="docmentName"> {{'Asset.DocumentTitle' | translate
+                        }}</label>
+                    <input #documentName="ngModel" class="form-control" type="text" pInputText
+                        [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="createExternalAssetMovementAttachmentObj.title">
+                </div>
+
+                <div class="col-2">
+                    <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                        style="display:none;">
+                    <button type="button" class="btn btn-outline-success"
+                        (click)="file.click()"> <i class="fa fa-upload"></i>{{'Asset.SelectDocument' | translate }}
+                    </button>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{{'Asset.Name' | translate }}</th>
+                                <th>{{'Asset.DocumentTitle' | translate }}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let i of lstCreateExternalAssetMovementFiles">
+                                <td>{{i.fileName}}</td>
+                                <td>{{i.title}}</td>
+                                <td>
+                                    <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"></i></span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="lstCreateExternalAssetMovementFiles.length == 0">
+                                <td colspan="4" [translate]="'Asset.NoData'">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-success " value="save" type="submit">
+                        {{ 'Asset.Save' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6 >{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span >
+        {{ errorMessage }}</span>
+</p-dialog>

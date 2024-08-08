@@ -1,0 +1,24 @@
+<div [dir]="textDir">
+    <div class="card">
+        <div class="card-header" style="height:60px;">
+            <h1 mat-dialog-title style="font-size: 23px;color: #910404;font-weight: bold;"
+                [ngStyle]="lang =='en' ? {'float': 'left'} : {  'float': 'right'}">{{'Asset.Error' |
+                translate}}
+            </h1>
+            <i class="fa fa-exclamation-triangle fa-3x" width="40" height="40" style="color:#dbb302"
+                [ngStyle]="lang =='en' ? {'float': 'right','margin-top':'-5px'} : {  'float': 'left','margin-top':'-5px'}"></i>
+        </div>
+        <div class="card-body" style="height: 90px;text-align:center;font-size: 20px;color:#910404;">
+            <p>
+                <b>{{alertErrorMessage.message}} </b>
+            </p>
+        </div>
+        <div class="card-footer" style="height: 50px; background-color: white;"
+            [ngStyle]="lang =='en' ? {'text-align': 'center'} : {  'text-align': 'center'}">
+
+            <button type="button" class="btn btn-outline-danger  btn-sm" style="margin: 0px 10px; margin-top: -5px;"
+                (click)="close()">{{'Asset.Close' | translate}}</button>
+
+        </div>
+    </div>
+</div>

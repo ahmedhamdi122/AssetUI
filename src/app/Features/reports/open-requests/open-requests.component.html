@@ -1,0 +1,256 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-11">
+            <h4 class="card-title"> {{'Asset.OpenRequestReport' | translate }} </h4>
+        </div>
+        <div class="col-1">
+            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="generatePDF()" pTooltip="PDF"
+                class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="icon">{{'Asset.From' | translate }}</label>
+                        <p-calendar [(ngModel)]="searchOpenRequestObj.startDate" name="startDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            [ngModelOptions]="{standalone: true}" (onSelect)="getStartDate($event)" inputId="icon"
+                            appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-3">
+                        <label for="icon">{{'Asset.To' | translate }}</label>
+                        <p-calendar [(ngModel)]="searchOpenRequestObj.endDate" name="endDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getEndDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <b> أجهزة معطلة </b>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstOpenRequests" id="requestTbl2" name="requestTbl2" responsiveLayout="scroll"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true" [lazy]="true"
+                [rows]="10" [totalRecords]="count" pageLinks="10" (onLazyLoad)="clicktbl($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;"> {{'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.ModelNumber' | translate }} </th>
+                        <th style="text-align: inherit;">{{'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.fixCost' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.costPerDay' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.allDays' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.TotalCost' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en"?item.assetName:item.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang=="en"?item.brandName:item.brandNameAr}}</td>
+                        <td style="text-align: inherit;" field="modelNumber">{{item.modelNumber}}</td>
+                        <td style="text-align: inherit;" field="barcode">{{item.barcode}}</td>
+                        <td style="text-align: inherit;" field="serialNumber">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{item.requestDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{item.fixCost}}</td>
+                        <td style="text-align: inherit;">{{item.costPerDay}}</td>
+                        <td style="text-align: inherit;">{{item.allDays}}</td>
+                        <td style="text-align: inherit;">{{item.totalCost}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <b> أجهزة مستبعدة من خلال المستشفى</b>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstAllHospitalExcludes"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" [paginator]="true" [lazy]="true"
+                [rows]="10" [totalRecords]="excludecount" responsiveLayout="scroll" pageLinks="10"
+                (onLazyLoad)="clickHospitalExcludes($event)" [totalRecords]="excludecount">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Model' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.fixCost' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.costPerDay' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.allDays' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.TotalCost' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-host>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en" ? host.assetName: host.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang=="en"?host.brandName:host.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{host.modelNumber}}</td>
+                        <td style="text-align: inherit;">{{host.barCode}}</td>
+                        <td style="text-align: inherit;">{{host.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{host.date | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{host.fixCost}}</td>
+                        <td style="text-align: inherit;">{{host.costPerDay}}</td>
+                        <td style="text-align: inherit;">{{host.allDays}}</td>
+                        <td style="text-align: inherit;">{{host.totalCost}}</td>
+
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <b> أجهزة متوقفة من خلال المستشفى </b>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstAllHospitalHolds" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="holdcount" responsiveLayout="scroll"
+                pageLinks="10" (onLazyLoad)="clickHospitalHolds($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Model' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.fixCost' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.costPerDay' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.allDays' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.TotalCost' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-host>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en" ? host.assetName: host.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang=="en"?host.brandName:host.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{host.modelNumber}}</td>
+                        <td style="text-align: inherit;">{{host.barCode}}</td>
+                        <td style="text-align: inherit;">{{host.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{host.date | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{host.fixCost}}</td>
+                        <td style="text-align: inherit;">{{host.costPerDay}}</td>
+                        <td style="text-align: inherit;">{{host.allDays}}</td>
+                        <td style="text-align: inherit;">{{host.totalCost}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <b> أجهزة مستبعدة من خلال وادي النيل</b>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstAllSupplierExcludes"
+                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" [paginator]="true" [lazy]="true"
+                [rows]="10" [totalRecords]="supplierExcludeCount" responsiveLayout="scroll" pageLinks="10"
+                (onLazyLoad)="clickSupplierExcludes($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Model' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.fixCost' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.costPerDay' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.allDays' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.TotalCost' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-host>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en" ? host.assetName: host.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang=="en"?host.brandName:host.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{host.modelNumber}}</td>
+                        <td style="text-align: inherit;">{{host.barCode}}</td>
+                        <td style="text-align: inherit;">{{host.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{host.date | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{host.fixCost}}</td>
+                        <td style="text-align: inherit;">{{host.costPerDay}}</td>
+                        <td style="text-align: inherit;">{{host.allDays}}</td>
+                        <td style="text-align: inherit;">{{host.totalCost}}</td>
+
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <b> أجهزة متوقفة من خلال وادي النيل</b>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstAllSupplierHolds" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="supplierHoldCount"
+                responsiveLayout="scroll" pageLinks="10" (onLazyLoad)="clickSupplierHolds($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Model' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.fixCost' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.costPerDay' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.allDays' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.TotalCost' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-host>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en" ? host.assetName: host.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang=="en"?host.brandName:host.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{host.modelNumber}}</td>
+                        <td style="text-align: inherit;">{{host.barCode}}</td>
+                        <td style="text-align: inherit;">{{host.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{host.date | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{host.fixCost}}</td>
+                        <td style="text-align: inherit;">{{host.costPerDay}}</td>
+                        <td style="text-align: inherit;">{{host.allDays}}</td>
+                        <td style="text-align: inherit;">{{host.totalCost}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer"></div>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{errorMessage}}
+
+    </span>
+</p-dialog>

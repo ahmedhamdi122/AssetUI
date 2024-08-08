@@ -1,0 +1,265 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;">{{
+            'Asset.HospitalExeclude' | translate }}
+        </h4>
+    </div>
+    <div class="card-body">
+        <form #form="ngForm" (ngSubmit)="onSubmit()">
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                        [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" autoWidth="true"
+                        (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                        placeholder="{{'Asset.Barcode' |  translate}}" [dropdown]="false" showClear="true">
+                        <ng-template let-assetBarCodeObj pTemplate="item">
+                            {{assetBarCodeObj.barCode}}
+                        </ng-template>
+                        <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                            {{assetBarCodeObj.barCode}}
+                        </ng-template>
+                    </p-autoComplete>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="assetId" [translate]="'Asset.Asset'"></label>
+                    <select [value]="0" [(ngModel)]="hospitalApplicationObj.assetId" id="assetId" #assetId="ngModel"
+                        name="assetId" class="form-control">
+                        <option value="0"> {{ 'Asset.Select' | translate }}{{ 'Asset.Asset' | translate }}</option>
+                        <option *ngFor="let item of lstAssets" value="{{item.id}}">{{lang=="en" ? item.assetName:
+                            item.assetNameAr}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="appNumber" [translate]="'Asset.AppNumber'"></label>
+                    <input type="text" class="form-control" id="appNumber" name="appNumber" pTooltip="Select Hospital"
+                        tooltipPosition="bottom" [(ngModel)]="hospitalApplicationObj.appNumber" disabled="true" />
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <mat-radio-group [(ngModel)]="selectedAppType" (change)="onTypeChange($event)" name="ghtype"
+                        id="ghtype" [ngModelOptions]="{standalone: true}">
+                        <mat-radio-button [value]="item.id" *ngFor="let item of lstTypes">{{lang =="en"
+                            ?item.name:item.nameAr}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+            <!---->
+            <div class="row top-buffer">
+                <div class="col-12" *ngIf="showHExeclude">
+                    <label for="organization" [translate]="'Asset.Reasons'"></label>
+                    <ul>
+                        <li *ngFor="let itm of lstHospitalExecludeReasons;let idx= index">
+                            <mat-checkbox id="ckbx{{idx}}" name="ckbx{{idx}}" [checked]="toggleHEReasons(itm.id)"
+                                (change)="selectedHEReasons($event, itm.id)" [value]="itm.id">
+                                {{lang == "en" ?itm.name: itm.nameAr}}
+                            </mat-checkbox>
+                            <ul>
+                                <li *ngFor="let trans of lstTransactions">
+
+                                    <div class="row top-buffer" style="margin-top: 10px;">
+                                        <div class="col-12">
+                                            <table class="table table-striped" style="width: 100%;"
+                                                *ngIf="trans.reasonId == itm.id">
+                                                <thead>
+                                                    <tr>
+                                                        <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' |
+                                                            translate }}</th>
+                                                        <th style="text-align: center;" [translate]="'Asset.Download'">
+                                                            {{
+                                                            'Asset.Download' | translate }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let attach of trans.attachments">
+                                                        <td>
+                                                            {{attach.fileName}}
+                                                        </td>
+                                                        <td style="cursor: pointer;text-align: center;"
+                                                            pTooltip="Download File" tooltipPosition="bottom">
+                                                            <a (click)="downloadFile(attach.fileName)"><i
+                                                                    class="fa-solid fa fa-download"
+                                                                    style="color: #61bb20;"></i></a>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div name="myfile_{{itm.id}}" id="myfile_{{itm.id}}">
+                                <p-fileUpload name="myfile_{{itm.id}}" id="myfile_{{itm.id}}"
+                                    [showUploadButton]="isShown" customUpload="true" multiple="multiple"
+                                    [showCancelButton]="false" (uploadHandler)="myUploader($event,itm.id)">
+                                </p-fileUpload>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="showHHold">
+                <div class="col-12">
+                    <label for="organization" [translate]="'Asset.Reasons'"></label>
+                    <ul>
+                        <li *ngFor="let itm2 of lstHospitalHoldReasons;let idx= index">
+                            <mat-checkbox id="ckbx{{idx}}" name="ckbx{{idx}}" [checked]="toggleHHReasons(itm.id)"
+                                (change)="selectedHHReasons($event,itm2.id)" [value]="itm2.id">
+                                {{lang == "en" ?itm2.name: itm2.nameAr}}
+                            </mat-checkbox>
+                            <ul>
+                                <li *ngFor="let trans of lstTransactions">
+
+                                    <div class="row top-buffer" style="margin-top: 10px;">
+                                        <div class="col-12">
+                                            <table class="table table-striped" style="width: 100%;"
+                                                *ngIf="trans.reasonId == itm.id">
+                                                <thead>
+                                                    <tr>
+                                                        <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' |
+                                                            translate }}</th>
+                                                        <th style="text-align: center;" [translate]="'Asset.Download'">
+                                                            {{
+                                                            'Asset.Download' | translate }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let attach of trans.attachments">
+                                                        <td>
+                                                            {{attach.fileName}}
+                                                        </td>
+                                                        <td style="cursor: pointer;text-align: center;"
+                                                            pTooltip="Download File" tooltipPosition="bottom">
+                                                            <a (click)="downloadFile(attach.fileName)"><i
+                                                                    class="fa-solid fa fa-download"
+                                                                    style="color: #61bb20;"></i></a>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div name="{{itm2.id}}" id="{{itm2.id}}" style="display: none;">
+                                <p-fileUpload name="myfile1_{{itm2.id}}" id="myfile1_{{itm2.id}}" customUpload="true"
+                                    multiple="multiple" (uploadHandler)="myUploader($event,itm2.id)">
+                                </p-fileUpload>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+            <!--    <div class="row top-buffer" *ngIf="showGovCity">
+                <div class="col-6">
+                    <label for="governorate" [translate]="'Asset.Governorate'"></label>
+                    <select class="form-control" id="governorate" pTooltip="select governorate" tooltipPosition="bottom"
+                        name="governorate" [value]="0" (change)="getCitiesByGovId($event)">
+                        <option value="0">{{ 'Asset.Select' | translate }} {{
+                            'Asset.Governorate' |
+                            translate }}</option>
+                        <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                            {{ lang == "en" ? gov.name : gov.nameAr }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <label for="cityId" [translate]="'Asset.City'"></label>
+                    <select class="form-control" id="city" pTooltip="select city" tooltipPosition="bottom" name="city"
+                        [value]="0">
+                        <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.City' | translate }}
+                        </option>
+                        <option *ngFor="let city of lstCities" [value]="city.id">
+                            {{ lang == "en" ? city.name : city.nameAr }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="showOrgAndSub">
+                <div class="col-6">
+                    <label for="organization" [translate]="'Asset.Organization'"></label>
+                    <select class="form-control" id="organization" pTooltip="select organization"
+                        tooltipPosition="bottom" name="organization" (change)="getSubOrgByOrgId($event)" [value]="0">
+                        <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.Organization' |
+                            translate }}</option>
+                        <option *ngFor="let org of lstOrganizations" [value]="org.id"
+                            [selected]="org.id ==  hospitalApplicationObj.organizationId">
+                            {{ lang == "en" ? org.name : org.nameAr }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-6">
+                    <label for="suborganization" [translate]="'Asset.SubOrganization'"></label>
+                    <select class="form-control" id="suborganization" pTooltip="select sub organization"
+                        tooltipPosition="bottom" name="suborganization" [value]="0"
+                        (change)="getHospitalsBySubOrgId($event)">
+                        <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.SubOrganization' |
+                            translate }}</option>
+                        <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id"
+                            [selected]="suborg.id ==  hospitalApplicationObj.subOrganizationId">
+                            {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6" *ngIf="showHospital">
+                    <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                    <select class="form-control" id="hospitalId" name="hospitalId" [value]="0"
+                        pTooltip="Select Hospital" tooltipPosition="bottom" (change)="getAssetsofHospital($event)">
+                        <option value="0">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Hospital' | translate
+                            }}--</option>
+                        <option *ngFor="let hospital of lstHospitals" [value]="hospital.id"
+                            [selected]="hospital.id ==  hospitalApplicationObj.hospitalId">
+                            {{ lang == "en" ? hospital.name:hospital.nameAr}}
+                        </option>
+                    </select>
+                </div> </div>-->
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary pull-center btn-sm" [translate]="'Asset.Save'"
+                        style="margin:0px 5px;background-color: #1483c2;border-color: #1483c2"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate
+        }}</span>
+</p-dialog>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="savedfilesdisplay">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedFiles' | translate
+        }}</span>
+</p-dialog>

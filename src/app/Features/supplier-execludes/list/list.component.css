@@ -1,0 +1,17 @@
+.mat-list-test {
+  display: flex !important;
+  flex-flow: row wrap;
+}
+
+.mat-list-base .mat-list-item.mat-list-item-test {
+  display: initial;
+  width: auto;
+}
+
+.btnclicked:focus {
+  background-color: #ffebcd;
+}
+
+/* .active, .btnclicked:focus {
+    background-color: #ffebcd;
+  } */

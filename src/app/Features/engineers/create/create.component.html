@@ -1,0 +1,94 @@
+ <div class="col-12">
+        <form #form="ngForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-3">
+                    <label for="code" [translate]="'Asset.Code'"> </label>
+                    <input type="text" class="form-control" id="code" name="code" [(ngModel)]="engineerObj.code"
+                        #code="ngModel" [class.is-invalid]="
+                    (code.touched && code.errors) || form.submitted" [class.is-valid]="code.valid && form.submitted"
+                        required />
+                </div>
+                <div class="col-3">
+                    <label for="name" [translate]="'Asset.Name'"></label>
+                    <input type="text" #name="ngModel" [class.is-invalid]="name.invalid && name.touched"
+                        [class.is-valid]="name.valid" [(ngModel)]="engineerObj.name" name="name" id="name"
+                        class="form-control" required>
+                </div>
+                <div class="col-3">
+                    <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+                    <input type="text" #nameAr="ngModel" [class.is-invalid]="nameAr.invalid && nameAr.touched"
+                        [class.is-valid]="name.valid" [(ngModel)]="engineerObj.nameAr" name="nameAr" id="nameAr"
+                        class="form-control" required>
+                </div>
+                <div class="col-3">
+                    <label for="CardId" [translate]="'Asset.CardId'"></label>
+                    <input type="number" class="form-control" #cardId="ngModel" [(ngModel)]="engineerObj.cardId"
+                        name="cardId" max="14">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="genderId" [translate]="'Asset.Gender'"></label>
+                    <select name="genderId" #genderId="ngModel" [(ngModel)]="engineerObj.genderId" class="form-control"
+                        [value]="0">
+                        <option value="0"></option>
+                        <option *ngFor="let item of lstGender" value="{{item.id}}"
+                            [selected]="item.id == engineerObj.genderId">{{lang=="en" ? item.name:
+                            item.nameAr}}</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <label for="Email" [translate]="'Asset.EMail'"></label>
+                    <input type="email" class="form-control" #email="ngModel"
+                        [class.is-invalid]="email.invalid && email.touched" [class.is-valid]="email.valid"
+                        [(ngModel)]="engineerObj.email" required name="email">
+                </div>
+                <div class="col-3">
+                    <label for="WhatsApp" [translate]="'Asset.WhatsApp'"></label>
+                    <input type="text" class="form-control" #WhatsApp="ngModel" name="whatsApp"
+                        [(ngModel)]="engineerObj.whatsApp">
+                </div>
+                <div class="col-3">
+                    <label for="Phone" [translate]="'Asset.Phone'"></label>
+                    <input class="form-control" type="number" #phone="ngModel" name="phone"
+                        [(ngModel)]="engineerObj.phone">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="Address" [translate]="'Asset.Address'"></label>
+                    <textarea type="text" #address="ngModel" name="address" id="address" class="form-control"
+                        [(ngModel)]="engineerObj.address"></textarea>
+                </div>
+                <div class="col-4">
+                    <label for="AddressAr" [translate]="'Asset.ArabicAddress'"></label>
+                    <textarea type="text" #addressAr="ngModel" name="addressAr" id="addressAr" class="form-control"
+                        [(ngModel)]="engineerObj.addressAr"></textarea>
+                </div>
+                <div class="col-4">
+                    <label for="dob" [translate]="'Asset.DOB'"></label>
+                    <mat-form-field appearance="fill">
+                        <input matInput [matDatepicker]="dob" [value]="engineerObj.dob | date:'yyyy-MM-dd'">
+                        <mat-datepicker-toggle matSuffix [for]="dob"></mat-datepicker-toggle>
+                        <mat-datepicker #dob></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-success" [translate]="'Asset.Save'"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span>{{ errorMessage }}</span>
+</p-dialog>

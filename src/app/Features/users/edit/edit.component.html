@@ -1,0 +1,254 @@
+<div class="card">
+  <div class="card-header cardHeader">
+    <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;" [translate]="''">
+      {{ 'Asset.EditUser' | translate }}
+    </h4>
+  </div>
+  <div class="card-body">
+
+    <form (ngSubmit)="editForm.valid && onSubmit()" #editForm="ngForm">
+      <input type="hidden" [(ngModel)]="userObj.id" name="id" id="id" />
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <label> {{ 'Asset.RoleCategories' | translate }} </label>
+        </div>
+        <div class="col-md-12">
+          <mat-radio-group [(ngModel)]="selectedCategory" (change)="onRoleChange($event)" name="gcat" id="gcat">
+            <mat-radio-button [value]="item.id" *ngFor="let item of lstRoleCategories"> {{ lang == "en" ? item.name :
+              item.nameAr }}
+
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+      <div class="row top-buffer" *ngIf="showRadioHospitals">
+        <div class="col-md-12">
+          <label> {{ 'Asset.Select' | translate }} {{ 'Asset.HospitalType' | translate }} </label>
+        </div>
+        <div class="col-md-12">
+          <mat-radio-group [(ngModel)]="selectedHospitalType" (change)="onTypeChange($event)" name="ghtype" id="ghtype"
+            [ngModelOptions]="{standalone: true}">
+            <mat-radio-button [value]="item.id" *ngFor="let item of lstHospitalTypes">{{item.name}}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+
+      <div class="row top-buffer">
+        <div class="col-12">
+          <label for="code" [translate]="'Asset.Roles'"></label>
+          <ul>
+            <li *ngFor="let itm of lstRoles2;let idx= index">
+              <mat-checkbox id="ckbx{{idx}}" name="ckbx{{idx}}" (change)="selectedRoles($event)" [value]="itm.id"
+                [checked]="toggleCheckBox(itm.id)">
+                {{itm.name}} - {{itm.displayName}}
+              </mat-checkbox>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+      <div class="row top-buffer" *ngIf="showSuppliers">
+        <div class="col-12">
+          <label for="code"> {{ 'Asset.Suppliers' | translate }}</label>
+          <select id="supplierId" name="supplierId" class="form-control" [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="userObj.supplierId" [value]="0">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Supplier' | translate }}</option>
+            <option *ngFor="let item of lstSuppliers" [value]="item.id">
+              {{ lang=="en" ? item.name :item.nameAr}} </option>
+          </select>
+        </div>
+      </div>
+
+
+
+      <div class="row top-buffer" *ngIf="showMembers">
+        <div class="col-12">
+          <label for="code"> {{ 'Asset.Member' | translate }}</label>
+          <select id="commetieeMemberId" name="commetieeMemberId" class="form-control"
+            [ngModelOptions]="{standalone: true}" [(ngModel)]="userObj.commetieeMemberId" [value]="0">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Member' | translate }}</option>
+            <option *ngFor="let item of lstMembers" [value]="item.id">
+              {{ lang=="en" ? item.name :item.nameAr}} </option>
+          </select>
+        </div>
+      </div>
+
+
+
+
+      <div class="row top-buffer">
+        <div *ngIf="showEmployees" [ngClass]="selectedCategory == '5' ? 'col-6' : 'col-6'">
+          <label class="myfont" [translate]="'Asset.Employee'"></label>
+          <select type="text" [(ngModel)]="userObj.email" name="unregisteredUsers" id="unregisteredUsers"
+            class="form-control" [ngModelOptions]="{standalone: true}" disabled="true">
+            <option *ngFor="let user of lstEmployees" [value]="user.email" [selected]="user.email == userObj.email">
+              {{ lang == "en" ? user.name : user.nameAr }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-4">
+          <label for="code" [translate]="'Asset.Username'">Username</label>
+          <input type="text" class="form-control" [(ngModel)]="userObj.userName" #userName="ngModel" id="userName"
+            name="userName" autofocus required autocomplete="off"
+            [class.is-invalid]="(userName.touched && userName.errors) || editForm.submitted"
+            [class.is-valid]="userName.valid && editForm.submitted">
+          <div *ngIf="(userName.touched || editForm.submitted) && userName.errors?.required">
+            <span class="text-danger"> please insert name</span>
+          </div>
+        </div>
+        <div class="col-4">
+          <label for="code" [translate]="'Asset.EMail'">E-Mail</label>
+          <input type="text" class="form-control" [(ngModel)]="userObj.email" #email="ngModel" id="email" name="email"
+            autofocus required [class.is-invalid]="(email.touched && email.errors) || editForm.submitted"
+            [class.is-valid]="email.valid && editForm.submitted">
+          <div *ngIf="(email.touched || editForm.submitted) && email.errors?.required">
+            <span class="text-danger"> please insert email</span>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <label for="code" [translate]="'Asset.Mobile'">Phone</label>
+          <input type="text" class="form-control" [(ngModel)]="userObj.phoneNumber" id="phoneNumber" name="phoneNumber">
+        </div>
+
+
+      </div>
+
+
+
+
+      <div class="row top-buffer">
+        <div *ngIf="showGov" [ngClass]="selectedCategory == '3' ? 'col-12' : 'col-6'">
+          <label for="governorate"> {{ 'Asset.Governorate' | translate }} </label>
+          <select class="form-control" id="governorateId" pTooltip="select governorate" tooltipPosition="bottom"
+            name="governorateId" #governorateId="ngModel" [(ngModel)]="userObj.governorateId" [value]="0"
+            (change)="getCitiesByGovId(userObj.governorateId)">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Governorate' | translate }} </option>
+            <option *ngFor="let gov of lstGovernorates" [value]="gov.id" [selected]="gov.id == userObj.governorateId">
+              {{ lang == "en" ? gov.name : gov.nameAr }}
+            </option>
+          </select>
+        </div>
+
+
+        <div *ngIf="showCity" [ngClass]="selectedCategory == '3' ? 'col-0' : 'col-6'">
+          <label for="districtName"> {{ 'Asset.City' | translate }} </label>
+          <select class="form-control" id="city" pTooltip="select city" tooltipPosition="bottom" name="city"
+            #districtName="ngModel" [(ngModel)]="userObj.cityId" [value]="0" (change)="getHospitalsByCityId($event)">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.City' | translate }} </option>
+            <option *ngFor="let city of lstCities" [value]="city.id" [selected]="city.id === userObj.cityId">
+              {{ lang == "en" ? city.name : city.nameAr }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div *ngIf="showOrg" [ngClass]="selectedCategory == '2' ? 'col-12' : 'col-6'">
+          <label for="organization"> {{ 'Asset.Organization' | translate }} </label>
+          <select class="form-control" id="organization" pTooltip="select organization" tooltipPosition="bottom"
+            name="organization" (change)="getSubOrgByOrgId($event)" [(ngModel)]="userObj.organizationId"
+            #organizationId="ngModel" [value]="0">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Organization' | translate }} </option>
+            <option *ngFor="let org of lstOrganizations" [value]="org.id"
+              [selected]="org.id === userObj.organizationId">
+              {{ lang == "en" ? org.name : org.nameAr }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-6" *ngIf="showSubOrg">
+          <label for="organization"> {{ 'Asset.SubOrganization' | translate }} </label>
+          <select class="form-control" id="subOrganizationId" pTooltip="select sub organization"
+            tooltipPosition="bottom" name="subOrganizationId" [value]="0" [(ngModel)]="userObj.subOrganizationId"
+            #subOrganizationId="ngModel" (change)="getHospitalsBySubOrgId($event)">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.SubOrganization' | translate }} </option>
+            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id"
+              [selected]="suborg.id === userObj.subOrganizationId">
+              {{ lang == "en" ? suborg.name : suborg.nameAr }}
+            </option>
+          </select>
+        </div>
+
+
+
+        <!-- <div class="col-12" *ngIf="showHospitals">
+          <label for="hospital"> {{ 'Asset.Hospital' | translate }} </label>
+          <select class="form-control" id="hospital" pTooltip="select hospital" tooltipPosition="bottom" name="hospital"
+            [(ngModel)]="userObj.hospitalId" #hospitalId="ngModel">
+            <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Hospital' | translate }} </option>
+            <option *ngFor="let host of lstHospitals" [value]="host.id" [selected]="host.id === userObj.hospitalId">
+              {{ lang == "en" ? host.name : host.nameAr }}
+            </option>
+          </select>
+        </div> -->
+        <div class="col-12" *ngIf="showHospitals">
+          <label for="hospital"> {{ 'Asset.Hospital' | translate }} </label>
+          <select class="form-control" id="hospital" pTooltip="select hospital" tooltipPosition="bottom" name="hospital"
+            [(ngModel)]="selectedHospital" disabled>
+            <option [value]="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Hospital' | translate }} </option>
+            <option *ngFor="let host of lstHospitals" [value]="host.id" [selected]="host.id == selectedHospital">
+              {{ lang == "en" ? host.name : host.nameAr }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+
+
+
+
+
+
+      <div class="row top-buffer">
+        <div class="col-offset-3 col-6 col-offset-3">
+          <button class="btn btn-primary pull-center btn-sm" value="save" type="submit"
+            style="margin: 0px 5px;background-color: #1483c2;border-color: #1483c2;">
+            {{ 'Asset.Save' | translate }}
+          </button>
+
+          <button class="btn btn-primary pull-center btn-sm" (click)="back()"
+            style="margin: 0px 5px;background-color: #7e8083 !important;border-color:#7e8083">{{
+            'Asset.Back' | translate }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- <p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+  <ng-template pTemplate="header">
+    <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">Save Data</h6>
+  </ng-template>
+  <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> Data is saved
+    successfully</span>
+</p-dialog> -->
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+  <ng-template pTemplate="header">
+    <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+    </h6>
+  </ng-template>
+  <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+    translate
+    }}</span>
+</p-dialog>

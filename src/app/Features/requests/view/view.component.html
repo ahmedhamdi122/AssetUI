@@ -1,0 +1,267 @@
+<div class="top-buffer" [ngStyle]="lang =='en' ? {'text-align': 'left'} : {  'text-align': 'right'}">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+                {{'Asset.Request' | translate }} </h3>
+
+            <button type="button" class="btn btn-outline-primary btn-sm" style="margin: 0px 10px; margin-top: -5px;"
+                (click)="close()">{{'Asset.Close' | translate}}</button>
+
+            <div class="row top-buffer">
+                <div class="col-md-12">
+                    <span style="font-weight: bold;"> {{'Asset.SRNumber' | translate }} :
+                    </span>&nbsp;{{requestDetailObj.requestCode}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-md-3">
+
+                    <span style="font-weight: bold;">{{'Asset.AssetName' | translate }} :
+                    </span>{{lang == 'en' ? requestDetailObj.assetName:requestDetailObj.assetNameAr}}
+                </div>
+                <div class="col-md-3" [ngStyle]="lang =='en' ? {'direction': 'ltr'} : {  'direction': 'ltr'}">
+                    {{requestDetailObj.serialNumber}}
+                    <span style="font-weight: bold;">:{{'Asset.Serial' | translate }}
+                    </span>
+
+                </div>
+                <div class="col-md-3">
+
+                    <span style="font-weight: bold;">{{'Asset.Barcode' | translate }} :
+                    </span>&nbsp;
+                    {{requestDetailObj.barcode}}
+                </div>
+                <div class="col-md-3">
+                    <span style="font-weight: bold;">{{'Asset.Department' | translate }} :
+                    </span>&nbsp;
+                    {{lang == 'en' ? requestDetailObj.departmentName:requestDetailObj.departmentNameAr}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-4">
+                    <span style="font-weight: bold;">{{'Asset.Type' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestDetailObj.requestTypeName:requestDetailObj.requestTypeNameAr}}
+                </div>
+                <div class="col-md-4">
+                    <span style="font-weight: bold;"> {{'Asset.Mode' | translate }} :
+                    </span>&nbsp;
+                    {{lang == 'en' ? requestDetailObj.modeName:requestDetailObj.modeNameAr}}
+                </div>
+
+                <div class="col-md-4">
+                    <span style="font-weight: bold;">{{'Asset.Periority' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestDetailObj.periorityName:requestDetailObj.periorityNameAr}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+
+                <div class="col-md-6">
+                    <span style="font-weight: bold;">{{'Asset.Problem' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestDetailObj.problemName:requestDetailObj.problemNameAr}}
+                </div>
+                <div class="col-md-6">
+                    <span style="font-weight: bold;">{{'Asset.SubProblem' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestDetailObj.subProblemName:requestDetailObj.subProblemNameAr}}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-6">
+                    <span style="font-weight: bold;"> {{'Asset.Subject' | translate }} :
+                    </span>&nbsp;{{requestDetailObj.subject}}
+                </div>
+                <div class="col-md-6">
+                    <span style="font-weight: bold;">{{'Asset.Date' | translate }} :
+                    </span>&nbsp;{{requestDetailObj.requestDate | date:'dd-MM-yyyy HH:mm'}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-md-12">
+                    <span style="font-weight: bold;"> {{'Asset.Description' | translate }} :
+                    </span>&nbsp;{{requestDetailObj.description}}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 2px;">
+                {{
+                'Asset.SRTrackDetails' | translate }}
+            </h3>
+            <div class="row">
+                <div class="col-7">
+
+                    <p-table [value]="requestDetailObj.lstTracking"
+                        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                        <ng-template pTemplate="header">
+                            <tr [ngStyle]="lang =='en' ? {'text-align': 'left'} : {  'text-align': 'right'}">
+
+                                <th style="text-align: inherit;">{{'Asset.Status' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.CreatedBy' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Date' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Description' | translate }}</th>
+                                <th style="text-align: center;">{{'Asset.Documents' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-i>
+                            <tr>
+                                <td style="text-align: inherit;">
+
+                                    <span [ngStyle]="{'color':i.statusColor}">
+                                        <span><i [ngClass]="i.statusIcon"></i></span>
+                                        {{lang=='en' ? i.statusName:i.statusNameAr}}
+                                    </span>
+
+                                </td>
+                                <td style="text-align: inherit;">{{i.userName}}</td>
+                                <td style="text-align: inherit;">{{i.descriptionDate| date:'dd-MM-yyyy HH:mm'}}</td>
+                                <td style="text-align: inherit;">{{i.description}}</td>
+                                <td style="text-align: center;">
+                                    <a (click)="getDocuments(i.id)" pTooltip="View Files" tooltipPosition="bottom">
+                                        <i class="fa-solid fa-file"
+                                            style="color: #d58308; cursor: pointer;margin: 0px 5px;"></i></a>
+
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                </div>
+                <div class="col-5" *ngIf="isShowFiles">
+
+                    <p-fieldset legend="{{'Asset.TrackDocuments' | translate }}">
+                        <!-- <legend>{{'Asset.TrackDocuments' | translate }}</legend> -->
+                        <p-table [value]="lstDocuments" responsiveLayout="stack"
+                            styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="text-align: inherit;"> {{'Asset.Name' | translate }}</th>
+                                    <th style="text-align: inherit;"> {{'Asset.Title' | translate }}</th>
+                                    <th style="text-align: center;">{{'Asset.Download' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-doc>
+                                <tr>
+                                    <td style="text-align: inherit;">{{doc.fileName}}</td>
+                                    <td style="text-align: inherit;">{{doc.documentName}}</td>
+                                    <td style="text-align: center;">
+                                        <a (click)="downloadFile(doc.fileName)" pTooltip="View Files"
+                                            tooltipPosition="bottom">
+                                            <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-fieldset>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 2px;">
+                {{
+                'Asset.WOTrackDetails' | translate }}
+            </h3>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-2" style="font-weight: bold;">
+                            {{'Asset.WorkOrderNumber' | translate }}
+                        </div>
+                        <div class="col-2">
+                            {{ workOrderOj.workOrderNumber}}
+                        </div>
+                        <div class="col-2" style="font-weight: bold;">
+                            {{'Asset.Serial' | translate }}
+                        </div>
+                        <div class="col-2">
+                            {{ workOrderOj.serialNumber}}
+                        </div>
+                        <div class="col-2" style="font-weight: bold;">
+                            {{'Asset.Subject' | translate }}
+                        </div>
+
+                        <div class="col-2">
+                            {{ workOrderOj.subject}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+                    <p-table [value]="lstWO" name="WOTbl"
+                        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+                        [paginator]="true" [rows]="10">
+                        <ng-template pTemplate="header">
+                            <tr>
+
+                                <th style="text-align: inherit;">{{'Asset.Status' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Periority' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Date' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Notes' | translate }}</th>
+                                <th style="text-align: center;">{{'Asset.Documents' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item>
+                            <tr>
+
+                                <td style="text-align: inherit;">
+                                    <span [ngStyle]="{'color':item.workOrderStatusColor}">
+                                        <span><i [ngClass]="item.workOrderStatusIcon"></i></span>
+                                        {{lang=="en" ? item.workOrderStatusName:item.workOrderStatusNameAr}}
+                                    </span>
+                                </td>
+                                <td style="text-align: inherit;">
+
+                                    {{lang=="en" ? item.workOrderPeriorityName: item.workOrderPeriorityNameAr}}
+                                </td>
+                                <td style="text-align: inherit;">
+                                    {{item.workOrderDate | date:'dd/MM/yyyy'}}
+                                </td>
+
+                                <td style="text-align: inherit;">
+                                    {{item.notes}}
+                                </td>
+                                <td style="text-align: center;">
+                                    <a (click)="getWODocuments(item.id)" pTooltip="View Files" tooltipPosition="bottom">
+                                        <i class="fa-solid fa-file"
+                                            style="color: #d58308; cursor: pointer;margin: 0px 5px;"></i></a>
+
+                                </td>
+                            </tr>
+                        </ng-template>
+
+
+                    </p-table>
+                </div>
+                <div class="col-5" *ngIf="isWOShowFiles">
+                    <p-fieldset legend="{{'Asset.TrackDocuments' | translate }}">
+                        <p-table class="table" [value]="lstWODocuments"
+                            styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="text-align: inherit;"> {{'Asset.Name' | translate }}</th>
+                                    <th style="text-align: inherit;"> {{'Asset.Title' | translate }}</th>
+                                    <th style="text-align: center;"> {{'Asset.Download' | translate }}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-doc>
+                                <tr>
+                                    <td style="text-align: inherit;"> {{doc.fileName}}</td>
+                                    <td style="text-align: inherit;">{{doc.documentName}}</td>
+                                    <td style="text-align: center;">
+                                        <a (click)="downloadWOFile(doc.fileName)" pTooltip="Download Files"
+                                            tooltipPosition="bottom">
+                                            <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

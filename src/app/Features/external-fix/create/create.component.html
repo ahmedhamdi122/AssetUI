@@ -1,0 +1,188 @@
+<p-toast position="top-right" key="tr" [baseZIndex]="10000"></p-toast>
+<div class="card">
+    <div class="card-body">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <mat-radio-group [(ngModel)]="selectedType" (change)="onTypeChange($event)" name="gtype" id="ghtype"
+                    [ngModelOptions]="{standalone: true}">
+                    <mat-radio-button [value]="item.id" *ngFor="let item of lstTypes">{{lang =="en"
+                        ?item.name:item.nameAr}}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div [ngClass]="selectedType == 1 ? 'col-12': 'col-12'" *ngIf="showBarcode">
+                <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+                <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                    [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" [autoWidth]="true"
+                    (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                    [dropdown]="false" [showClear]="true">
+                    <ng-template let-assetBarCodeObj pTemplate="item">
+                        {{assetBarCodeObj.barCode}}
+                    </ng-template>
+                    <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                        {{assetBarCodeObj.barCode}}
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+            <div [ngClass]="selectedType == 2 ? 'col-12': 'col-12'" *ngIf="showSerial">
+                <label for="serial" [translate]="'Asset.Serial'">Serial</label>
+                <p-autoComplete [(ngModel)]="assetSerialObj" [ngModelOptions]="{standalone: true}"
+                    [suggestions]="lstSerials" name="serialNumber" id="serialNumber" [autoWidth]="true"
+                    (completeMethod)="onSerialSelectionChanged($event)" (onSelect)="getSerial($event)"
+                    field="serialNumber" [dropdown]="false" [showClear]="true">
+                    <ng-template let-assetSerialObj pTemplate="item">
+                        {{assetSerialObj.serialNumber}}
+                    </ng-template>
+                    <ng-template let-assetSerialObj pTemplate="selectedItem">
+                        {{assetSerialObj.serialNumber}}
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+        </div>
+        <div class="row top-buffer" *ngIf="showBarcode || showSerial">
+            <div class="col-12">
+                <label for="MasterAsset" [translate]="'Asset.MasterAsset'">MasterAsset</label>
+                <select (change)="ViewAllAssetDetailByMasterId($event)" id="masterAssetId" class="form-control"
+                    name="masterAssetId" [(ngModel)]="externalfixObj.masterAssetId" #masterAssetId="ngModel" [value]="0"
+                    disabled>
+                    <option value="0"> </option>
+                    <option *ngFor="let master of lstMasterAsset" [value]="master.id">
+                        {{lang == "en" ? master.name: master.nameAr}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer" *ngIf="showName">
+            <div class="col-12">
+                <label for="masterCode" [translate]="'Asset.MasterAsset'">Master Asset</label>
+                <p-autoComplete [(ngModel)]="masterAssetObj1" appendTo="body" [ngModelOptions]="{standalone: true}"
+                    [suggestions]="lstMasterAssets" name="assetDetailId" id="assetDetailId"
+                    (completeMethod)="onMasterAssetSelectionChanged($event)" (onSelect)="getMasterAssetObject($event)"
+                    field="name" [dropdown]="false">
+                    <ng-template let-masterAssetObj1 pTemplate="item">
+                        {{lang=="en"
+                        ?masterAssetObj1.name:masterAssetObj1.nameAr}} - {{lang
+                        ==="en" ?
+                        masterAssetObj1.brandName:masterAssetObj1.brandNameAr}} - {{masterAssetObj1.model}}
+                        - {{masterAssetObj1.serialNumber}}
+                    </ng-template>
+                    <ng-template let-masterAssetObj1 pTemplate="selectedItem">
+                        {{lang=="en"
+                        ?masterAssetObj1.name:masterAssetObj1.nameAr}} - {{lang
+                        ==="en" ?
+                        masterAssetObj1.brandName:masterAssetObj1.brandNameAr}} - {{masterAssetObj1.model}} -
+                        {{masterAssetObj1.serialNumber}}
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="supplierId" [translate]="'Asset.OutTo'"></label>
+                <select id="supplierId" class="form-control" name="supplierId" [(ngModel)]="externalfixObj.supplierId"
+                    #supplierId="ngModel" [value]="0">
+                    <option value="0"></option>
+                    <option *ngFor="let supp of lstSuppliers" [value]="supp.id">
+                        {{lang == "en" ? supp.name: supp.nameAr}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="outNumber" [translate]="'Asset.OutNumber'"> {{'Asset.OutNumber' | translate}}</label>
+                <input type="text" id="outNumber" name="outNumber" #outNumber="ngModel"
+                    [(ngModel)]="externalfixObj.outNumber" class="form-control" [ngModelOptions]="{standalone: true}"
+                    disabled>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-6">
+                <label for="outDate" [translate]="'Asset.OutDate'"> </label>
+                <br />
+                <p-calendar appendTo="body" [(ngModel)]="externalfixObj.outDate" [ngModelOptions]="{standalone: true}"
+                    dateFormat="dd/mm/yy" [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true">
+                </p-calendar>
+            </div>
+            <div class="col-6">
+                <label for="expectedDate" [translate]="'Asset.ExpectedDate'"> </label>
+                <br />
+                <p-calendar [(ngModel)]="externalfixObj.expectedDate" [ngModelOptions]="{standalone: true}"
+                    dateFormat="dd/mm/yy" [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true">
+                </p-calendar>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="notes" [translate]="'Asset.Notes'"></label>
+                <textarea class="form-control" id="notes" [(ngModel)]="externalfixObj.notes" pInputTextarea name="notes"
+                    [ngModelOptions]="{standalone: true}"></textarea>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-10">
+                <label for="title"> {{'Asset.DocumentName' | translate }}</label>
+                <input #title="ngModel" class="form-control" type="text" pInputText
+                    [(ngModel)]="createExternalFixFile.title">
+            </div>
+            <div class="col-2">
+                <input type="file" #file (change)="uploadFile(file.files)" (click)="$event.target.value=null">
+                <button type="button" class="btn btn-outline-success" (click)="file.click()"> <i
+                        class="fa fa-upload"></i>{{'Asset.SelectDocumentTitle' | translate }}
+                </button>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{'Asset.Name' | translate }}</th>
+                            <th>{{'Asset.DocumentTitle' | translate }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let i of lstCreateExternalFixFiles">
+                            <td>{{i.fileName}}</td>
+                            <td>{{i.title}}</td>
+                            <td>
+                                <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"></i></span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="lstCreateExternalFixFiles.length == 0">
+                            <td colspan="3" [translate]="'Asset.NoData'">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-12">
+                <button class="btn btn-success" (click)="onSubmit()">{{'Asset.Save' |translate }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{errorMessage}}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4>{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span>{{error.errorMessage}} </span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+    <br />
+    <br />
+    <button class="btn btn-primary" (click)="closeDialogue()"> {{ 'Asset.Close' | translate }}</button>
+</p-dialog>

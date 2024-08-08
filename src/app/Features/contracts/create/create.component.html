@@ -1,0 +1,211 @@
+<div class="col-12">
+    <form (ngSubmit)="onSubmit()" #EditAssetForm="ngForm">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="hospitalIds" [translate]="'Asset.Hospitals'"></label>
+                <p-multiSelect appendTo="body" [options]="hospitals" [(ngModel)]="selectedHospitals"
+                    [ngModelOptions]="{standalone: true}" optionLabel="nameAr" optionValue="id" name="msEmployees"
+                    (onChange)="AddAssets($event)" [disabled]="isDisabled">
+                </p-multiSelect>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-3">
+                <label for="healthName" [translate]="'Asset.Subject'">Subject</label>
+                <input type="text" [(ngModel)]="contractObj.subject" class="form-control" name="subject" />
+            </div>
+            <div class="col-3">
+                <label for="serial" [translate]="'Asset.ContractNumber'">Contract Number</label>
+                <input type="text" [(ngModel)]="contractObj.serial" disabled="true" class="form-control"
+                    name="serial" />
+            </div>
+            <div class="col-3">
+                <label for="cost" [translate]="'Asset.Cost'">Cost</label>
+                <input type="number" [(ngModel)]="contractObj.cost" class="form-control" name="cost" />
+            </div>
+            <div class="col-3">
+                <label for="totalVisits" [translate]="'Asset.TotalVisits'">Total Visits</label>
+                <input type="number" [(ngModel)]="contractObj.totalVisits" class="form-control" name="totalVisits" />
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-3">
+                <label for="contractDate" [translate]="'Asset.ContractDate'">Contract Date</label>
+                <input type="date" [(ngModel)]="contractObj.contractDate" class="form-control" name="contractDate" />
+            </div>
+            <div class="col-3">
+                <label for="from" [translate]="'Asset.From'">From</label>
+                <input type="date" [(ngModel)]="contractObj.from" class="form-control" name="from" />
+            </div>
+            <div class="col-3">
+                <label for="to" [translate]="'Asset.To'">To</label>
+                <input type="date" [(ngModel)]="contractObj.to" class="form-control" name="to" />
+            </div>
+            <div class="col-3">
+                <label for="supId" [translate]="'Asset.Supplier'">Suppliers</label>
+                <select class="form-control" id="supId" name="supId" [(ngModel)]="contractObj.supplierId" [value]="0">
+                    <option value="0"></option>
+                    <option *ngFor="let supply of lstSelectSuppliers" [value]="supply.id">
+                        {{ lang == "en" ? supply.name : supply.nameAr }}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="notes"> {{'Asset.Notes' | translate }}</label>
+                <textarea #notes="ngModel" class="form-control" [(ngModel)]="contractObj.notes"
+                    [ngModelOptions]="{standalone: true}"></textarea>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <!-- <div class="col-10">
+                <label for="docmentName"> {{'Asset.DocumentTitle' | translate }}</label>
+                <input #documentName="ngModel" class="form-control" type="text" pInputText
+                    [(ngModel)]="contractAttachmentObj.documentName" [ngModelOptions]="{standalone: true}">
+            </div> -->
+            <div class="col-12">
+                <!-- <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" />
+                <button type="button" class="btn btn-outline-success" (click)="file.click()"> <i
+                        class="fa fa-upload"></i>{{'Asset.SelectDocument' | translate }}
+                </button> -->
+
+                <input type="file" multiple #file placeholder="Choose file" (change)="uploadMultipleFile($event)"
+                    style="display: none;">
+                <button type="button" name="btnUpload" class="btn btnUpload" style="margin:0px 10px"
+                    (click)="file.click()">
+                    <i class="fa fa-upload"></i> {{'Asset.SelectUploadFiles' |
+                    translate }}
+                </button>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <p-table [value]="lstContractAttachments" dataKey="id"
+                    styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>{{ 'Asset.FileName' | translate }}</th>
+                            <th>{{ 'Asset.Title' | translate }}</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-contractAttachmentObj let-rowIndex="rowIndex"
+                        let-editing="editing">
+                        <tr>
+                            <td>{{contractAttachmentObj.fileName}}</td>
+                            <td [pEditableColumn]="contractAttachmentObj.documentName"
+                                pEditableColumnField="documentName" [pEditableColumnRowIndex]="rowIndex">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText [(ngModel)]="contractAttachmentObj.documentName"
+                                            [ngModelOptions]="{standalone: true}" />
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contractAttachmentObj.documentName}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td>
+                                <span (click)="removeFileFromObjectArray(rowIndex)"><i class="fa-solid fa-times-circle"
+                                        style="color: rgb(123, 9, 9);"></i></span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <button class="btn btn-success" value="save" type="submit">
+                    {{ 'Asset.Save' | translate }}
+                </button>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-6">
+                <label for="barcode" [translate]="'Asset.Barcode'"> </label>
+                <p-autoComplete type="search" [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                    [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" autoWidth="true"
+                    (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                    [dropdown]="false" showClear="true">
+                    <ng-template let-assetBarCodeObj pTemplate="item">
+                        {{assetBarCodeObj.barCode}}
+                    </ng-template>
+                    <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                        {{assetBarCodeObj.barCode}}
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+            <div class="col-6">
+                <label for="serialNumber" [translate]="'Asset.Serial'"></label>
+                <p-autoComplete type="search" [(ngModel)]="assetSerailNumberObj" [ngModelOptions]="{standalone: true}"
+                    [suggestions]="lstAssetSerailNumberObj" name="serial" id="serial" autoWidth="true"
+                    (completeMethod)="onSerialNumberSelectionChanged($event)" (onSelect)="getSerialNumber($event)"
+                    field="serialNumber" [dropdown]="false" showClear="true">
+                    <ng-template let-assetSerailNumberObj pTemplate="item">
+                        {{assetSerailNumberObj.serialNumber}}
+                    </ng-template>
+                    <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                        {{assetSerailNumberObj.serialNumber}}
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+        </div>
+        <br />
+        <p-pickList [source]="lstAssets" [target]="selectedAsset" [dragdrop]="true"
+            (onMoveToTarget)="onMoveAssetToTarget($event)">
+            <ng-template let-asset pTemplate="item">
+                <div>
+                    <label>
+                        {{ 'Asset.Hospital' | translate }}: {{lang == "en"
+                        ?asset.hospitalName:asset.hospitalNameAr}}
+                    </label>
+                    <br />
+                    <label>
+                        {{ 'Asset.AssetName' | translate }}: {{lang == "en" ?asset.assetName: asset.assetNameAr}}
+                    </label>
+                    <br />
+                    <label>
+                        {{ 'Asset.Barcode' | translate }}: {{asset.barcode}}
+                    </label>
+                    <br />
+                    <label>
+                        {{ 'Asset.Serial' | translate }}: {{asset.serialNumber}}
+                    </label>
+                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td> {{ 'Asset.SpareParts' | translate }}</td>
+                            <td><input type="checkbox" class="checkbox" [(ngModel)]="asset.hasSpareParts"
+                                    name="sparepart" /></td>
+                            <td> {{ 'Asset.ResponseTime' | translate }}:</td>
+                            <td> <input type="text" class="form-control" [(ngModel)]="asset.responseTime"
+                                    name="responsetime" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
+            </ng-template>
+        </p-pickList>
+    </form>
+
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4>{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span> {{error.errorMessage}} </span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{errorMessage}}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>

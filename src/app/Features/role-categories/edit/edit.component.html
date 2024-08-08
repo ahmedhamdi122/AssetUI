@@ -1,0 +1,36 @@
+<div class="col-12">
+    <form [formGroup]="frm">
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="orderId" [translate]="'Asset.OrderId'"></label><span class="text-danger"
+                        style="font-size:10px; font-weight:bold"> *</span>
+                    <input type="number" class="form-control" formControlName="orderId"
+                        [(ngModel)]="roleCategoryObj.orderId" autofocus required />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="name" [translate]="'Asset.Name'"></label> <span class="text-danger"
+                        style="font-size:10px; font-weight:bold"> *</span>
+                    <input type="text" class="form-control" formControlName="name" placeholder="Enter name"
+                        [(ngModel)]="roleCategoryObj.name" autofocus required />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="name" [translate]="'Asset.ArabicName'"></label><span class="text-danger"
+                        style="font-size:10px; font-weight:bold"> *</span>
+                    <input type="text" class="form-control" formControlName="nameAr" placeholder="Enter name"
+                        [(ngModel)]="roleCategoryObj.nameAr" autofocus required />
+                </div>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button class="btn btn-success" value="Save" type="button" (click)="onSubmit()">
+                    {{ 'Asset.Save' | translate }}</button>
+            </div>
+        </div>
+    </form>
+</div>

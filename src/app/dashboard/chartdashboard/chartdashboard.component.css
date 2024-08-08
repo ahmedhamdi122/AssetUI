@@ -1,0 +1,111 @@
+.a1 {
+    color: dodgerblue;
+}
+
+.a2 {
+    color: lightseagreen;
+}
+
+.a3 {
+    color: blueviolet;
+}
+
+.a4 {
+    color: #F7473A;
+}
+
+.a5 {
+    color: #FF9C09;
+}
+
+.a6 {
+    color: rgb(48, 97, 97);
+}
+
+.a7 {
+    color: darkred;
+}
+
+.widget-icon-box:hover {
+    .a1 {
+        color: #2b6ba0;
+    }
+
+    .a2 {
+        color: #117a70;
+    }
+
+    .a3 {
+        color: rgb(84, 24, 139);
+    }
+
+    .a4 {
+        color: #a82f26;
+    }
+
+    .a5 {
+        color: #bd760b;
+    }
+
+    .a6 {
+        color: rgb(36, 59, 59);
+    }
+
+    .a7 {
+        color: rgb(92, 1, 1);
+    }
+}
+
+.a2text {
+    background: lightseagreen;
+    color: #fff;
+    cursor: pointer;
+}
+
+.a2text:hover {
+    background: #117a70;
+}
+
+.text-more {
+    cursor: pointer;
+}
+
+.text-more:hover {
+    text-decoration: underline;
+}
+
+.p-card {
+    height: 80px;
+    padding: 10px 0px; 
+}
+
+
+
+
+/* Table In Print View */
+
+
+/* Create three equal columns that floats next to each other */
+/* .column {
+    float: left;
+    width: 33%;
+    padding: 1px;
+    text-align: center;
+}
+
+.column p {
+    font-size: 11px;
+    text-align: center;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+} */
+
+/******************************/
+
+.alert-light {
+    height: 180px !important;
+}

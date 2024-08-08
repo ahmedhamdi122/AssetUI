@@ -1,0 +1,315 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-7">
+            <h4 class="card-title">{{ 'Asset.SupplierExeclude' | translate }} <span>({{ 'Asset.Supplier' |translate
+                    }})</span>
+            </h4>
+        </div>
+        <div class="col-1">
+
+        </div>
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton" *ngIf="isSupplierManager || isSupplier">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" *ngIf="isSupplier" [routerLink]="['/supplierexecludes/addsupplierexeclude']"><i
+                    class="fa-solid fa-plus"></i>{{ 'Asset.Create' | translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer" id="collapseExample" class="collapse row card-filter">
+        <div class="col-12">
+            <form (ngSubmit)="onSearch()" #searchForm="ngForm">
+                <div class="row top-buffer">
+                    <div class="col-4">
+                        <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                        <select class="form-control" id="governorate" name="governorate" #governorate="ngModel"
+                            [value]="0" [(ngModel)]="sortFilterObjects.searchObj.governorateId"
+                            (change)="getCitiesByGovId(sortFilterObjects.searchObj.governorateId)">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                        <select class="form-control" id="city" name="city" #cityId="ngModel"
+                            (change)="getHospitalsByCityId($event)" [(ngModel)]="sortFilterObjects.searchObj.cityId"
+                            [value]="0">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let city of lstCities" [value]="city.id">
+                                {{ lang == "en" ? city.name : city.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                        <select class="form-control" id="hospitalId" name="hospitalId"
+                            [(ngModel)]="sortFilterObjects.searchObj.hospitalId" [value]="0">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                {{ lang == "en" ? host.name : host.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="assetName" [translate]="'Asset.Name'"></label><br />
+                        <p-autoComplete appendTo="body" [suggestions]="lstMasterAssets" type="search"
+                            name="masterAssetId" id="masterAssetId" (completeMethod)="onMasterSelectionChanged($event)"
+                            (onSelect)="getMasterObject($event)" field="name" [dropdown]="false">
+                            <ng-template let-masterAssetObj pTemplate="item">
+                                {{lang ==="en" ? masterAssetObj.name:masterAssetObj.nameAr}} -
+                                {{lang ==="en" ? masterAssetObj.brandName:masterAssetObj.brandNameAr}}
+                                - {{masterAssetObj.model}}
+                            </ng-template>
+                            <ng-template let-masterAssetObj pTemplate="selectedItem">
+                                {{lang=="en" ?masterAssetObj.name:masterAssetObj.nameAr}} -
+                                {{lang ==="en" ? masterAssetObj.brandName:masterAssetObj.brandNameAr}}
+                                - {{masterAssetObj.model}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-3">
+                        <label for="barcode" [translate]="'Asset.Barcode'"> </label>
+                        <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                            [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" autoWidth="true"
+                            (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                            [dropdown]="false" showClear="true">
+                            <ng-template let-assetBarCodeObj pTemplate="item">
+                                {{assetBarCodeObj.barCode}}
+                            </ng-template>
+                            <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                                {{assetBarCodeObj.barCode}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-3">
+                        <label for="serialNumber" [translate]="'Asset.Serial'"></label>
+                        <p-autoComplete [(ngModel)]="assetSerailNumberObj" [ngModelOptions]="{standalone: true}"
+                            [suggestions]="lstAssetSerailNumberObj" name="serial" id="serial" autoWidth="true"
+                            (completeMethod)="onSerialNumberSelectionChanged($event)"
+                            (onSelect)="getSerialNumber($event)" field="name" [dropdown]="false" showClear="true">
+                            <ng-template let-assetSerailNumberObj pTemplate="item">
+                                {{assetSerailNumberObj.serialNumber}}
+                            </ng-template>
+                            <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                                {{assetSerailNumberObj.serialNumber}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+
+                    <div class="col-3">
+                        <label for="assetName" [translate]="'Asset.Brands'"></label><br />
+                        <select class="form-control" id="brandId" name="brandId"
+                            [(ngModel)]="sortFilterObjects.searchObj.brandId" [value]="0">
+                            <option value="0">{{'Asset.Brands' | translate }}</option>
+                            <option *ngFor="let brnd of lstBrands" [value]="brnd.id">
+                                {{ lang == "en" ? brnd.name : brnd.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="modelNumber" [translate]="'Asset.Model'"></label>
+                        <input type="text" class="form-control" [(ngModel)]="sortFilterObjects.searchObj.modelNumber"
+                            [ngModelOptions]="{standalone: true}" />
+                    </div>
+                    <div class="col-3">
+                        <label for="departmentId" [translate]="'Asset.Departments'">Departments</label>
+                        <select class="form-control" id="departmentId" name="departmentId"
+                            [(ngModel)]="sortFilterObjects.searchObj.departmentId" [value]="0">
+                            <option value="0">
+                            </option>
+                            <option *ngFor="let depart of lstDepartments" [value]="depart.id">
+                                {{ lang == "en" ? depart.name : depart.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="subject"> {{'Asset.StartDate' | translate }}</label>
+                        <input type="date" class="form-control" [(ngModel)]="sortFilterObjects.searchObj.start"
+                            [ngModelOptions]="{standalone: true}" />
+                    </div>
+                    <div class="col-3">
+                        <label for="endDate" [translate]="'Asset.EndDate'"> {{'Asset.EndDate' | translate }}</label>
+                        <input type="date" class="form-control" [(ngModel)]="sortFilterObjects.searchObj.end"
+                            [ngModelOptions]="{standalone: true}" />
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-10"></div>
+                    <div class="col-1">
+                        <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button>
+                    </div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reload()">
+                            <i class="fa-solid fa-circle-xmark fa-2xl"></i>
+                        </button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+
+        <div class="col-10">
+            <mat-list class="mat-list-test" dense name="lstStatusItems">
+                <button mat-stroked-button color="" name="btnAll" (click)="getAllByStatus(0)" class="btnclicked"
+                    [matBadge]="totalStatus">{{'Asset.All'
+                    |
+                    translate }}</button>
+
+                <mat-list-item class="mat-list-item-test" *ngFor="let sts of lstStatuses.listStatus">
+                    <button *ngIf="sts.id == 1" [matBadge]="sts.id==1 ? openStatus:0" mat-stroked-button
+                        name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)" [ngStyle]="{'color': sts.color}"
+                        class="btnclicked active">
+                        <span><i [ngClass]="sts.icon"></i></span>
+                        {{lang=="en"?sts.name:sts.nameAr}}
+                    </button>
+                    <button *ngIf="sts.id == 2" [matBadge]="sts.id==2 ? approveStatus:0" mat-stroked-button
+                        name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)" [ngStyle]="{'color': sts.color}"
+                        class="btnclicked">
+                        <span><i [ngClass]="sts.icon"></i></span>
+                        {{lang=="en"?sts.name:sts.nameAr}}
+                    </button>
+                    <button *ngIf="sts.id == 3" [matBadge]="sts.id==3?rejectStatus:0" mat-stroked-button
+                        name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)" [ngStyle]="{'color': sts.color}"
+                        class="btnclicked">
+                        <span><i [ngClass]="sts.icon"></i></span>
+                        {{lang=="en"?sts.name:sts.nameAr}}
+                    </button>
+                    <button *ngIf="sts.id == 4" [matBadge]="sts.id==4? systemRejectStatus:0" mat-stroked-button
+                        name="btn{{sts.id}}" (click)="getAllByStatus(sts.id)" [ngStyle]="{'color': sts.color}"
+                        class="btnclicked">
+                        <span><i [ngClass]="sts.icon"></i></span>
+                        {{lang=="en"?sts.name:sts.nameAr}}
+                    </button>
+
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <div class="col-2">
+            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="generatePDF()" pTooltip="PDF"
+                class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"
+                *ngIf="isSupplierManager || isSupplier"></button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <label for="statusId" [translate]="'Asset.ExcludeType'"></label>
+            <div class="col-12 top-buffer">
+                <mat-radio-group [(ngModel)]="selectedAppType" (change)="onTypeChange($event)" name="ghtype" id="ghtype"
+                    [ngModelOptions]="{standalone: true}">
+                    <mat-radio-button [value]="item.id" *ngFor="let item of lstTypes">{{lang =="en"
+                        ?item.name:item.nameAr}}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstSupplierExecludeAssets"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="supplierCount" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Hospital' | translate }}
+                            <p-sortIcon id="{{ 'Asset.AssetName' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AssetName' | translate }}
+                            <p-sortIcon id="{{ 'Asset.AssetName' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Barcode' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Barcode' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Serial' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Serial' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.ModelNumber' | translate }}
+                            <p-sortIcon id="{{ 'Asset.ModelNumber' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.ExNumber' | translate }}
+                            <p-sortIcon id="{{ 'Asset.ExNumber' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Date' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Date' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Status' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Status' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.ExecludeDate' | translate }}
+                            <p-sortIcon id="{{ 'Asset.ExecludeDate' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Reasons' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Reasons' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="width: 7%;text-align: inherit;">{{'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-supplier>
+                    <tr>
+                        <td style="text-align: inherit;">{{ lang=="en" ? supplier.hospitalName:
+                            supplier.hospitalNameAr}}
+                        </td>
+                        <td style="text-align: inherit;" [frozen]="true">
+                            <a [routerLink]="['/dash/hospitalassets/detail/',supplier.assetId]">
+                                {{lang=="en" ? supplier.assetName:supplier.assetNameAr}}</a>
+                        </td>
+                        <td style="text-align: inherit;">{{supplier.barCode}}</td>
+                        <td style="text-align: inherit;">{{supplier.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{supplier.modelNumber}}</td>
+                        <td style="text-align: inherit;">{{supplier.exNumber}}</td>
+                        <td style="text-align: inherit;">{{supplier.date | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+
+                        <td style="text-align: inherit;" [ngStyle]="{'color': supplier.statusColor}">
+                            <i [ngClass]="supplier.statusIcon"></i>
+                            {{lang=="en" ? supplier.statusName: supplier.statusNameAr}}
+                        </td>
+                        <td style="text-align: inherit;">{{supplier.execludeDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td style="text-align: inherit;" *ngIf="supplier.appTypeId == 1">
+                            {{lang =="en" ? supplier.reasonExTitles:supplier.reasonExTitlesAr}}</td>
+                        <td style="text-align: inherit;" *ngIf="supplier.appTypeId == 2">
+                            {{lang =="en" ? supplier.reasonHoldTitles:supplier.reasonHoldTitlesAr}}</td>
+                        <td style="text-align: inherit;">
+                            <a [routerLink]="['/supplierexecludes/viewsupplierexeclude',supplier.id,'supplier']"
+                                class="viewIcon"> <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <span class="deleteIcon" (click)="Delete(supplier.id)" *ngIf="supplier.statusId === 1">
+                                <i class="fa-solid fa-trash"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="11" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+</div>

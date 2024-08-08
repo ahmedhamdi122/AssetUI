@@ -1,0 +1,321 @@
+<div class="col-12">
+    <mat-horizontal-stepper #stepper>
+        <mat-step [stepControl]="firstFormGroup">
+            <ng-template matStepLabel> <i class="fa-solid fa-edit" style="margin: 0px 10px;"></i>
+                {{'Asset.EditRequest' |
+                translate }}
+            </ng-template>
+            <div class="row top-buffer">
+                <div class="col-md-6">
+                    <label for="MasterAsset" [translate]="'Asset.MasterAsset'">MasterAsset</label>
+                    <select (change)="ViewAllAssetDetailByMasterId($event)" type="text" id="masterAssetId"
+                        class="form-control" name="masterAssetId" [(ngModel)]="reqObj.masterAssetId"
+                        #masterAssetId="ngModel" [value]="0" pTooltip="Please,Select Master Asset"
+                        tooltipPosition="bottom" [disabled]="isDisabled">
+                        <option value="0">Select Master Asset</option>
+                        <option *ngFor="let master of lstMasterAsset" [value]="master.id"
+                            [selected]="master.id == reqObj.masterAssetId">
+                            {{lang == "en" ? master.name :master.nameAr}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="assetName" [translate]="'Asset.Serial'">
+                    </label>
+                    <select id="Serial" class="form-control" name="Serial" [(ngModel)]="reqObj.assetDetailId"
+                        #Serial="ngModel" pTooltip="Please,Select Asset Serial" tooltipPosition="bottom"
+                        [disabled]="isDisabled" (change)="getAssetCode($event)">
+                        <option value="0">{{'Asset.Select' | translate }}{{'Asset.Serial' | translate }}</option>
+                        <option *ngFor="let item of lstassetDetails" [value]="item.id">
+                            {{item.serialNumber}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-6">
+                    <label for="assetCode" [translate]="'Asset.Code'">
+                    </label>
+                    <select id="assetCode" class="form-control" name="assetCode"
+                        pTooltip="{{'Asset.Code' |  translate}}" tooltipPosition="bottom" [disabled]="true">
+                        <option *ngFor="let item of lstassetDetails" [value]="item.id">
+                            {{reqObj.assetCode}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="assetCode" [translate]="'Asset.Barcode'">
+                    </label>
+                    <select id="assetCode" class="form-control" name="assetCode"
+                        pTooltip="{{'Asset.Code' |  translate}}" tooltipPosition="bottom" [disabled]="true">
+                        <option *ngFor="let item of lstassetDetails" [value]="item.id">
+                            {{reqObj.barcode}}
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="Subject" [translate]="'Asset.Subject'"></label>
+                    <input id="name" name="requestName" [(ngModel)]="reqObj.subject" class="form-control" required
+                        placeholder="{{'Asset.Subject' | translate}}" pInputText [ngModelOptions]="{standalone: true}"
+                        [disabled]="isDisabled">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="type" [translate]="'Asset.Type'"></label>
+                    <select type="text" id="Type" class="form-control" name="Type" [(ngModel)]="reqObj.requestTypeId"
+                        #Type="ngModel" [value]="0" pTooltip="Please,Select Type Name" tooltipPosition="bottom"
+                        [disabled]="isDisabled">
+                        <option value="0">Select Type Name</option>
+                        <option *ngFor="let item of lstRequestTypes" [value]="item.id">
+                            {{ lang == "en" ?item.name : item.nameAr}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-6">
+                    <label for="problem" [translate]="'Asset.Problem'"></label>
+                    <select type="text" id="Problem" class="form-control" name="Problem"
+                        (change)="GetAllSubProblemsByProblemId($event)" [(ngModel)]="reqObj.problemId"
+                        #problemId="ngModel" pTooltip="{{'Asset.Select' | translate}} {{'Asset.Problem' | translate}}"
+                        tooltipPosition="bottom" [disabled]="isDisabled">
+                        <option [value]="0">{{'Asset.Select' | translate }} {{'Asset.Problem' | translate }}
+                        </option>
+                        <option *ngFor="let item of lstProblems" [value]="item.id"
+                            [selected]="item.id == reqObj.problemId">
+                            {{ lang == "en" ?item.name : item.nameAr}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="subProblem" [translate]="'Asset.SubProblem'"> </label>
+                    <select type="text" id="subProblem" class="form-control" name="SubProblem"
+                        [(ngModel)]="reqObj.subProblemId" #SubCategory="ngModel" [value]="0"
+                        pTooltip="Please,Select SubProblem" tooltipPosition="bottom" [disabled]="isDisabled">
+                        <option [value]="0">Select SubProblem</option>
+                        <option *ngFor="let item of lstSubProblems" [value]="item.id">
+                            {{ lang == "en" ?item.name : item.nameAr}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="periority" [translate]="'Asset.Periority'">
+                    </label>
+                    <select type="text" id="eriorities" class="form-control" name="eriorities"
+                        [(ngModel)]="reqObj.requestPeriorityId" #eriorities="ngModel" [value]="0"
+                        pTooltip="Please,Request Periority" tooltipPosition="bottom" [disabled]="isDisabled">
+                        <option value="0">Select Request Periority</option>
+                        <option *ngFor="let item of lstPeriorities" [value]="item.id">
+                            {{ lang == "en" ?item.name : item.nameAr}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="mode" [translate]="'Asset.Mode'"> Mode
+                    </label>
+                    <select type="text" id="Mode" class="form-control" name="Mode" [(ngModel)]="reqObj.requestModeId"
+                        #Mode="ngModel" [value]="0" pTooltip="Please,Request Mode" tooltipPosition="bottom"
+                        [disabled]="isDisabled">
+                        <option value="0">Select Request Mode</option>
+                        <option *ngFor="let item of lstRequestMode" [value]="item.id">
+                            {{ lang == "en" ?item.name : item.nameAr}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="desc" [translate]="'Asset.Description'"></label>
+                    <textarea id="name" name="requestName" [(ngModel)]="reqObj.description" class="form-control"
+                        placeholder="{{'Asset.Description' | translate}}" [ngModelOptions]="{standalone: true}"
+                        [disabled]="isDisabled"></textarea>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-7">
+                    <fieldset>
+                        <legend>{{'Asset.TrackDetails' | translate }}</legend>
+                        <table class="table" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>{{'Asset.Name' | translate }}</th>
+                                    <th>{{'Asset.CreatedBy' | translate }}</th>
+                                    <th>{{'Asset.Date' | translate }}</th>
+                                    <th>{{'Asset.Description' | translate }}</th>
+                                    <th style="text-align: center;">{{'Asset.Documents' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let trk of lstTracks">
+                                    <td>{{lang == "en" ? trk.statusName : trk.statusNameAr}}</td>
+                                    <td>{{trk.userName}}</td>
+                                    <td>{{trk.descriptionDate| date:'dd-MM-yyyy'}}</td>
+                                    <td>{{trk.description}}</td>
+                                    <td style="text-align: center;">
+                                        <a (click)="addFiles(trk.id,stepper)" pTooltip="Add Files"
+                                            tooltipPosition="bottom">
+                                            <i class="fa fa-plus"
+                                                style="color: #087f9d; cursor: pointer;margin: 0px 5px;"></i></a>
+                                        <a (click)="getDocuments(trk.id)" pTooltip="View Files"
+                                            tooltipPosition="bottom">
+                                            <i class="fa-solid fa-file"
+                                                style="color: #d58308; cursor: pointer;margin: 0px 5px;"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+                <div class="col-5" *ngIf="isShowFiles">
+                    <fieldset>
+                        <legend>{{'Asset.TrackDocuments' | translate }}</legend>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> {{'Asset.Name' | translate }}</th>
+                                    <th> {{'Asset.Title' | translate }}</th>
+                                    <th style="text-align: center;"> {{'Asset.Download' | translate }}</th>
+                                    <th style="text-align: center;"> {{'Asset.Delete' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let doc of lstDocuments">
+                                    <td> {{doc.fileName}}</td>
+                                    <td>{{doc.documentName}}</td>
+                                    <td style="text-align: center;">
+                                        <a (click)="downloadFile(doc.fileName)"
+                                            pTooltip="{{'Asset.Download' | translate }}" tooltipPosition="bottom">
+                                            <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <a (click)="deleteFile(doc.id)" pTooltip="{{'Asset.Delete' | translate }}"
+                                            tooltipPosition="bottom">
+                                            <i class="fa-solid fa-trash"
+                                                style="color: #fe7f83; cursor: pointer;margin: 0px 5px;"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup">
+            <ng-template matStepLabel> <i class="fa fa-paperclip" aria-hidden="true" style="margin: 0px 10px;"></i>
+                {{'Asset.AddDocuments'| translate }}</ng-template>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <input type="file" multiple #file placeholder="Choose file" (change)="uploadMultipleFile($event)"
+                        style="display: none;" (click)="$event.target.value=null">
+                    <button type="button" name="btnUpload" class="btn btnUpload" style="margin:0px 10px"
+                        (click)="file.click()"> <i class="fa fa-upload"></i> {{'Asset.SelectUploadFiles' |
+                        translate }}
+                    </button>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <p-table [value]="lstCreateRequestDocument" dataKey="id"
+                        styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>{{ 'Asset.FileName' | translate }}</th>
+                                <th>{{ 'Asset.Title' | translate }}</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-requestDocumentObj let-rowIndex="rowIndex"
+                            let-editing="editing">
+                            <tr>
+                                <td>{{requestDocumentObj.fileName}}</td>
+                                <td [pEditableColumn]="requestDocumentObj.documentName"
+                                    pEditableColumnField="documentName" [pEditableColumnRowIndex]="rowIndex">
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input pInputText [(ngModel)]="requestDocumentObj.documentName"
+                                                [ngModelOptions]="{standalone: true}" />
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{requestDocumentObj.documentName}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td>
+                                    <span (click)="removeFileFromObjectArray(rowIndex)"><i
+                                            class="fa-solid fa-times-circle" style="color: rgb(123, 9, 9);"></i></span>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <p-table [value]="lstDocuments" dataKey="id"
+                        styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>{{ 'Asset.FileName' | translate }}</th>
+                                <th>{{ 'Asset.Title' | translate }}</th>
+                                <th>{{ 'Asset.Actions' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-requestDocumentObj>
+                            <tr>
+                                <td>{{requestDocumentObj.fileName}}</td>
+                                <td>{{requestDocumentObj.documentName}}</td>
+                                <td>
+                                    <a (click)="downloadFile(requestDocumentObj.fileName)" class="downloadIcon">
+                                        <i class="fa-solid fa-download"></i></a>
+                                    <a (click)="deleteFile(requestDocumentObj.id)" class="deleteIcon">
+                                        <i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </mat-step>
+    </mat-horizontal-stepper>
+    <div class="row top-buffer">
+        <div class="col-md-2"> <button mat-stroked-button (click)="EditRequest()" color="primary" mat-button>
+                {{'Asset.Save' | translate
+                }}</button>
+        </div>
+        <div class="col-md-9"></div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="isDeleted" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #023958;font-weight: bold;font-size: 16pt;">{{ 'Asset.Delete' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: rgb(1, 89, 1);font-weight: bold;font-size: 12pt;text-align: center;">
+        {{ 'Asset.DeleteFile' | translate }}
+    </span>
+</p-dialog>

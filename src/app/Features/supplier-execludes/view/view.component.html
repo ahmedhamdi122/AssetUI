@@ -1,0 +1,156 @@
+<div class="card" id="printable">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;">{{
+            'Asset.SupplierExeclude' | translate }}
+        </h4>
+        <h4 class="card-title" id="printable"
+            style="font-size: 20px;color: #1683c2;font-weight: bold;margin-bottom: 20px;">
+            <!-- {{lang =="en" ?currentUser.hospitalName :currentUser.hospitalNameAr }} -->
+        </h4>
+    </div>
+    <div class="card-body">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <button type="button" class="btn btn-outline-primary  btn-sm"
+                    style="margin: 0px 10px; margin-top: -5px;float: left;" (click)="printPage()"><i
+                        class="fa-solid fa-print"></i></button>
+            </div>
+        </div>
+
+        <div class="row top-buffer">
+            <div class="col-6 viewfont">
+                <label for="types" class="viewfont" [translate]="'Asset.ExcludeType1'"></label>
+                {{lang =="en" ? supplierExecludeAssetObj.appTypeName:supplierExecludeAssetObj.appTypeNameAr}}
+            </div>
+            <div class="col-6 viewfont">
+
+                <label for="appNumber" class="viewfont" [translate]="'Asset.AppNumber'"></label>
+                {{supplierExecludeAssetObj.exNumber}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-6 viewfont">
+                <label for="date" class="viewfont" [translate]="'Asset.Date'"></label>
+                {{supplierExecludeAssetObj.date}}
+            </div>
+
+            <div class="col-6 viewfont">
+                <label for="execludeDate" class="viewfont" [translate]="'Asset.ExecludeDate'"></label>
+                {{ supplierExecludeAssetObj.execludeDate}}
+            </div>
+        </div>
+
+
+        <div class="row top-buffer">
+            <div class="col-4 viewfont">
+                <label for="assetId" class="viewfont" [translate]="'Asset.Asset'"></label>
+                {{lang=="en" ? supplierExecludeAssetObj.assetName:supplierExecludeAssetObj.assetNameAr}}
+            </div>
+            <div class="col-4 viewfont">
+                <label for="assetId" class="viewfont" [translate]="'Asset.Serial'"></label>
+                {{supplierExecludeAssetObj.serialNumber}}
+            </div>
+            <div class="col-4 viewfont">
+                <label for="assetId" class="viewfont" [translate]="'Asset.Barcode'"></label>
+                {{supplierExecludeAssetObj.barCode}}
+            </div>
+        </div>
+
+        <div class="row top-buffer">
+            <div class="col-6 viewfont">
+                <label for="hospitalId" class="viewfont" [translate]="'Asset.Hospital'"></label>
+                {{lang=="en" ? supplierExecludeAssetObj.hospitalName:supplierExecludeAssetObj.hospitalNameAr}}
+            </div>
+        </div>
+
+
+        <div class="row top-buffer">
+            <div class="col-12 viewfont">
+                <label for="comment" class="viewfont" [translate]="'Asset.Comment'"></label>
+                {{supplierExecludeAssetObj.comment}}
+            </div>
+        </div>
+        <div class="row top-buffer" name="HExeclude" *ngIf="showHExeclude">
+            <div class="col-12">
+
+                <label for="hexeclude" [translate]="'Asset.Reasons'" class="lbltitles"
+                    style="padding-bottom: 20px;"></label>
+                <ul>
+                    <li *ngFor="let itm of lstSupplierExecludes">
+                        {{lang == "en" ?itm.reasonName: itm.reasonNameAr}}
+
+                        <div class="row top-buffer" style="margin-top: 15px;">
+                            <div class="col-12">
+                                <table class="table table-striped" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' | translate }}</th>
+                                            <th style="text-align: center;" [translate]="'Asset.Download'"> {{
+                                                'Asset.Download' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let attach of itm.attachments">
+                                            <td>
+                                                {{attach.fileName}}
+                                            </td>
+                                            <td style="cursor: pointer;text-align: center;" pTooltip="Download File"
+                                                tooltipPosition="bottom">
+                                                <a (click)="downloadFile(attach.fileName)"><i class="fa-solid fa fa-download"
+                                                        style="color: #61bb20;"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row top-buffer" name="HHold" *ngIf="showHHold">
+            <div class="col-12">
+                <label for="reasons" [translate]="'Asset.Reasons'" class="lbltitles"
+                    style="padding-bottom: 20px;"></label>
+                <ul>
+                    <li *ngFor="let itm of lstSupplierExecludes">
+                        {{lang == "en" ?itm.reasonName:itm.reasonNameAr}}
+
+                        <div class="row top-buffer" style="margin-top: 15px;">
+                            <div class="col-12">
+                                <table class="table table-striped" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th [translate]="'Asset.FileName'"> {{ 'Asset.FileName' | translate }}</th>
+                                            <th style="text-align: center;" [translate]="'Asset.Download'"> {{
+                                                'Asset.Download' | translate }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let attach of itm.attachments">
+                                            <td>
+                                                {{attach.fileName}}
+                                            </td>
+                                            <td style="cursor: pointer;text-align: center;" pTooltip="Download File"
+                                                tooltipPosition="bottom">
+                                                <a (click)="downloadFile(attach.fileName)"><i class="fa-solid fa fa-download"
+                                                        style="color: #61bb20;"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <button (click)="back()" class="btn btn-primary pull-center btn-sm" (click)="back()"
+        style="margin: 0px 5px;background-color: #7e8083 !important;border-color:#7e8083">{{'Asset.Back' | translate
+        }}</button>
+</div>

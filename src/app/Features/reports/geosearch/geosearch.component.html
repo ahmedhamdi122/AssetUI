@@ -1,0 +1,109 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-3">
+            <h4 class="card-title"> {{ 'Asset.Geo' | translate }} </h4>
+        </div>
+        <div class="col-6 d-flex flex-row form-control">
+            <h6 *ngIf="govnameAr !=='' || govname !== '' "> {{lang=='ar'?govnameAr:govname}} </h6>
+            <h6 *ngIf="hosnameAr !=='' || hosname !== '' "> - {{lang=='ar'?hosnameAr:hosname}} </h6>
+            <h6 *ngIf="DeptNameAr !=='' || DeptName !== '' "> - {{lang=='ar'?DeptNameAr:DeptName}}</h6>
+        </div>
+        <div class="col-2"></div>
+        <div class="col-1">
+            <span class="btn btn-danger" value="Reset" type="button" (click)="reset()">
+                <i class="fa-solid fa-arrows-rotate"></i> </span>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-carousel [value]="lstGovernorates" [showIndicators]="false" [numVisible]="7" [numScroll]="7"
+                [circular]="true" dir="ltr">
+                <ng-template let-item pTemplate="item">
+                    <a class="card text-center m-2 p-2 rounded btn"
+                        (click)="getHospitalsByGovernorateId(item.id,item.name,item.nameAr)">
+                        <img class="rounded-circle d-block mx-auto" src="{{imgURL+item.logo}}" width="40" height="40" />
+                        <h6 class="d-block">{{lang=='ar'?item.nameAr:item.name}}</h6>
+                    </a>
+                </ng-template>
+            </p-carousel>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-12">
+            <p-carousel *ngIf="showDiv1" [value]="lstHospitals" [showIndicators]="false" [numVisible]="7"
+                [numScroll]="7" [circular]="true" dir="ltr">
+                <ng-template let-item pTemplate="item">
+                    <a class="card text-center mr-2 p-2 rounded btn"
+                        (click)="getDepartmentByHospitalId(item.id,item.name,item.nameAr)">
+                        <h6>{{lang=='ar'?item.nameAr:item.name}}</h6>
+                    </a>
+                </ng-template>
+            </p-carousel>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p-carousel *ngIf="showDiv2" [value]="lstDepartments" [showIndicators]="true" [numVisible]="5"
+                [numScroll]="5" [circular]="true" dir="ltr">
+                <ng-template let-item pTemplate="item">
+                    <a class="card text-center mr-2 p-2 rounded btn "
+                        (click)="getAssetsByDeptId(item.departmentId,item.departmentName,item.departmentNameAr)">
+                        <h6>{{lang=='ar'?item.departmentNameAr:item.departmentName}}</h6>
+                    </a>
+                </ng-template>
+            </p-carousel>
+        </div>
+    </div>
+    <div class="row " *ngIf="showDiv3">
+        <div class="col-12">
+            <p-table [value]="lstAssets" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count"
+                pageLinks="10" (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AssetName' |translate }}
+                            <p-sortIcon id="{{ 'Asset.Name' | translate }}" (click)="sort($event)"
+                                style="cursor:pointer">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Barcode' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Serial' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Serial' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Model' | translate}}
+                            <p-sortIcon id="{{ 'Asset.Model' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Brand' | translate}}
+                            <p-sortIcon id="{{ 'Asset.Brand' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Supplier' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Supplier' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Hospital' | translate }}
+                            <p-sortIcon id="{{ 'Asset.Hospital' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;"> <a [routerLink]="['/dash/hospitalassets/detail/',item.id]" style="text-decoration: underline;">{{lang=="en" ?item.assetName:item.assetNameAr}}</a></td>
+                        <td style="text-align: inherit;">{{item.barCode}}</td>
+                        <td style="text-align: inherit;">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{item.model}}</td>
+                        <td style="text-align: inherit;">{{ lang=="en" ? item.brandName: item.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{ lang=="en" ? item.supplierName: item.supplierNameAr}}</td>
+                        <td style="text-align: inherit;">{{ lang=="en" ? item.hospitalName: item.hospitalNameAr}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

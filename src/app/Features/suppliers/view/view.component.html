@@ -1,0 +1,75 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-4">
+            <label for="code" [translate]="'Asset.Code'"> </label>
+            {{supplierObj.code}}
+        </div>
+        <div class="col-4">
+            <label for="name" [translate]="'Asset.Name'"></label>
+            {{supplierObj.name}}
+        </div>
+        <div class="col-4">
+            <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+            {{supplierObj.nameAr}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-4">
+            <label for="email" [translate]="'Asset.EMail'"></label>
+            {{supplierObj.eMail}}
+        </div>
+        <div class="col-4">
+            <label for="mobile" [translate]="'Asset.Mobile'"></label>
+            {{supplierObj.mobile}}
+        </div>
+        <div class="col-4">
+            <label for="website" [translate]="'Asset.Website'"></label>
+            {{supplierObj.website}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-4">
+            <label for="contactPerson" [translate]="'Asset.ContactPerson'"></label>
+            {{supplierObj.contactPerson}}
+        </div>
+        <div class="col-4">
+            <label for="fax" [translate]="'Asset.Fax'"></label>
+            {{supplierObj.fax}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-4">
+            <label for="address" [translate]="'Asset.Address'"></label>
+            {{supplierObj.address}}
+        </div>
+        <div class="col-4">
+            <label for="addressAr" [translate]="'Asset.ArabicAddress'"></label>
+            {{supplierObj.addressAr}}
+        </div>
+        <div class="col-4">
+            <label for="notes" [translate]="'Asset.Notes'"></label>
+            {{supplierObj.notes}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <table class="table table-bordered table-striped table-hover" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th> {{'Asset.Name' | translate }}</th>
+                    <th> {{'Asset.Title' | translate }}</th>
+                    <th style="text-align: center;"> {{'Asset.Download' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let doc of lstAllSupplierAttachments">
+                    <td>{{doc.fileName}}</td>
+                    <td>{{doc.title}}</td>
+                    <td style="text-align: center;">
+                        <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files" tooltipPosition="bottom">
+                            <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

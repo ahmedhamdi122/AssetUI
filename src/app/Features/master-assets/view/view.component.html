@@ -1,0 +1,188 @@
+<div class="col-12" [dir]="textDir">
+    <div class="row top-buffer">
+        <div class="col-10">
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="masterCode" [translate]="'Asset.Code'">Code</label>
+                    {{ masterAssetObj.code }}
+                </div>
+                <div class="col-3">
+                    <label for="ecriId" [translate]="'Asset.ECRI'">ECRI</label>
+                    {{ lang == "en" ? masterAssetObj.ecriName : masterAssetObj.ecriNameAr }}
+                </div>
+                <div class="col-4">
+                    <label for="name" [translate]="'Asset.Name'">Name</label>
+                    {{ lang == "en" ? masterAssetObj.name : masterAssetObj.nameAr }}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="category" [translate]="'Asset.Category'">Category</label>
+                    {{
+                    lang == "en"
+                    ? masterAssetObj.categoryName
+                    : masterAssetObj.categoryNameAr
+                    }}
+                </div>
+                <div class="col-3">
+                    <label for="subCategory" [translate]="'Asset.SubCategory'">Sub Category</label>
+                    {{
+                    lang == "en"
+                    ? masterAssetObj.subCategoryName
+                    : masterAssetObj.subCategoryNameAr
+                    }}
+                </div>
+
+                <div class="col-3">
+                    <label for="priority" [translate]="'Asset.Periority'">Periority</label>
+                    {{ lang == "en"? masterAssetObj.periorityName : masterAssetObj.periorityNameAr
+                    }}
+                </div>
+                <div class="col-3">
+                    <label for="manufacturer" [translate]="'Asset.Brand'">Brand</label>
+                    {{ lang == "en" ? masterAssetObj.brandName : masterAssetObj.brandNameAr }}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="origin" [translate]="'Asset.Origin'">Origin</label>
+                    {{ lang == "en" ? masterAssetObj.originName : masterAssetObj.originNameAr }}
+                </div>
+                <div class="col-3">
+                    <label for="modelNumber" [translate]="'Asset.Model'">Model Number</label>
+                    {{ masterAssetObj.modelNumber }}
+                </div>
+
+                <div class="col-3">
+                    <label for="versionNumber" [translate]="'Asset.Version'">Version Number</label>
+                    {{ masterAssetObj.versionNumber }}
+                </div>
+                <div class="col-3">
+                    <label for="ExpectedLifeTime" [translate]="'Asset.ExpectedLifeTime'">Expected Time Life</label>
+                    {{ masterAssetObj.expectedLifeTime }}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="height" [translate]="'Asset.Height'">Height</label>
+                    {{ masterAssetObj.height }}
+                </div>
+                <div class="col-3">
+                    <label for="width" [translate]="'Asset.Width'">Width</label>
+                    {{ masterAssetObj.width }}
+                </div>
+                <div class="col-3">
+                    <label for="length" [translate]="'Asset.Length'">Length</label>
+                    {{ masterAssetObj.length }}
+                </div>
+                <div class="col-3">
+                    <label for="weight" [translate]="'Asset.Weight'">Weight</label>
+                    {{ masterAssetObj.weight }}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-3">
+                    <label for="power" [translate]="'Asset.Power'"></label>
+                    (<label [translate]="'Asset.PowerUnit'"></label>)
+                    {{ masterAssetObj.power }}
+                </div>
+
+                <div class="col-3">
+                    <label for="voltage" [translate]="'Asset.Voltage'"></label>
+                    (<label [translate]="'Asset.VoltageUnit'"></label>)
+                    {{ masterAssetObj.voltage }}
+                </div>
+
+                <div class="col-3">
+                    <label for="ampair" [translate]="'Asset.Ampair'"></label>
+                    (<label [translate]="'Asset.AmpairUnit'"></label>)
+                    {{ masterAssetObj.ampair }}
+                </div>
+
+                <div class="col-3">
+                    <label for="frequency" [translate]="'Asset.Frequency'"></label>
+                    (<label [translate]="'Asset.FrequencyUnit'"></label>)
+                    {{ masterAssetObj.frequency }}
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="description" [translate]="'Asset.Description'">Description</label>
+                    {{ masterAssetObj.description }}
+                </div>
+                <div class="col-6">
+                    <label for="descriptionAr" [translate]="'Asset.ArabicDescription'">Arabic Description</label>
+                    {{ masterAssetObj.descriptionAr }}
+                </div>
+            </div>
+            <!-- <div class="col-3">
+                <label for="electricRequirement" [translate]="'Asset.ElectricRequirement'"></label>
+                {{ masterAssetObj.electricRequirement }}
+            </div> -->
+        </div>
+        <div class="col-2"><img src="{{ imgURL }}" width="100" height="100" /></div>
+    </div>
+
+    
+    <div class="row top-buffer">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ "Asset.Id" | translate }}</th>
+                        <th>{{ "Asset.FileName" | translate }}</th>
+                        <th>{{ "Asset.Title" | translate }}</th>
+                        <th>{{ "Asset.Download" | translate }} </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lstAttachment">
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.fileName }} </td>
+                        <td>{{ item.title }} </td>
+                        <td pTooltip="Download File" tooltipPosition="top">
+                            <a (click)="downloadFile(item.fileName)">
+                                <i class="fa-solid fa fa-download" style="color: #61bb20"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ "Asset.Name" | translate }}</th>
+                        <th>{{ "Asset.ArabicName" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let i of lstPMTaskItems">
+                        <td>{{ i.name }}</td>
+                        <td>{{ i.nameAr }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ "Asset.Name" | translate }}</th>
+                        <th>{{ "Asset.ArabicName" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let tsk of lstWOTasks">
+                        <td>{{ tsk.name }}</td>
+                        <td>{{ tsk.nameAr }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

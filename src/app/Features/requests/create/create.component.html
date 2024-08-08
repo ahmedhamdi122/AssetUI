@@ -1,0 +1,447 @@
+<div class="col-12">
+
+    <div class="row top-buffer" *ngIf="isAdmin">
+        <div class="col-12">
+            <label for="hospitalId" [translate]="'Asset.Hospitals'">{{'Asset.SRNumber' | translate }}
+            </label>
+            <select id="hospitalId" class="form-control" name="hospitalId" [(ngModel)]="reqObj.hospitalId"
+            #hospitalId="ngModel" [value]="0">
+            <option value="0">{{'Asset.Select' | translate}} {{'Asset.Hospital' | translate}}
+            </option>
+            <option *ngFor="let host of lstHospitals" [value]="host.id">
+                {{lang == "en" ? host.name: host.nameAr}}
+            </option>
+        </select>
+        </div>
+    </div>
+
+
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <label for="code" [translate]="'Asset.Code'">{{'Asset.SRNumber' | translate }}
+            </label>
+            <input type="text" id="code" class="form-control" name="code" [(ngModel)]="reqObj.requestCode"
+                #code="ngModel" [value]="0" pTooltip="Request Code" tooltipPosition="bottom" disabled
+                style="font-size: 13px;" />
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <mat-radio-group [(ngModel)]="selectedType" (change)="onTypeChange($event)" name="gtype" id="ghtype"
+                [ngModelOptions]="{standalone: true}">
+                <mat-radio-button [value]="item.id" *ngFor="let item of lstTypes">{{lang =="en"
+                    ?item.name:item.nameAr}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div class="row top-buffer"
+        *ngIf="(assetBarCodeObj != null || assetBarCodeObj != undefined) || (assetSerialObj != null || assetSerialObj != undefined)">
+        <div class="col-12" style="font-size: 16px;font-weight: bold;color: red;">
+            <label for="status" [translate]="'Asset.AssetStatus'"></label>:
+            {{applicationStatus}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div [ngClass]="selectedType == 1 ? 'col-12': 'col-12'" *ngIf="showBarcode">
+            <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+            <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" [autoWidth]="true"
+                (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                placeholder="{{'Asset.Barcode' |  translate}}" [dropdown]="false" [showClear]="true">
+                <ng-template let-assetBarCodeObj pTemplate="item">
+                    {{assetBarCodeObj.barCode}}
+                </ng-template>
+                <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                    {{assetBarCodeObj.barCode}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+        <div [ngClass]="selectedType == 2 ? 'col-12': 'col-12'" *ngIf="showSerial">
+            <label for="serial" [translate]="'Asset.Serial'">Serial</label>
+            <p-autoComplete [(ngModel)]="assetSerialObj" [ngModelOptions]="{standalone: true}"
+                [suggestions]="lstSerials" name="serialNumber" id="serialNumber" [autoWidth]="true"
+                (completeMethod)="onSerialSelectionChanged($event)" (onSelect)="getSerial($event)" field="serialNumber"
+                placeholder="{{'Asset.Serial' |  translate}}" [dropdown]="false" [showClear]="true">
+                <ng-template let-assetSerialObj pTemplate="item">
+                    {{assetSerialObj.serialNumber}}
+                </ng-template>
+                <ng-template let-assetSerialObj pTemplate="selectedItem">
+                    {{assetSerialObj.serialNumber}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+    </div>
+    <div class="row top-buffer" *ngIf="showBarcode || showSerial">
+        <div class="col-12">
+            <label for="MasterAsset" [translate]="'Asset.MasterAsset'">MasterAsset</label>
+            <select (change)="ViewAllAssetDetailByMasterId($event)" id="masterAssetId" class="form-control"
+                name="masterAssetId" [(ngModel)]="reqObj.masterAssetId" #masterAssetId="ngModel" [value]="0"
+                pTooltip="Please,Select Master Asset" tooltipPosition="bottom" disabled style="font-size: 13px;">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.MasterAsset' | translate}}
+                </option>
+                <option *ngFor="let master of lstMasterAsset" [value]="master.id">
+                    {{lang == "en" ? master.name: master.nameAr}}- {{lang == "en" ? master.brandName:
+                    master.brandNameAr}} - {{master.model}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row top-buffer" *ngIf="showName">
+        <div class="col-12">
+            <label for="masterCode" [translate]="'Asset.MasterAsset'">Master Asset</label>
+            <p-autoComplete [(ngModel)]="masterAssetObj1" appendTo="body" [ngModelOptions]="{standalone: true}"
+                [suggestions]="lstMasterAssets" name="assetDetailId" id="assetDetailId"
+                (completeMethod)="onMasterAssetSelectionChanged($event)" (onSelect)="getMasterAssetObject($event)"
+                field="name" placeholder="{{'Asset.AssetName' |  translate}}" [dropdown]="false">
+                <ng-template let-masterAssetObj1 pTemplate="item">
+                    {{lang=="en"
+                    ?masterAssetObj1.name:masterAssetObj1.nameAr}} - {{lang
+                    ==="en" ?
+                    masterAssetObj1.brandName:masterAssetObj1.brandNameAr}} - {{masterAssetObj1.model}}
+                    - {{masterAssetObj1.serialNumber}}
+                </ng-template>
+                <ng-template let-masterAssetObj1 pTemplate="selectedItem">
+                    {{lang=="en"
+                    ?masterAssetObj1.name:masterAssetObj1.nameAr}} - {{lang
+                    === "en" ?
+                    masterAssetObj1.brandName:masterAssetObj1.brandNameAr}} - {{masterAssetObj1.model}} -
+                    {{masterAssetObj1.serialNumber}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+    </div>
+    <div class="row top-buffer" *ngIf="showDepartment">
+        <div class="col-12">
+            <label for="departments" [translate]="'Asset.Departments'">Departments</label>
+            <select id="departmentId" class="form-control" name="departmentId" [(ngModel)]="reqObj.departmentId"
+                #departmentId="ngModel" [value]="0">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.Department' | translate}}
+                </option>
+                <option *ngFor="let depart of lstDepartments" [value]="depart.id">
+                    {{lang == "en" ? depart.name: depart.nameAr}}
+                </option>
+            </select>
+        </div>
+        <div class="col-12 top-buffer">
+            <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+            <p-autoComplete [(ngModel)]="assetDepartmentBarCodeObj" [ngModelOptions]="{standalone: true}"
+                [suggestions]="lstDepartmentsBarcode" name="barcodedepart" id="barcodedepart"
+                (completeMethod)="onDepartmentsBarcodeSelectionChanged($event)"
+                (onSelect)="getDepartmentsBarcode($event)" field="name" placeholder="{{'Asset.Barcode' |  translate}}"
+                [dropdown]="false" [showClear]="true">
+                <ng-template let-assetDepartmentBarCodeObj pTemplate="item">
+                    {{assetDepartmentBarCodeObj.barCode}}
+                </ng-template>
+                <ng-template let-assetDepartmentBarCodeObj pTemplate="selectedItem">
+                    {{assetDepartmentBarCodeObj.barCode}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+    </div>
+    <div *ngIf="showBarcode || showSerial || showName|| showDepartment">
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="brandId" [translate]="'Asset.Brand'"></label>
+                <br />
+                {{brandName}}
+            </div>
+            <div class="col-4">
+                <label for="model" [translate]="'Asset.Model'"></label>
+                <br />
+                {{modelNumber}}
+            </div>
+            <div class="col-4">
+                <label for="model" [translate]="'Asset.Serial'"></label>
+                <br />
+                {{serialNumber}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="model" [translate]="'Asset.Barcode'"></label>
+                <br />
+                {{barCode}}
+            </div>
+            <div class="col-4">
+                <label for="model" [translate]="'Asset.Department'"></label>
+                <br />
+                {{departmentName}}
+            </div>
+            <div class="col-4"></div>
+        </div>
+    </div>
+    <div class="row top-buffer" *ngIf="assetBarCodeObj != null || assetBarCodeObj != undefined">
+        <div class="col-4">
+            <label for="" class="labeldetails"> {{ 'Asset.Building' | translate }}
+            </label>
+            {{ lang=='en' ? assetBarCodeObj.buildName : assetBarCodeObj.buildNameAr}}
+        </div>
+        <div class="col-4">
+            <label for="" class="labeldetails"> {{ 'Asset.Floor' | translate }} </label>
+            {{ lang=='en' ? assetBarCodeObj.floorName : assetBarCodeObj.floorNameAr}}
+        </div>
+        <div class="col-4">
+            <label for="" class="labeldetails"> {{ 'Asset.Room' | translate }} </label>
+            {{ lang=='en' ? assetBarCodeObj.roomName : assetBarCodeObj.roomNameAr}}
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <label for="subject" [translate]="'Asset.Subject'"> {{'Asset.Subject' | translate}}</label>
+            <input id="name" name="requestName" [(ngModel)]="reqObj.subject" class="form-control" required
+                placeholder="{{'Asset.Subject' | translate}}" pInputText [ngModelOptions]="{standalone: true}"
+                [disabled]="isDisabled" style="font-size: 13px;">
+
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <label for="periority" [translate]="'Asset.Periority'">
+            </label>
+            <mat-radio-group [(ngModel)]="radioPerioritySelected" (change)="getSelecteditem()"
+                [ngModelOptions]="{standalone: true}" [disabled]="isDisabled">
+                <mat-radio-button [value]="item.id" name="periority{{i}}"
+                    *ngFor="let item of lstPeriorities;let i = index">
+                    <i [ngClass]="item.icon" [ngStyle]="{'color': item.color}"></i>
+                    {{lang == "en" ? item.name:item.nameAr}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+            <label for="problem" [translate]="'Asset.Problem'"></label>
+            <select type="text" id="Problem" class="form-control" name="Problem" style="font-size: 13px;"
+                (change)="GetAllSubProblemsByProblemId($event)" [(ngModel)]="reqObj.problemId" #Category="ngModel"
+                [value]="0" pTooltip="Please,Select Problem" tooltipPosition="bottom" [disabled]="isDisabled">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.Problem' | translate}}
+                </option>
+                <option *ngFor="let item of lstProblems" [value]="item.id">
+                    {{lang == "en" ? item.name:item.nameAr}}
+                </option>
+            </select>
+        </div>
+        <div class="col-6">
+            <label for="subProblem" [translate]="'Asset.SubProblem'"></label>
+            <select type="text" id="subProblem" class="form-control" name="SubProblem" [(ngModel)]="reqObj.subProblemId"
+                #SubCategory="ngModel" [value]="0" style="font-size: 13px;" pTooltip="Please,Select SubProblem"
+                tooltipPosition="bottom" [disabled]="isDisabled">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.SubProblem' | translate}}
+                </option>
+                <option *ngFor="let item of lstSubProblems" [value]="item.id">
+                    {{lang == "en" ? item.name:item.nameAr}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+            <label for="type" [translate]="'Asset.Type'"></label>
+            <select type="text" id="Type" class="form-control" name="Type" [(ngModel)]="reqObj.requestTypeId"
+                #Type="ngModel" [value]="0" pTooltip="Select Type" tooltipPosition="bottom" [disabled]="isDisabled"
+                style="font-size: 13px;">
+                <option value="0">{{'Asset.Select' | translate}}{{'Asset.Type' | translate}}</option>
+                <option *ngFor="let item of lstRequestTypes" [value]="item.id" style="font-size: 13px;">
+                    {{lang == "en" ? item.name:item.nameAr}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-6">
+            <label for="mode" [translate]="'Asset.Mode'"></label>
+            <select type="text" id="Mode" class="form-control" name="Mode" [(ngModel)]="reqObj.requestModeId"
+                #Mode="ngModel" [value]="0" pTooltip="Please,Request Mode" tooltipPosition="bottom"
+                [disabled]="isDisabled" style="font-size: 13px;">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.Mode' | translate}}</option>
+                <option *ngFor="let item of lstRequestMode" [value]="item.id">
+                    {{lang== 'en' ?item.name:item.nameAr}}
+                </option>
+            </select>
+
+        </div>
+        <div class="col-4" hidden>
+            <label for="requestDate" [translate]="'Asset.Date'"> </label>
+            <p-calendar [(ngModel)]="reqObj.requestDate" [ngModelOptions]="{standalone: true}" dateFormat="dd/mm/yy"
+                [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true" [disabled]="isDisabled">
+            </p-calendar>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="p-field col-md-12">
+            <label for="description" [translate]="'Asset.Description'">Description</label>
+            <textarea class="form-control" id="description" [(ngModel)]="reqObj.description" pInputTextarea
+                name="description" rows="3" [ngModelOptions]="{standalone: true}" cols="63" style="font-size: 13px;"
+                [disabled]="isDisabled"></textarea>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <input type="file" multiple #file placeholder="Choose file" (change)="uploadMultipleFile($event)"
+                style="display: none;">
+            <button type="button" name="btnUpload" class="btn btnUpload" style="margin:0px 10px" (click)="file.click()">
+                <i class="fa fa-upload"></i> {{'Asset.SelectUploadFiles' | translate }}
+            </button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+
+            <p-table [value]="lstCreateRequestDocument" dataKey="id">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th  style="text-align: inherit;">{{ 'Asset.FileName' | translate }}</th>
+                        <th  style="text-align: inherit;">{{ 'Asset.Title' | translate }}</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-createRequestDocument let-rowIndex="rowIndex" let-editing="editing">
+                    <tr>
+                        <td  style="text-align: inherit;">{{createRequestDocument.fileName}}</td>
+                        <td  style="text-align: inherit;" [pEditableColumn]="createRequestDocument.documentName" pEditableColumnField="documentName"
+                            [pEditableColumnRowIndex]="rowIndex">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="createRequestDocument.documentName"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{createRequestDocument.documentName}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td  style="text-align: inherit;">
+                            <span (click)="removeFileFromObjectArray(rowIndex)"><i class="fa-solid fa-times-circle"
+                                    style="color: rgb(123, 9, 9);"></i></span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr *ngIf="lstCreateRequestDocument.length == 0">
+                        <td   colspan="3" style="color: rgb(102, 97, 23);text-align: inherit;" [translate]="'Asset.NoData'">
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-md-12">
+            <button mat-stroked-button class="ml-2" (click)="AddRequest()" color="primary" mat-button
+                [disabled]="isDisabled">{{'Asset.Save' | translate }}</button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+
+        <div class="col-12">
+            <p-table [value]="lstRequests" name="requestTbl"
+                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="false" [rows]="10" [totalRecords]="count" pageLinks="10">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;" [sortable]="true">{{'Asset.Code' |
+                            translate }}
+                            <p-sortIcon id="{{ 'Asset.Code' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+
+                        <th style="text-align: inherit;" [sortable]="true"> {{'Asset.Subject' | translate }}
+                            <p-sortIcon id="{{'Asset.Subject' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true"> {{'Asset.Date' | translate }}
+                            <p-sortIcon id="{{'Asset.Date' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true"> {{'Asset.Status' |
+                            translate }}
+                            <p-sortIcon id="{{'Asset.Status' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true"> {{'Asset.Periority' |
+                            translate }}
+                            <p-sortIcon id="{{'Asset.Periority' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" [sortable]="true"> {{'Asset.Mode' |
+                            translate }}
+                            <p-sortIcon id="{{'Asset.Mode' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;">{{item.requestCode}}</td>
+                        <td style="text-align: inherit;">{{item.subject}}</td>
+                        <td style="text-align: inherit;">{{item.requestDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">
+                            <span [ngStyle]="{'color':item.statusColor}">
+                                <span><i [ngClass]="item.statusIcon"></i></span>
+                                {{lang=="en" ? item.statusName:item.statusNameAr}}
+                            </span>
+                        </td>
+                        <td style="text-align: inherit;">
+                            <i [ngClass]="item.periorityIcon" [ngStyle]="{'color': item.periorityColor}"></i>
+                            {{lang=="en" ? item.periorityName: item.periorityNameAr}}
+                        </td>
+                        <td style="text-align: inherit;">{{lang=="en" ? item.modeName: item.modeNameAr}}</td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage" *ngIf="lstRequests.length === 0">
+                    <tr>
+                        <td colspan="6" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+</div>
+
+<p-dialog appendTo=" body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorRequest" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }}
+    </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{error.errorMessage}}
+    </span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{error.errorMessage}}
+    </span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">
+            {{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{
+        'Asset.SavedSuccess' |
+        translate }}</span>
+    <br />
+    <br />
+    <button class="btn btn-primary pull-center btn-md"
+        style="margin: 0px 5px;background-color: #fe7f83 !important;border-color:#fe7f83" (click)="closeDialogue()"> {{
+        'Asset.Close' | translate }}</button>
+</p-dialog>

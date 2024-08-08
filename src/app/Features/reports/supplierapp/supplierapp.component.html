@@ -1,0 +1,135 @@
+<!-- <div class="card">
+    <div class="card-header cardHeader">
+
+        <h4 class="card-title"
+            [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold'} : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{'Asset.HospitalExecludeReport' | translate }}
+        </h4>
+
+    </div>
+    <div class="card-body" style="margin-top: -20px;">
+        <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="icon">{{'Asset.From' | translate }}</label>
+                    <p-calendar [(ngModel)]="searchObj.startDate" name="startDate" [showIcon]="true"
+                        (onSelect)="getStartDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                    </p-calendar>
+                </div>
+                <div class="col-4">
+                    <label for="icon">{{'Asset.To' | translate }}</label>
+                    <p-calendar [(ngModel)]="searchObj.endDate" name="endDate" [showIcon]="true"
+                        (onSelect)="getEndDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                    </p-calendar>
+                </div>
+                <div class="col-4" [ngStyle]="lang =='en' ? {'text-align': 'right'} : {  'text-align': 'left'}">
+                    <button class="btn btn-primary pull-center btn-sm" value="save" type="submit"
+                        style="margin: 0px 5px;background-color: #1483c2;border-color: #1483c2;width: 100px;">
+                        {{'Asset.Search' | translate }}
+                    </button>
+
+                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
+                        class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+
+                </div>
+            </div>
+        </form>
+        <div class="row top-buffer">
+            <div class="col-12">
+
+                <p-table [value]="lstHospitalApplications" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                    responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count"
+                    pageLinks="10" (onLazyLoad)="clicktbl($event)">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AssetName' | translate }}
+                                <p-sortIcon id="{{ 'Asset.AssetName' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Type' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Type' | translate }}" (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.AppNumber' | translate }}
+                                <p-sortIcon id="{{ 'Asset.AppNumber' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true" style="width: 10%">{{ 'Asset.Date' |
+                                translate }}
+                                <p-sortIcon id="{{ 'Asset.Date' | translate }}" (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true" style="width: 12%">{{ 'Asset.Status' |
+                                translate }}
+                                <p-sortIcon id="{{ 'Asset.Status' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true" style="width: 10%">{{
+                                'Asset.ExecludeDate' | translate }}
+                                <p-sortIcon id="{{ 'Asset.ExecludeDate' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                            <th style="text-align: inherit;" [sortable]="true">{{ 'Asset.Reasons' | translate }}
+                                <p-sortIcon id="{{ 'Asset.Reasons' | translate }}"
+                                    (click)="sortHospitalExcludes($event)">
+                                </p-sortIcon>
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-host>
+                        <tr>
+                            <td style="text-align: inherit;">{{ lang=="en" ? host.assetName: host.assetNameAr}}</td>
+                            <td style="text-align: inherit;">{{ lang=="en" ? host.typeName: host.typeNameAr}}</td>
+                            <td style="text-align: inherit;">{{host.appNumber}}</td>
+                            <td style="text-align: inherit;">{{host.date | date:'dd-MM-yyyy'}}</td>
+                            <td style="text-align: inherit;">
+                                <div *ngIf="host.statusId == '1'"
+                                    style="display:inline-block;text-align:cente3r;color: rgb(6, 38, 218);">
+                                    <i class="fa-solid fa-envelope-open-text"></i> {{lang =="en" ?
+                                    host.statusName:host.statusNameAr}}
+                                </div>
+
+                                <div *ngIf="host.statusId == '2'"
+                                    style="display:inline-block;text-align:cente3r;color: rgb(7, 124, 60);">
+                                    <i class="fa-solid fa-thumbs-up"></i> {{lang =="en" ? host.statusName:host.statusNameAr}}
+                                </div>
+                                <div *ngIf="host.statusId == '3'"
+                                    style="display:inline-block;text-align:cente3r;color: Red;">
+                                    <i class="fa-solid fa-times-circle"></i> {{lang =="en" ?
+                                    host.statusName:host.statusNameAr}}
+                                </div>
+                                <div *ngIf="host.statusId == '4'"
+                                    style="display:inline-block;text-align:cente3r;color: Red;">
+                                    <i class="fa-solid fa-times-circle"></i> {{lang =="en" ?
+                                    host.statusName:host.statusNameAr}}
+                                </div>
+                            </td>
+                            <td style="text-align: inherit;">{{host.dueDate}}</td>
+                            <td style="text-align: inherit;">
+                                <div *ngIf="host.appTypeId == 1"> {{lang =="en" ?
+                                    host.reasonExTitles:host.reasonExTitlesAr}}
+                                </div>
+                                <div *ngIf="host.appTypeId == 2">
+                                    {{lang =="en" ? host.reasonHoldTitles:host.reasonHoldTitlesAr}}
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft" let-state>
+                        {{'Asset.Showing' | translate }} {{(state.page * state.rows) + 1}}
+                        {{'Asset.To' | translate }}
+                        {{state.rows * (state.page + 1)}} {{'Asset.OF' | translate }}
+                        {{count}}
+                        {{'Asset.Entries' | translate }}
+                    </ng-template>
+                  
+</p-table>
+</div>
+</div>
+</div>
+</div> -->

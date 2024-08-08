@@ -1,0 +1,52 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-11">
+            <h3 class="card-title"> {{'Asset.Departments' | translate }}</h3>
+        </div>
+    </div>
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <div class="row top-buffer">
+            <div class="col-1 ">
+                <h6 class="m-2">{{'Asset.Departments' | translate }}</h6>
+            </div>
+            <div class="col-4">
+                <select [value]="0" [(ngModel)]="searchObj.departmentId" id="departmentId" #departmentId="ngModel"
+                    name="departmentId" class="form-control">
+                    <option value="0"> {{ 'Asset.Select' | translate }}</option>
+                    <option *ngFor="let item of lstDepartments" value="{{item.id}}">{{lang=="en" ? item.name:
+                        item.nameAr}}</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-primary" value="save" type="submit"> {{'Asset.Search' | translate }} </button>
+            </div>
+        </div>
+    </form>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstHospitalAssets" id="timeLine" name="timeLine"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [rowHover]="true" [totalRecords]="count" pageLinks="10"
+                [loading]="loading" (onLazyLoad)="clicktbl($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{'Asset.Name' | translate}}</th>
+                        <th style="text-align: inherit;">{{'Asset.Barcode' | translate}}</th>
+                        <th style="text-align: inherit;">{{'Asset.Serial' | translate}}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Model' | translate}}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Departments' | translate}}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;">{{ lang=="en" ? item.assetName: item.assetNameAr}}</td>
+                        <td style="text-align: inherit;" class="innerHeader" field="barcode">{{item.barCode}}</td>
+                        <td style="text-align: inherit;" field="serialNumber">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{item.model}}</td>
+                        <td style="text-align: inherit;">{{ lang=="en" ? item.departmentName: item.departmentNameAr}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

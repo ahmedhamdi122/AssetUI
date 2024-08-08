@@ -1,0 +1,14 @@
+
+ [elementType = canvas]{
+    width:50px !important;
+    height:50px !important;
+ }
+ 
+ mat-nav-list.list-horizontal {
+   padding: 0;
+   .mat-list-item {
+     display: inline-block;
+     height: auto;
+     width: auto;
+   }
+ }

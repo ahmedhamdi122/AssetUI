@@ -1,0 +1,147 @@
+<div class="col-12">
+  <div class="row top-buffer">
+    <div class="col-8">
+      <h4 class="card-title"> {{ 'Asset.Visits' | translate }} </h4>
+    </div>
+    <div class="col-2">
+      <a class="addbutton" (click)="addVisit()"><i class="fa-solid fa-plus"></i> {{ 'Asset.Create' |
+        translate }}</a>
+    </div>
+    <div class="col-2">
+      <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+        aria-controls="collapseExample" class="filterbutton">
+        <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+    </div>
+  </div>
+  <div class="col-12 top-buffer">
+    <div class="collapse row card-filter" id="collapseExample">
+      <form (ngSubmit)="onSearch()" #searchForm="ngForm">
+        <div class="row top-buffer">
+          <div class="col-2">
+            <label for="fromVisitDate" [translate]="'Asset.VisitDate'">
+              {{ "Asset.From" | translate }} </label>
+            <input type="date" [(ngModel)]="searchObj.fromVisitDate" [ngModelOptions]="{standalone: true}"
+              class="form-control" />
+          </div>
+          <div class="col-2">
+            <label for="toVisitDate" [translate]="'Asset.VisitDate'"> {{ "Asset.To" | translate }} </label>
+            <input type="date" [(ngModel)]="searchObj.toVisitDate" [ngModelOptions]="{standalone: true}"
+              class="form-control" />
+          </div>
+
+          <div class="col-4">
+            <label for="hospitalId" [translate]="'Asset.Hospital'"></label>
+            <select class="form-control" id="hospitalId" name="hospitalId" #hospitalId="ngModel" [value]="0"
+              [(ngModel)]="searchObj.hospitalId" [ngModelOptions]="{standalone: true}">
+              <option value="0"> </option>
+              <option *ngFor="let hosp of lstHospitals" [value]="hosp.id">
+                {{ lang == "en" ? hosp.name : hosp.nameAr }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label for="engineerId" [translate]="'Asset.Engineer'"></label>
+            <select class="form-control" id="engineerId" name="engineerId" #engineerId="ngModel" [value]="0"
+              [(ngModel)]="searchObj.engineerId" [ngModelOptions]="{standalone: true}">
+              <option value="0"> </option>
+              <option *ngFor="let eng of lstEngineers" [value]="eng.id">
+                {{ lang == "en" ? eng.name : eng.nameAr }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-2">
+            <label for="visitType" [translate]="'Asset.VisitType'"></label>
+            <select class="form-control" id="visitType" [disabled]="isvtype" name="visitType" [value]="0"
+              [(ngModel)]="searchObj.visitTypeId" #visitType="ngModel" [ngModelOptions]="{standalone: true}">
+              <option value="0"> </option>
+              <option *ngFor="let vtype of lstvisitTypes" [value]="vtype.id">
+                {{ lang == "en" ? vtype.name : vtype.nameAr }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row top-buffer">
+          <div class="col-10"></div>
+          <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+              <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+            </button></div>
+          <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+              <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+            </button></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <p-table [value]="lstVisits" name="requestTbl"
+        styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+        [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count" pageLinks="10"
+        (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="text-align: inherit;" [sortable]="true"> {{ "Asset.VisitDate" | translate }}
+              <p-sortIcon id="{{ 'Asset.VisitDate' | translate }}" (click)="sort($event)"></p-sortIcon>
+            </th>
+            <th style="text-align: inherit;" [sortable]="true">{{ "Asset.Hospitals" | translate }}
+              <p-sortIcon id="{{ 'Asset.Hospitals' | translate }}" (click)="sort($event)"></p-sortIcon>
+            </th>
+            <th style="text-align: inherit;" [sortable]="true"> {{ "Asset.Engineers" | translate }}
+              <p-sortIcon id="{{ 'Asset.Engineers' | translate }}" (click)="sort($event)"></p-sortIcon>
+            </th>
+            <th style="text-align: inherit;" [sortable]="true">{{ "Asset.VisitType" | translate }}
+              <p-sortIcon id="{{ 'Asset.VisitType' | translate }}" (click)="sort($event)"></p-sortIcon>
+            </th>
+            <th style="text-align: inherit;" *ngIf="isVisitEngineerManager || isVisitEngineer"> {{ "Asset.Verified" | translate }}
+            </th>
+            <th style="text-align: inherit;"> {{ "Asset.Actions" | translate }}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td style="text-align: inherit;">{{ item.visitDate | date: "dd-MM-yyyy" }}</td>
+            <td style="text-align: inherit;">{{ lang == "en" ? item.hospitalName : item.hospitalNameAr }}</td>
+            <td style="text-align: inherit;">{{ lang == "en" ? item.engineerName : item.engineerNameAr }}</td>
+            <td style="text-align: inherit;">{{ lang == "en" ? item.visitTypeName : item.visitTypeNameAr }}</td>
+            <td style="text-align: inherit;" class="text-center" *ngIf="isVisitEngineerManager && item.statusId == 0 ">
+              <span (click)="verifyVisit(item.id)" pTooltip="{{ 'Asset.Verified' | translate }}"
+                tooltipPosition="bottom">
+                <i class="pi"
+                  [ngClass]="item.statusId == 0 ? ' false-icon pi-times-circle' : 'true-icon pi-check-circle'"></i>
+              </span>
+            </td>
+            <td class="text-center" *ngIf="isVisitEngineer && item.statusId == 0 ">
+              <i class="pi"
+                [ngClass]="item.statusId == 0 ? ' false-icon pi-times-circle' : 'true-icon pi-check-circle'"></i>
+            </td>
+            <td class="text-center" *ngIf="(isVisitEngineerManager || isVisitEngineer) && item.statusId == 1 ">
+              <i class="pi true-icon pi-check-circle" style="color: green;"></i>
+            </td>
+            <td style="text-align: inherit;">
+              <span class="viewIcon" (click)="viewVisit(item.id)">
+                <i class="fa-solid fa-eye"></i>
+              </span>
+              <a class="editIcon" (click)="editVisit(item.id)" *ngIf="isVisitEngineer && item.statusId == 0"
+                pTooltip="{{ 'Asset.Edit' | translate }}" tooltipPosition="bottom">
+                <i class="fa-solid fa-edit"></i>
+              </a>
+              <span class="deleteIcon" (click)="deleteVisit(item.id)" *ngIf="isVisitEngineer && item.statusId == 0"
+                pTooltip="{{ 'Asset.Delete' | translate }}" tooltipPosition="bottom">
+                <i class="fa-solid fa-trash"></i>
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>

@@ -1,0 +1,48 @@
+<form (ngSubmit)="saveStatus()">
+    <div class="row top-buffer">
+        <div class="col-12"> <label>Request:</label>{{requestSubject}}</div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <label for="statusId">Status</label><br>
+            <select id="statusId" class="form-control" name="statusId" [(ngModel)]="requestTrackObj.requestStatusId"
+                #statusId="ngModel" [value]="0" pTooltip="Select Status" tooltipPosition="bottom">
+                <option value="0">Select Status</option>
+                <option *ngFor="let sts of lstRequestStatus" [value]="sts.id">
+                    {{lang == "en" ? sts.name: sts.nameAr}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <label for="description" [translate]="'Asset.Description'"></label>
+            <textarea #description="ngModel" name="description" id="description" class="form-control"
+                [(ngModel)]="requestTrackObj.description" [placeholder]="'Asset.Description' | translate"></textarea>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <button class="btn btn-primary pull-center btn-sm" value="save" type="submit"
+                style="margin-top: 20px;background-color: #1483c2;border-color: #1483c2;">
+                {{ 'Asset.Save' | translate }}
+            </button>
+        </div>
+    </div>
+</form>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate
+        }}</span>
+</p-dialog>

@@ -1,0 +1,127 @@
+<div class="card">
+  <div class="card-body">
+    <form (ngSubmit)="onSubmit()">
+      <div class="row top-buffer">
+        <div class="col-12">
+          <label for="code" [translate]="'Asset.Code'">{{'Asset.Code' | translate }}
+          </label>
+          <input type="text" id="code" class="form-control" name="code" [(ngModel)]="visitObj.code" #code="ngModel"
+            [value]="0" disabled />
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-4">
+          <label for="hospitalId" [translate]="'Asset.Hospital'">
+            {{ "Asset.Hospital" | translate }}</label>
+          <select class="form-control" id="hospitalId" name="hospitalId" #hospitalId="ngModel"
+            [(ngModel)]="visitObj.hospitalId" [(ngModel)]="visitObj.hospitalId" [ngModelOptions]="{standalone: true}">
+            <option [value]="0">
+            </option>
+            <option *ngFor="let hosp of lsthosp" [value]="hosp.id" [selected]="hosp.id == visitObj.hospitalId">
+              {{ lang == "en" ? hosp.name : hosp.nameAr }}
+            </option>
+          </select>
+        </div>
+        <div class="col-4">
+          <label for="visitTypeId" [translate]="'Asset.VisitType'">
+            {{ "Asset.VisitType" | translate }}</label>
+          <select class="form-control" id="visitTypeId" name="visitTypeId" [(ngModel)]="visitObj.visitTypeId"
+            [ngModelOptions]="{standalone: true}">
+            <option [value]="0">
+            </option>
+            <option *ngFor="let vtype of lstvisitTypes" [value]="vtype.id"
+              [selected]="vtype.id == visitObj.visitTypeId">
+              {{ lang == "en" ? vtype.name : vtype.nameAr }}
+            </option>
+          </select>
+        </div>
+        <div class="col-4">
+          <label for="visitDate" [translate]="'Asset.VisitDate'">visit Date: </label>
+          <mat-form-field class="example-full-width" appearance="fill">
+            <input matInput [matDatepicker]="picker1" [value]="visitObj.visitDate | date:'yyyy-MM-dd'"
+              placeholder="Input & change Date" (dateChange)="changeVisitDate($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-12">
+          <label for="vdescription" [translate]="'Asset.Description'"></label>
+          <textarea type="text" #vdescription="ngModel" name="vdescription" id="vdescription" class="form-control"
+            [(ngModel)]="visitObj.visitDescr" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-5">
+          <label for="docmentName">
+            {{ "Asset.DocumentTitle" | translate }}</label>
+          <input #documentName="ngModel" class="form-control" type="text" pInputText
+            placeholder="{{ 'Asset.DocumentTitle' | translate }}" [(ngModel)]="visitAttachmentObj.title"
+            [ngModelOptions]="{standalone: true}" />
+        </div>
+        <div class="col-3">
+          <input type="file" #file placeholder="Choose file" Click="$event.target.value=null"
+            (change)="uploadFile(file.files)" style="display: none" />
+          <button type="button" class="btn btn-outline-success" (click)="file.click()">
+            <i class="fa fa-upload"></i>{{ "Asset.SelectDocument" | translate }}
+          </button>
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{ "Asset.Name" | translate }}</th>
+                <th>{{ "Asset.DocumentTitle" | translate }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of lstEditVisitAttachments">
+                <td>{{ i.fileName }}</td>
+                <td>{{ i.title }}</td>
+                <td>
+                  <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                      style="color: rgb(123, 9, 9)"></i></span>
+                </td>
+              </tr>
+              <tr *ngIf="lstEditVisitAttachments.length == 0">
+                <td colspan="2" style="color: rgb(102, 97, 23)" [translate]="'Asset.NoData'"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <table class="table table-bordered table-striped table-hover" style="width: 100%;">
+          <thead>
+            <tr>
+              <th> {{'Asset.Name' | translate }}</th>
+              <th> {{'Asset.Title' | translate }}</th>
+              <th style="text-align: center;"> {{'Asset.Download' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of lstVisitAttachment">
+              <td>{{doc.fileName}}</td>
+              <td>{{doc.title}}</td>
+              <td style="text-align: center;">
+                <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files" tooltipPosition="bottom">
+                  <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-success" value="save">
+            {{ "Asset.Save" | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

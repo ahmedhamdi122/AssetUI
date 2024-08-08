@@ -1,0 +1,31 @@
+button[icon="pi pi-angle-double-up"],
+button[icon="pi pi-angle-double-down"] {
+    display: none !important;
+}
+
+button[icon="pi pi-angle-up"],
+button[icon="pi pi-angle-down"] {
+    display: none !important;
+}
+
+.pi-angle-double-right:before {
+    content: ">>" !important;
+}
+
+.pi-angle-double-left:before {
+    content: "<<" !important;
+}
+
+.pi-angle-right:before {
+    content: ">" !important;
+}
+
+.pi-angle-left:before {
+    content: "<" !important;
+}
+
+.p-picklist-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+}

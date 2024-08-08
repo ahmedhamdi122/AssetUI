@@ -1,0 +1,222 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-10">
+            <h4 class="card-title"> {{'Asset.StockTaking' | translate }} </h4>
+        </div>
+        <!-- <div class="col-2">
+            <a class="filterbutton" (click)="toggle()">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}} <input type="hidden"
+                    value="{{buttonName}}" />
+            </a>
+        </div> -->
+
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="collapse row card-filter"   id="collapseExample">
+            
+                <form (ngSubmit)="onSearch()" #searchForm="ngForm">
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <h5>{{ "Asset.Location" | translate }}:</h5>
+                        </div>
+                        <div class="col-2">
+                            <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                            <select class="form-control" id="governorate" name="governorate" #governorate="ngModel"
+                                [value]="0" [(ngModel)]="searchObj.governorateId" [disabled]="isGov"
+                                (change)="getCitiesByGovId(searchObj.governorateId)">
+                                <option value="0"></option>
+                                <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                    {{ lang == "en" ? gov.name : gov.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                            <select class="form-control" id="city" name="city" #cityId="ngModel"
+                                [(ngModel)]="searchObj.cityId" [value]="0" [disabled]="isCity"
+                                (change)="getHospitalsByCityId($event)">
+                                <option value="0"></option>
+                                <option *ngFor="let city of lstCities" [value]="city.id">
+                                    {{ lang == "en" ? city.name : city.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-2">
+                            <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                            <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+                                [(ngModel)]="searchObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                    {{ lang == "en" ? org.name : org.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-2">
+                            <label for="organization" [translate]="'Asset.SubOrganizations'">Sub
+                                Organization</label>
+                            <select class="form-control" id="suborganization" name="suborganization" [value]="0"
+                                [disabled]="isSubOrg" (change)="getHospitalsBySubOrgId()"
+                                [(ngModel)]="searchObj.subOrganizationId" #suborganization="ngModel">
+                                <option value="0"></option>
+                                <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                    {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-2">
+                            <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                            <select class="form-control" id="hospitalId" [disabled]="isHospital" name="hospitalId"
+                                [(ngModel)]="searchObj.hospitalId" [value]="0" (change)="getAssetsByHospitalId($event)">
+                                <option [value]="0"></option>
+                                <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                    {{ lang == "en" ? host.name : host.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <h5>{{ "Asset.BasicData" | translate }}:</h5>
+                        </div>
+                        <div class="col-2">
+                            <label for="assetName" [translate]="'Asset.Name'"></label><br />
+                            <p-autoComplete [suggestions]="lstMasterAssets" type="search" name="masterAssetId"
+                                id="masterAssetId" (completeMethod)="onMasterSelectionChanged($event)"
+                                (onSelect)="getMasterObject($event)" field="name" [dropdown]="false">
+                                <ng-template let-masterAssetObj pTemplate="item">
+                                    {{lang ==="en" ? masterAssetObj.name:masterAssetObj.nameAr}} -
+                                    {{lang ==="en" ? masterAssetObj.brandName:masterAssetObj.brandNameAr}}
+                                    - {{masterAssetObj.model}}
+                                </ng-template>
+                                <ng-template let-masterAssetObj pTemplate="selectedItem">
+                                    {{lang=="en" ?masterAssetObj.name:masterAssetObj.nameAr}} -
+                                    {{lang ==="en" ? masterAssetObj.brandName:masterAssetObj.brandNameAr}}
+                                    - {{masterAssetObj.model}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="col-2">
+                            <label for="barcode" [translate]="'Asset.Barcode'"> </label>
+                            <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                                [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" autoWidth="true"
+                                (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)"
+                                field="name" [dropdown]="false" showClear="true">
+                                <ng-template let-assetBarCodeObj pTemplate="item">
+                                    {{assetBarCodeObj.barCode}}
+                                </ng-template>
+                                <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                                    {{assetBarCodeObj.barCode}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="col-2">
+                            <label for="serialNumber" [translate]="'Asset.Serial'"></label>
+                            <p-autoComplete [(ngModel)]="assetSerailNumberObj" [ngModelOptions]="{standalone: true}"
+                                [suggestions]="lstAssetSerailNumberObj" name="serial" id="serial" autoWidth="true"
+                                (completeMethod)="onSerialNumberSelectionChanged($event)"
+                                (onSelect)="getSerialNumber($event)" field="name" [dropdown]="false" showClear="true">
+                                <ng-template let-assetSerailNumberObj pTemplate="item">
+                                    {{assetSerailNumberObj.serialNumber}}
+                                </ng-template>
+                                <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                                    {{assetSerailNumberObj.serialNumber}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="col-2">
+                            <label for="modelNumber" [translate]="'Asset.Model'"></label>
+                            <input type="text" class="form-control" [(ngModel)]="searchObj.modelNumber"
+                                [ngModelOptions]="{standalone: true}" />
+                        </div>
+                        <div class="col-2">
+                            <label for="departmentId" [translate]="'Asset.Departments'">Departments</label>
+                            <select class="form-control" id="departmentId" name="departmentId"
+                                [(ngModel)]="searchObj.departmentId" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let depart of lstDepartments" [value]="depart.id">
+                                    {{ lang == "en" ? depart.name : depart.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <h5>{{ "Asset.BasicData" | translate }}:</h5>
+                        </div>
+                        <div class="col-2">
+                            <label for="brandId" [translate]="'Asset.Brand'"></label>
+                            <select class="form-control" id="brandId" [ngModelOptions]="{standalone: true}"
+                                name="brandId" [(ngModel)]="searchObj.brandId" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let brand of lstBrands" [value]="brand.id">
+                                    {{ lang == "en" ? brand.name : brand.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="startDate"> {{'Asset.StartDate' | translate }}</label>
+                            <input type="date" class="form-control" [(ngModel)]="searchObj.start"
+                                [ngModelOptions]="{standalone: true}" />
+                        </div>
+                        <div class="col-2">
+                            <label for="endDate"> {{'Asset.EndDate' | translate}}</label>
+                            <input type="date" class="form-control" [(ngModel)]="searchObj.end"
+                                [ngModelOptions]="{standalone: true}" />
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-10"></div>
+                        <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                                <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                            </button></div>
+                        <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                                <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                            </button></div>
+                    </div>
+                </form>
+         
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p-table [value]="lstAssetStockTaking" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [loading]="loading"
+                [totalRecords]="count" pageLinks="10" (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{'Asset.CaptureDate' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Hospital' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Name' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode'| translate}}</th>
+                        <th style="text-align: inherit;">{{'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.UserName' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Department' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-columns="columns">
+                    <tr>
+                        <td style="text-align: inherit;">{{item.captureDate | date:'dd-MM-yyyy'}}</td>
+                        <td style="text-align: inherit;">{{lang =='en'?item.hospitalName: item.hospitalNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang =='en'?item.assetName: item.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{item.barCode}}</td>
+                        <td style="text-align: inherit;">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{item.userName}}</td>
+                        <td style="text-align: inherit;">{{lang =='en'?item.brandName: item.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang =='en'?item.departmentName: item.departmentNameAr}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

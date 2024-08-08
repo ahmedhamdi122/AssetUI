@@ -1,0 +1,70 @@
+<p-carousel [value]="lstAssets2" [numVisible]="3" [numScroll]="3" [circular]="false"
+    [responsiveOptions]="responsiveOptions">
+    <ng-template let-asset pTemplate="item">
+        <div class="asset-item-content" *ngIf="asset.masterImg !='' || asset.masterImg != null">
+            <div class="p-mb-3">
+                <img src="http://localhost:24813/UploadedAttachments/MasterAssets/UploadMasterAssetImage/{{asset.masterImg}}"
+                    [alt]="asset.masterImg" class="asset-image" width="200" height="200"
+                    onerror="this.src='http://localhost:24813/UploadedAttachments/MasterAssets/UploadMasterAssetImage/UnknownAsset.png';" />
+            </div>
+        </div>
+        <div>
+            <b> {{'Asset.AssetName' |translate}} </b> :<h4 class="p-mb-2">
+                {{lang=='en'?asset.assetName:asset.assetNameAr}}
+            </h4>
+            <b> {{'Asset.Model' |translate}} </b> :<h4 class="p-mb-2">
+                {{asset.model}}
+            </h4>
+            <!-- <label> {{'Asset.Serial' |translate}} </label> :{{asset.Serial}} -->
+            <b> {{'Asset.Serial' |translate}} </b> :<h4 class="p-mb-2">
+                {{asset.serial}}
+            </h4>
+            <br />
+            <span style="font-size: 14px;"> <label> {{'Asset.Price' |translate}} </label> :{{asset.price}}</span>
+
+        </div>
+        <div>
+            <button mat-stroked-button (click)="addRequest(asset.id)">
+                <span><i class="fa fa-wrench"></i></span>
+                {{'Asset.AddRequest' |translate}}
+            </button>
+        </div>
+    </ng-template>
+</p-carousel>
+
+
+
+
+
+
+
+
+
+<p-carousel [value]="lstAssets" [numVisible]="1" [numScroll]="1" [circular]="false"
+    [responsiveOptions]="responsiveOptions" orientation="vertical">
+    <ng-template let-asset pTemplate="item">
+        <img src="http://localhost:24813/UploadedAttachments/MasterAssets/UploadMasterAssetImage/{{asset.masterImg}}"
+            [alt]="asset.assetName" class="asset-image" width="200" height="200" align="left"
+            style="margin: 5px 15px 10px 15px;"
+            onerror="this.src='http://localhost:24813/UploadedAttachments/MasterAssets/UploadMasterAssetImage/UnknownAsset.png';" />
+
+        <b> {{'Asset.AssetName' |translate}} </b> :<h4 class="p-mb-1">
+            {{lang=='en'?asset.assetName:asset.assetNameAr}}
+        </h4>
+        <b> {{'Asset.Model' |translate}} </b> :<h4 class="p-mb-2">
+            {{asset.model}}
+        </h4>
+        <span class="p-mb-1">
+            <b> {{'Asset.Serial' |translate}} </b> : {{asset.serial}}
+        </span>
+        <br />
+        <span style="font-size: 14px;"> <b> {{'Asset.Price' |translate}} </b> :{{asset.price}}</span>
+        <br />
+        <button mat-stroked-button (click)="addRequest(asset.id)">
+            <span><i class="fa fa-wrench"></i></span>
+            {{'Asset.AddRequest' |translate}}
+        </button>
+
+        <hr style="margin-top: 30px;" />
+    </ng-template>
+</p-carousel>

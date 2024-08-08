@@ -1,0 +1,165 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-4">
+            <h4 class="card-title">
+                {{ 'Asset.Contracts' | translate }}
+            </h4>
+        </div>
+        <div class="col-4">
+            <h4 class="card-title">
+                {{ 'Asset.Hospitals' | translate }}
+            </h4>
+        </div>
+        <div class="col-4">
+            <h4 class="card-title">
+                {{ 'Asset.Assets' | translate }}
+            </h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <p-listbox [options]="lstMasterContracts" [(ngModel)]="masterContractId" [filter]="true" optionLabel="name"
+                optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 220px)' }">
+                <ng-template let-master pTemplate="item">
+                    <div (click)="getHospitalsOfContract(master.id)">
+                        {{ master.subject }} - {{lang=='en'? master.supplierName:master.supplierNameAr }}
+                    </div>
+                    <span class="example-spacer"></span>
+                    <span class="viewIcon" (click)="getContractById(master.id)">
+                        <i class="fa-solid fa-eye"></i></span>
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-4">
+            <p-listbox [options]="lstAssetsHospital" [(ngModel)]="selectedHospitalId" optionLabel="name"
+                optionValue="id" [filter]="true" [listStyle]="{ 'max-height': 'calc(100vh - 220px)' }">
+                <ng-template let-hospital pTemplate="item">
+                    <div (click)="getContractAssetsByHospitalId(hospital.id)">
+                        {{ lang == "en" ? hospital.name : hospital.nameAr }}
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-4">
+            <p-listbox [options]="lstContracts" optionLabel="name" optionValue="id" [filter]="true"
+                [listStyle]="{ 'max-height': 'calc(100vh - 220px)' }">
+                <ng-template let-detail pTemplate="item">
+                    <div>
+                        {{'Asset.Name'|translate }}: {{ lang == "en" ? detail.assetName : detail.assetNameAr }}
+                        <br />
+                        {{'Asset.Barcode'|translate }}: {{detail.barCode}}
+                        <br />
+                        {{'Asset.Serial'|translate }}: {{detail.serialNumber }}
+                        <hr />
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+
+    <h5 [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"> {{ "Asset.Contract" |
+        translate }} </h5>
+
+    <div class="row" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <div class="col-3">
+            <label for="serial" [translate]="'Asset.ContractNumber'"></label>
+            {{contractObj.serial}}
+        </div>
+        <div class="col-3">
+            <label for="subject" [translate]="'Asset.Subject'"></label> {{contractObj.subject}}
+        </div>
+        <div class="col-3">
+            <label for="cost" [translate]="'Asset.Cost'"></label> {{contractObj.cost }}
+        </div>
+        <div class="col-3">
+            <label for="totalVisits" [translate]="'Asset.TotalVisits'"></label>{{contractObj.totalVisits}}
+        </div>
+        <div class="col-3">
+            <label for="contractDate" [translate]="'Asset.ContractDate'"></label>{{contractObj.contractDate|
+            date:'yyyy-MM-dd'}}
+        </div>
+        <div class="col-3"> <label for="from" [translate]="'Asset.From'"></label>
+            {{contractObj.from | date:'yyyy-MM-dd'}}
+        </div>
+        <div class="col-3">
+            <label for="to" [translate]="'Asset.To'"> </label>
+            {{contractObj.to | date:'yyyy-MM-dd'}}
+        </div>
+        <div class="col-3">
+            <label for="supId" [translate]="'Asset.Supplier'"></label>
+            {{supplierName}}
+        </div>
+    </div>
+    <div class="row top-buffer" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <div class="col-12">
+            <p-table #dt dataKey="id" [value]="lstContractAttachment"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;"> {{'Asset.Name' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Title' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Download' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-doc>
+                    <tr>
+                        <td style="text-align: inherit;">{{doc.fileName}}</td>
+                        <td style="text-align: inherit;">{{doc.documentName}}</td>
+                        <td style="text-align: inherit;">
+                            <a (click)="downloadFile(doc.fileName)"> <i class="fa-solid fa fa-download"></i></a>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="3" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <div class="col-12">
+            <p-table #dt2 dataKey="id" [value]="contractObj.listDetails"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Brand' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.Department' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.ResponseTime' | translate }}</th>
+                        <th style="text-align: inherit;">{{ 'Asset.SpareParts' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;" class="spanpopup" (click)="viewDetail(item.assetDetailId)">
+                            {{lang == "en"
+                            ? item.assetName:item.assetNameAr}}</td>
+                        <td style="text-align: inherit;">{{item.barCode}}</td>
+                        <td style="text-align: inherit;">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{lang=='en'?item.brandName:item.brandNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang=='en'?item.departmentName:item.departmentNameAr}}
+                        </td>
+                        <td style="text-align: inherit;">{{item.responseTime}} </td>
+                        <td style="text-align: inherit;">{{item.hasSpareParts}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-dialog>

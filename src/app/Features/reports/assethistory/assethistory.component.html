@@ -1,0 +1,317 @@
+<div class="col-12">
+    <div class="row top-buffer ">
+        <div class="col-10">
+            <h4 class="card-title">{{'Asset.AssetHistory' | translate }}</h4>
+        </div>
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <form (ngSubmit)="onSearch()" class="collapse" id="collapseExample" #searchForm="ngForm">
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                        <select class="form-control" id="governorate" name="governorate" #governorate="ngModel"
+                            [value]="0" [(ngModel)]="searchObj.governorateId" [disabled]="isGov"
+                            (change)="getCitiesByGovId(searchObj.governorateId)">
+                            <option value="0"></option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                        <select class="form-control" id="city" name="city" #cityId="ngModel"
+                            [(ngModel)]="searchObj.cityId" [value]="0" [disabled]="isCity">
+                            <option value="0"></option>
+                            <option *ngFor="let city of lstCities" [value]="city.id">
+                                {{ lang == "en" ? city.name : city.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                        <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+                            [(ngModel)]="searchObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+                            <option value="0"></option>
+                            <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                {{ lang == "en" ? org.name : org.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="organization" [translate]="'Asset.SubOrganizations'">Sub Organization</label>
+                        <select class="form-control" id="suborganization" pTooltip="select sub organization"
+                            tooltipPosition="top" name="suborganization" [value]="0" [disabled]="isSubOrg"
+                            (change)="getHospitalsBySubOrgId()" [(ngModel)]="searchObj.subOrganizationId"
+                            #suborganization="ngModel">
+                            <option value="0"></option>
+                            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                        <select class="form-control" id="hospitalId" [disabled]="isHospital" name="hospitalId"
+                            [(ngModel)]="searchObj.hospitalId" [value]="0" (change)="getAssetsByHospitalId($event)">
+                            <option value="0"> </option>
+                            <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                {{ lang == "en" ? host.name : host.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="barcode" [translate]="'Asset.Barcode'"> </label>
+                        <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                            [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode" autoWidth="true"
+                            (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                            [dropdown]="false" showClear="true">
+                            <ng-template let-assetBarCodeObj pTemplate="item">
+                                {{assetBarCodeObj.barCode}}
+                            </ng-template>
+                            <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                                {{assetBarCodeObj.barCode}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-3">
+                        <label for="serialNumber" [translate]="'Asset.Serial'"></label>
+                        <p-autoComplete [(ngModel)]="assetSerailNumberObj" [ngModelOptions]="{standalone: true}"
+                            [suggestions]="lstAssetSerailNumberObj" name="serial" id="serial" autoWidth="true"
+                            (completeMethod)="onSerialNumberSelectionChanged($event)"
+                            (onSelect)="getSerialNumber($event)" field="name" [dropdown]="false" showClear="true">
+                            <ng-template let-assetSerailNumberObj pTemplate="item">
+                                {{assetSerailNumberObj.serialNumber}}
+                            </ng-template>
+                            <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                                {{assetSerailNumberObj.serialNumber}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-1"></div>
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                            <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                        </button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+    <button type="button" pButton pRipple icon="pi pi-file-pdf" id="btnExport" class="p-button-warning download"
+        pTooltip="PDF" tooltipPosition="bottom" (click)="SavePDF()">
+    </button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title"> {{ 'Asset.AssetDetails' | translate }} </h3>
+                    <div class="divTable">
+                        <div class="divTableBody">
+                            <div class="divTableRow">
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Governorate' | translate }}</label>{{ lang== "en"? assetDetailObj.governorateName:assetDetailObj.governorateNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.City' | translate }} </label>{{ lang== "en"? assetDetailObj.cityName: assetDetailObj.cityNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Organization' | translate }}</label>{{ lang== "en"? assetDetailObj.orgName:assetDetailObj.orgNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.SubOrganization' | translate}}</label>{{ lang== "en"? assetDetailObj.subOrgName : assetDetailObj.subOrgNameAr}}</div>
+                                <div class="divTableCell" colspan="5"><img src="{{imgURL}}" width="100" height="100" class="img-fluid" />
+                                <!-- <br/>
+                                <ngx-barcode [bc-value]="assetDetailObj.barcode" id="barcode_{{assetDetailObj.id}}" class="barcode"
+                                [bc-display-value]="true" width="15" height="7" [bc-element-type]="elementType">
+                            </ngx-barcode> -->
+                                </div>
+                            </div>
+                            <div class="divTableRow">
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Periority' | translate }}</label>{{ lang== "en"? assetDetailObj.periorityName:assetDetailObj.periorityNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Department' | translate }}</label>{{ lang== "en"? assetDetailObj.departmentName:assetDetailObj.departmentNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Barcode' | translate }}</label>{{assetDetailObj.barcode}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Serial' | translate }} </label>{{assetDetailObj.serialNumber}}</div>
+                            </div>
+                            <div class="divTableRow">
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.ModelNumber' | translate }}</label>{{assetDetailObj.modelNumber}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Brand' | translate }} </label>{{ assetDetailObj.brandName}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Supplier' | translate }}</label>{{ lang== "en"? assetDetailObj.supplierName :assetDetailObj.supplierNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Origin' | translate }}</label>{{ lang== "en"? assetDetailObj.originName: assetDetailObj.originNameAr}}</div>
+                            </div>
+                            <div class="divTableRow">
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Category' | translate }}</label>{{ lang== "en"? assetDetailObj.categoryName:assetDetailObj.categoryNameAr}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.SubCategory' | translate }}</label>{{ assetDetailObj.subCategoryName}}</div>
+                                <div class="divTableCell"><label for="" class="labeldetails"> {{ 'Asset.Version' | translate }}</label>{{ assetDetailObj.versionNumber}}</div>
+                                <div class="divTableCell"></div>
+                              
+                            </div>
+                        </div>
+                    </div>                   
+                </div>
+            </div>
+            <div class="top-buffer">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            {{
+                            'Asset.Location' | translate }} </h3>
+                        <div class="row top-buffer">
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.Building' | translate }}
+                                </label>
+                                {{ lang=='en' ? assetDetailObj.buildName : assetDetailObj.buildNameAr}}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.Floor' | translate }} </label>
+                                {{ lang=='en' ? assetDetailObj.floorName : assetDetailObj.floorNameAr}}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.Room' | translate }} </label>
+                                {{ lang=='en' ? assetDetailObj.roomName : assetDetailObj.roomNameAr}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="top-buffer">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            {{'Asset.Warranty' | translate }} </h3>
+                        <div class="row top-buffer">
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.WarrantyStart' | translate }}
+                                </label>
+                                {{assetDetailObj.warrantyStart}}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.WarrantyEnd' | translate }}
+                                </label>
+                                {{assetDetailObj.warrantyEnd}}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.WarrantyExpiresEnd' |
+                                    translate }}
+                                </label>
+                                {{lang =='en' ?assetDetailObj.warrantyExpires
+                                :assetDetailObj.warrantyExpiresAr}}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.WarrantyExpires' | translate
+                                    }}
+                                </label>
+
+                                {{lang =='en'
+                                ?assetDetailObj.remainWarrantyExpires:assetDetailObj.remainWarrantyExpiresAr}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="top-buffer">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">
+                            {{'Asset.Purchase' | translate }} </h3>
+                        <div class="row top-buffer">
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.Purchase' | translate }}
+                                </label>
+                                {{assetDetailObj.purchaseDate}}
+                            </div>
+                            <div class="col-3">
+                                <label for="receive" class="labeldetails"> {{ 'Asset.ReceivingDate' |
+                                    translate
+                                    }}
+                                </label>
+                                {{assetDetailObj.receivingDate}}
+                            </div>
+                            <div class="col-3">
+                                <label for="install" class="labeldetails"> {{ 'Asset.InstallationDate' |
+                                    translate}}
+                                </label>
+                                {{assetDetailObj.installationDate}}
+                            </div>
+                            <div class="col-3">
+                                <label for="oper" class="labeldetails"> {{ 'Asset.OperationDate' | translate
+                                    }}
+                                </label>
+                                {{assetDetailObj.operationDate }}
+                            </div>
+                        </div>
+                        <div class="row top-buffer">
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.PONumber' | translate }}
+                                </label>
+                                {{ assetDetailObj.poNumber }}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.Price' | translate }} </label>
+                                {{lang === 'en' ? assetDetailObj.price :
+                                (+assetDetailObj.price).toLocaleString("ar-SA")}}
+                            </div>
+                            <div class="col-3">
+                                <label for="" class="labeldetails"> {{ 'Asset.CostCenter' | translate }}
+                                </label>
+                                {{lang === 'en' ?
+                                assetDetailObj.costCenter:(+assetDetailObj.costCenter).toLocaleString("ar-SA")}}
+                            </div>
+                            <div class="col-3" *ngIf="assetDetailObj.depreciationRate != null">
+                                <label for="" class="labeldetails"> {{ 'Asset.DepreciationRate' |
+                                    translate}}
+                                </label>
+                                {{lang === 'en' ? assetDetailObj.depreciationRate :
+                                (+assetDetailObj.depreciationRate).toLocaleString("ar-SA")}} %
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="assetDetailObj.listRequests" id="timeLine" name="timeLine" [rowHover]="true"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{'Asset.SRNumber' | translate}}</th>
+                        <th>{{'Asset.Date' | translate}}</th>
+                        <th>{{'Asset.Subject' | translate}}</th>
+                        <th>{{'Asset.WONumber' | translate}}</th>
+                        <th>{{'Asset.Date' | translate}}</th>
+                        <th>{{'Asset.Subject' | translate}}</th>
+                        <th>{{'Asset.Status' | translate}}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{item.requestCode}}</td>
+                        <td>{{item.requestDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.subject}}</td>
+                        <td>{{item.workOrderNumber}}</td>
+                        <td>{{item.actualStartDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.workOrderSubject}}</td>
+                        <td>{{lang == 'en' ?item.workOrderStatusName:item.workOrderStatusNameAr}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="row top-buffer"></div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold;font-size: 16px;">
+        {{ errorMessage }}</span>
+</p-dialog>

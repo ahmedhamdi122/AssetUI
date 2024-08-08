@@ -1,0 +1,45 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-10">
+            <h1 class="card-title"> {{ 'Asset.Departments' | translate }} </h1>
+        </div>
+
+
+        <div class="col-2">
+            <a class="addbutton" (click)="addDepartment()">
+                <i class="fa-solid fa-plus"></i> {{ 'Asset.Create' | translate }}</a>
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table #dt dataKey="id" [value]="deptsList"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [loading]="loading" [totalRecords]="count" pageLinks="10"
+                [rowHover]="true" (onLazyLoad)="clicktbl($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.Code' | translate }}<p-sortIcon id="{{'Asset.Code' | translate }}"
+                                (click)="sort($event)"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Name' | translate }} <p-sortIcon id="{{'Asset.Name' | translate }}"
+                                (click)="sort($event)"> </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dept>
+                    <tr>
+                        <td style="text-align: inherit;"> {{lang=="en"?dept.code:(+dept.code).toLocaleString("ar-SA")}}</td>
+                        <td style="text-align: inherit;">{{lang =="en" ? dept.name:dept.nameAr}}</td>
+                        <td style="text-align: inherit;">
+                            <a (click)="editDepartment(dept.id)" class="editIcon"><i class="fa-solid fa-edit"></i></a>
+                            <a (click)="deleteDepartment(dept.id)" class="deleteIcon"> <i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

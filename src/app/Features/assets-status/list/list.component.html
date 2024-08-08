@@ -1,0 +1,59 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-2">
+            <h1 class="card-title"> {{ 'Asset.AssetStatus' | translate }} </h1>
+        </div>
+        <button class="btn excelIcon" (click)="exportExcel()" pTooltip="{{'Asset.ExportExcel'| translate}}"
+            tooltipPosition="top"> <i class="fa-solid fa-file-excel fa-2xl"></i></button>
+        <button class="btn pdfIcon" (click)="exportPDF()" pTooltip="{{'Asset.ExportPdf'| translate}}"
+            tooltipPosition="top"> <i class="fa-solid fa-file-pdf fa-2xl"></i></button>
+        <div class="col-7"></div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addAssetStatus()">
+                <i class=" fa-solid fa-plus"></i> {{ 'Asset.Create' | translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col">
+            <p-table [value]="AssetsStatusList" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count"
+                pageLinks="10" (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th  style="text-align: inherit;" [sortable]="true"> {{'Asset.Code'| translate }}
+                            <p-sortIcon id="{{'Asset.Code' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th  style="text-align: inherit;" [sortable]="true"> {{'Asset.Name'| translate }}
+                            <p-sortIcon id="{{'Asset.Name' | translate }}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th  style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td  style="text-align: inherit;">
+                            {{lang=="en"?item.code:(+item.code).toLocaleString("ar-SA")}}
+                        </td>
+                        <td  style="text-align: inherit;">
+                            {{lang =="en" ? item.name:item.nameAr}}
+                        </td>
+                        <td  style="text-align: inherit;">
+                            <a class="editIcon" (click)="editAssetStatus(item.id)"><i class="fa-solid fa-edit"></i></a>
+                            <a class="deleteIcon" (click)="deleteAssetStatus(item.id)"><i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6> {{ 'Asset.Save' | translate }}</h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>

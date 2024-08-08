@@ -1,0 +1,39 @@
+<div class="container card">
+    <div class="card-header cardHeader">
+        <h5 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;"
+            [translate]="'Asset.CloseRequest'">
+        </h5>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="description" [translate]="'Asset.Description'">Reason to Close</label>
+                <textarea class="form-control" name="description" [(ngModel)]="reqTrackObj.description"
+                    #description="ngModel" [value]="0" pTooltip="Service Request Close Description"
+                    tooltipPosition="bottom"></textarea>
+            </div>
+
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <button class="btn btn-primary pull-center btn-sm" value="save" type="button" (click)="closeRequest()"
+                    [disabled]="isDisabled" style="margin: 0px 5px;background-color: #1483c2;border-color: #1483c2;">{{
+                    'Asset.Save' | translate
+                    }} </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>

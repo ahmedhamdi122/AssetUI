@@ -1,0 +1,485 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!-- <script>
+    $(document).ready(function () {
+        $('.button-left').click(function () {
+            $('.sidebar').toggleClass('fliph');
+        });
+    });
+</script> -->
+
+<!--===================  Header  =======================-->
+<header class="header">
+    <nav class="navbar navbar-toggleable-md navbar-light row ">
+        <!-- <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> -->
+        <div class="col-2  text-center"> <img src="../../../assets/images/logoH.png" width="176" height="55"></div>
+
+        <!-- <div class="float-left "> <a href="#" data-toggle="collapse" data-target="#sidebar" class="button-left"><span
+                    class="fa fa-fw fa-bars "></span></a>
+        </div> -->
+        <div [ngClass]="translate.currentLang === 'en' ? 'ul' :'ular' " class="col-5 d-flex flex-row">
+            <div *ngFor="let breadcrumb of (breadcrumbs$ | async)">
+                <span [href]="breadcrumb.url">
+                    <i *ngIf="lang=='en'" class="fa-solid fa-chevron-right"></i>
+                    <i *ngIf="lang=='ar'" class="fa-solid fa-chevron-left"></i>
+                    {{ breadcrumb.label | translate}} &nbsp;&nbsp;</span>
+            </div>
+        </div>
+
+        <div class=" collapse navbar-collapse flex-row-reverse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown messages-menu">
+                    <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-message"></i>
+                        <span class="label label-success bg-success">9</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu-over list-unstyled">
+                            <li class="header-ul text-center">You have 4 messages</li>
+                            <li>
+                                <!-- inner menu: contains the actual data -->
+                                <ul class="menu list-unstyled">
+                                    <li><!-- start message -->
+                                        <a href="#">
+                                            <div class="pull-left">
+                                                <img src="http://via.placeholder.com/160x160" class="rounded-circle  "
+                                                    alt="User Image">
+                                            </div>
+                                            <h4>
+                                                Support Team
+                                                <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                            </h4>
+                                            <p>Why not buy a new awesome theme?</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="footer-ul text-center"><a href="#">See All Messages</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item dropdown notifications-menu">
+                    <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="label label-warning bg-warning">7</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu-over list-unstyled">
+                            <li class="header-ul text-center">You have 10 notifications</li>
+                            <li>
+                                <!-- inner menu: contains the actual data -->
+                                <ul class="menu list-unstyled">
+                                    <li>
+                                        <a href="#">
+                                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="footer-ul text-center"><a href="#">View all</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item dropdown   user-menu">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <img src="assets/images/MHP.png" class="user-image" alt="User Image">
+                        <span>{{userName}}</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li class="dropdown-item" *ngIf="translate.currentLang ==='en'" (click)="selectLanguage('ar')">
+                            {{ "Asset.Language" | translate }}</li>
+                        <li class="dropdown-item" *ngIf="translate.currentLang ==='ar'" (click)="selectLanguage('en')">
+                            {{ "Asset.Language" | translate }}
+                        </li>
+                        <li class="dropdown-item" (click)="forgetPassword()">{{'Asset.ForgetPassword' | translate}}</li>
+                        <div class="dropdown-divider"></div>
+
+                        <li class="dropdown-item" (click)="logout()">{{ "Asset.Logout" | translate }}</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="col row">
+    <div class="col-2">
+        <div class="main">
+            <aside>
+                <div class="sidebar left">
+                    <hr *ngIf="!isAdmin">
+                    <h4 class="text-center"> {{ hospitalName }}</h4>
+                    <hr *ngIf="!isAdmin">
+                    <ul class="list-sidebar bg-defoult">
+                        <li> <a class="text-truncate" [routerLinkActive]="['active']" [routerLink]="['/dash/dashboard']"
+                                [routerLinkActive]="['active']" *ngIf="isDashboard">
+                                <span class="nav-label"><i class="fa-solid fa-house"></i> {{'Asset.DashBoard' |
+                                    translate }}</span></a> </li>
+                        <li>
+                            <a class="text-truncate" href="#" data-toggle="collapse" data-target="#org"
+                                class="collapsed active" *ngIf="isAdmin">
+                                <span class="nav-label"><i class="fa-solid fa-sitemap"></i>
+                                    {{'Asset.heirarchicalstructure' | translate }}</span>
+                                <span *ngIf="lang=='en'" class="fa fa-chevron-down pull-right"></span>
+                                <span *ngIf="lang=='ar'" class="fa fa-chevron-down pull-left"></span>
+                            </a>
+                            <ul class="sub-menu collapse" id="org" style="list-style:none">
+                                <li class="active"><a [routerLinkActive]="['active']" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/governorates']"><i class="fa-solid fa-flag"></i>
+                                        {{'Asset.Governorates' | translate }}</a></li>
+                                <li [routerLinkActive]="['active']"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/organizations']"><i class="fa-solid fa-sitemap"></i>
+                                        {{'Asset.Organizations' | translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/hospitals']"><i class="fa-solid fa-hospital"></i>
+                                        {{'Asset.Hospitals' | translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/buildings']"><i class="fa-solid fa-building"></i>
+                                        {{'Asset.Buildings' | translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/departments']"><i class="fa-brands fa-codepen"></i>
+                                        {{'Asset.Departments' | translate }}</a></li>
+                            </ul>
+                        </li>
+
+                        <li> <a class="text-truncate" href="#" data-toggle="collapse" data-target="#assets"
+                                class="collapsed active" *ngIf="isHospitalAsset || isAdmin"> <span class="nav-label"><i class="fa-solid fa-building"></i>
+                                    {{'Asset.Assets' | translate
+                                    }}</span> <span *ngIf="lang=='en'" class="fa fa-chevron-down pull-right"></span>
+                                <span *ngIf="lang=='ar'" class="fa fa-chevron-down pull-left"></span>
+                            </a>
+                            <ul class="sub-menu collapse" id="assets">
+                                <li class="active"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/assets']" *ngIf="isMasterAsset || isAdmin || isHospitalManager">
+                                        {{
+                                        'Asset.MasterAssets' | translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/hospitalassets']" *ngIf="isHospitalAsset"> {{
+                                        'Asset.HospitalAssets' | translate }}</a> </li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/AssetStatus']" *ngIf="isAdmin"><i class="fa-solid fa-chart-simple"></i> {{
+                                        'Asset.AssetStatus' | translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/origins']" *ngIf="isAdmin"><i class="fa-solid fa-globe"></i>
+                                        {{'Asset.Origins' |
+                                        translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/brands']" *ngIf="isAdmin"><i class="fa-solid fa-award"></i> {{
+                                        'Asset.Brands' |
+                                        translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/suppliers']" *ngIf="isAdmin"><i class="fa-solid fa-warehouse"></i> {{
+                                        'Asset.Suppliers' | translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/categories']" *ngIf="isAdmin"><i class="fa-solid fa-code-branch"></i> {{
+                                        'Asset.Categories' | translate }}</a></li>
+                            </ul>
+                        </li>
+                        <li> <a class="text-truncate" href="#" data-toggle="collapse" data-target="#maintainance"
+                                class="collapsed active">
+                                <span class="nav-label"><i class="fa-solid fa-wrench"></i> {{'Asset.Maintainance' |
+                                    translate}}</span><span *ngIf="lang=='en'"
+                                    class="fa fa-chevron-down pull-right"></span>
+                                <span *ngIf="lang=='ar'" class="fa fa-chevron-down pull-left"></span></a>
+                            <ul class="sub-menu collapse" id="maintainance">
+                                <li><a class="text-truncate" [routerLinkActive]="['active']" *ngIf="showSR"
+                                        [routerLink]="['/dash/servicerequests']"><i class="fa-solid fa-ticket"></i>
+                                        {{'Asset.Requests' | translate}}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']" *ngIf="showIncomeSR"
+                                        [routerLink]="['/dash/servicerequests']"><i class="fa-solid fa-ticket"></i>
+                                        {{'Asset.IncomeRequests' |
+                                        translate}}</a></li>
+                                <li *ngIf="isHospitalManager || isEngManager || isWorkOrder || isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/workorders']"><i class="fa-solid fa-cogs"></i>
+                                        {{'Asset.WorkOrders' | translate}}</a></li>
+
+                                <li   *ngIf="isContracts || isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/hospitalcontract']"><i
+                                            class="fa-solid fa-file-signature"></i> {{ 'Asset.Contracts' | translate
+                                        }}</a></li>
+                                <li  *ngIf="isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/Problems']"><i class="fa-solid fa-comments"></i> {{
+                                        'Asset.Problems' | translate }}</a></li>
+                                <li  *ngIf="isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/workOrderTypes']"><i class="fa-solid fa-shield"></i> {{
+                                        'Asset.WorkOrderType' | translate
+                                        }}</a></li>
+                                <li  *ngIf="isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/workOrderStatus']"><i
+                                            class="fa-solid fa-chart-simple"></i>
+                                        {{ 'Asset.WorkOrderStatus' | translate}}</a>
+                                </li>
+                                <li   *ngIf="isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/requestTypes']"><i class="fa-solid fa-shield"></i> {{
+                                        'Asset.requestTypes' | translate }}</a>
+                                </li>
+                                <li   *ngIf="isAdmin"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/requestStatus']"><i class="fa-solid fa-chart-simple"></i>
+                                        {{ 'Asset.RequestStatus' | translate }}</a></li>
+                                <li  *ngIf="isExternalFix"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/externalfix']"><i
+                                            class="fa-solid fa-screwdriver-wrench"></i> {{ 'Asset.ExternalFix' |
+                                        translate }}</a>
+                                </li>
+                                <li  *ngIf="isBrandPMGenerateData || isBrandPMListData || isBrandPMCalender"> <a href="#" data-toggle="collapse" data-target="#ManfacturerPM"
+                                        class="collapsed active text-truncate">
+                                        <span class="nav-label"><i class="fa-solid fa-table"></i>
+                                            {{'Asset.ManfacturerPM' | translate}}</span></a>
+                                    <ul class="sub-menu collapse" id="ManfacturerPM">
+                                        <li *ngIf="isBrandPMGenerateData"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/manfacturerPMAssets/add']">
+                                                {{'Asset.ManfacturerPMCreate' | translate}}</a></li>
+                                        <li *ngIf="isBrandPMListData"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/manfacturerPMAssets']">
+                                                {{'Asset.ManfacturerPMList'
+                                                | translate}}</a></li>
+                                    </ul>
+                                </li>
+                                <li  *ngIf="isWNPMListData || isWNPMGenerateData || isWNPMCalender"> <a href="#" data-toggle="collapse" data-target="#pm"
+                                        class="collapsed active text-truncate">
+                                        <span class="nav-label"><i class="fa-solid fa-table"></i> {{'Asset.PM' |
+                                            translate}}</span></a>
+                                    <ul class="sub-menu collapse " id="pm">
+                                        <li *ngIf="isWNPMGenerateData" ><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/wnpm/add']">
+                                                {{'Asset.PMCreate' | translate}}</a>
+                                        </li>
+                                        <li *ngIf="isWNPMListData"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/wnpm']">
+                                                {{'Asset.PMList' | translate}}</a></li>
+                                        <li *ngIf="isWNPMCalender"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/wnpm/wnpmcalndr']">
+                                                {{'Asset.PMCalendar' |
+                                                translate}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li> <a href="#" data-toggle="collapse" data-target="#reports"
+                                class="collapsed active text-truncate"> <span class="nav-label"><i
+                                        class="fa-solid fa-scroll"></i> {{ 'Asset.Reports' |
+                                    translate
+                                    }}</span><span *ngIf="lang=='en'" class="fa fa-chevron-down pull-right"></span>
+                                <span *ngIf="lang=='ar'" class="fa fa-chevron-down pull-left"></span></a>
+                            <ul class="sub-menu collapse" id="reports">
+                                <li> <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#hospitals">
+                                        <i class="fa-solid fa-hospital"></i> {{'Asset.Hospitals'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="hospitals">
+                                        <a class="text-truncate" [routerLinkActive]="['active']"
+                                            [routerLink]="['/dash/reports/governoratehospitals']"> {{
+                                            'Asset.Governorates' |
+                                            translate }}</a>
+                                        <a class="text-truncate" [routerLinkActive]="['active']"
+                                            [routerLink]="['/dash/reports/hospitalcountprice']"> {{ 'Asset.ChartPrice' |
+                                            translate }}</a>
+                                        <a class="text-truncate" [routerLinkActive]="['active']"
+                                            [routerLink]="['/dash/reports/srwotimeline']"> {{ 'Asset.ReportCertificate'
+                                            | translate
+                                            }}</a>
+                                    </ul>
+                                </li>
+                                <li> <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#Assets">
+                                        <i class="fa-solid fa-building"></i> {{'Asset.Assets'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="Assets">
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/assetagegroup']"> {{ 'Asset.AgeGroup' |
+                                                translate
+                                                }}</a>
+                                        </li>
+                                        <li>
+                                            
+                                            <a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/pmAssetsReport']"> {{
+                                                'Asset.PM pmAssetsReport' |
+                                                translate }}</a></li>
+
+
+
+
+
+                                        <li>
+                                            
+                                            <a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/filterassetagegroup']"> {{
+                                                'Asset.FilterAgeGroup' |
+                                                translate }}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/dbs']"> {{
+                                                'Asset.Generic' | translate
+                                                }}</a> </li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/findsuppliers']"> {{
+                                                'Asset.SupplierCompany' | translate }}</a> </li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/openRequests']"> {{
+                                                'Asset.OpenRequestReport' |
+                                                translate }}</a> </li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/srwithindate']"> {{ 'Asset.SRWithInDate' |
+                                                translate
+                                                }}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/wowithindate']"> {{ 'Asset.WOWithInDate' |
+                                                translate}}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/srinprogress']"> {{ 'Asset.SRInProgress' |
+                                                translate}}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/assetsQR']"> {{ 'Asset.QrCode' |
+                                                translate}}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/assetsdepartments']"> {{
+                                                'Asset.Departments' |
+                                                translate }}</a> </li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/assethistorypage']"> {{
+                                                'Asset.AssetHistory' |
+                                                translate }}</a> </li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/geo']"> {{
+                                                'Asset.Geo' | translate}}</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li> <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#ExecludesReport">
+                                        <i class="fa-solid fa-square-xmark"></i> {{'Asset.Execludes'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="ExecludesReport">
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/reports/hospitalreport']"> {{
+                                                'Asset.HospitalExeclude' |
+                                                translate }}</a></li>
+                                    </ul>
+                                </li>
+                                <li> <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#Contracts">
+                                        <i class="fa-solid fa-file-contract"></i> {{'Asset.Contracts'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="Contracts">
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/hospitalcontract/viewcontracts']"> {{
+                                                'Asset.Contracts' | translate }}</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li> <a class="text-truncate" href="#" data-toggle="collapse" data-target="#AssetTransfer"
+                                class="collapsed active">
+                                <span class="nav-label"><i class="fa-solid fa-hospital"></i> {{ 'Asset.AssetTransfer' |
+                                    translate }}</span><span *ngIf="lang=='en'"
+                                    class="fa fa-chevron-down pull-right"></span>
+                                <span *ngIf="lang=='ar'" class="fa fa-chevron-down pull-left"></span></a>
+
+                            <ul  *ngIf="isAdmin || isAssetMovement || isHospitalAssetMovement || isExternalFixMovement" class="sub-menu collapse" id="AssetTransfer">
+                                <li> <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#AssetMovement">
+                                        <i class="fa-solid fa-hospital"></i> {{'Asset.AssetMovement'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="AssetMovement">
+                                        <li  *ngIf="isAdmin || isHospitalAssetMovement"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/assetmovement']">
+                                                {{ 'Asset.InternalAssetMovement'
+                                                | translate }}</a></li>
+                                        <li  *ngIf="isAdmin ||  isExternalFixMovement"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/externalassetmovement']"> {{
+                                                'Asset.ExternalAssetMovement' | translate }}</a></li>
+                                    </ul>
+                                </li>
+                                <li *ngIf="isAdmin || isMember || isAddSTSchedule || isAOSTAssets"> 
+                                    <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#StockTaking">
+                                        <i class="fa-solid fa-hospital"></i> {{'Asset.StockTaking'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="StockTaking">
+                                        <li *ngIf="isAddSTSchedule || isMember"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/stockTakingSchedule']"> {{
+                                                'Asset.stockTakingSchedule' |
+                                                translate }}</a></li>
+                                        <li *ngIf="isAOSTAssets"><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/assetStockTaking']"> {{ 'Asset.ListStockTaking' |
+                                                translate }}</a></li>
+                                    </ul>
+                                </li>
+                                <li *ngIf="(isHospitalManager  && isHospitalExeclude) || (isAdmin)"> 
+                                    <a class="text-truncate" data-toggle="collapse" href="#" role="button"
+                                        aria-expanded="true" data-target="#Execludes">
+                                        <i class="fa-solid fa-square-xmark"></i> {{'Asset.Execludes'|translate}}</a>
+                                    <ul class="sub-menu collapse" id="Execludes">
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/supplierexecludes']"> {{ 'Asset.SupplierExeclude'
+                                                |
+                                                translate }}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/hospitalexecludes']"> {{ 'Asset.HospitalExeclude'
+                                                |
+                                                translate }}</a></li>
+                                        <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                                [routerLink]="['/dash/memberexecludes']">
+                                                {{ 'Asset.MemberAction' |
+                                                translate }}</a></li>
+                                    </ul>
+                                </li>
+                                <li *ngIf="isScrap"><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/scrap']"><i class="fa fa-trash"></i> {{ 'Asset.Scrap' |
+                                        translate }}</a></li>
+                            </ul>
+                        </li>
+                        <li> <a class="text-truncate" href="#" data-toggle="collapse" data-target="#settings"
+                                class="collapsed active" *ngIf="isSettingAdmin"> <span class="nav-label"><i class="fa-solid fa-cog"></i> {{
+                                    'Asset.Settings' | translate }}</span><span *ngIf="lang=='en'"
+                                    class="fa fa-chevron-down pull-right"></span>
+                                <span *ngIf="lang=='ar'" class="fa fa-chevron-down pull-left"></span></a>
+                            <ul class="sub-menu collapse" id="settings">
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/rolecategories']"><i class="fa-solid fa-layer-group"></i>
+                                        {{
+                                        'Asset.RoleCategories' | translate }}</a>
+                                </li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/roles']"><i class="fa-solid fa-list-alt"></i> {{
+                                        'Asset.Roles' |
+                                        translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/users']"><i class="fa-solid fa-user-large"></i> {{
+                                        'Asset.Users'
+                                        |
+                                        translate
+                                        }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/employees']"><i class="fa-solid fa-users"></i> {{
+                                        'Asset.Employees' |
+                                        translate }}</a></li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/Classifications']"><i class="fa-solid fa-sliders"></i> {{
+                                        'Asset.Classification' | translate }}</a>
+                                </li>
+                                <li><a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/ecris']"><i class="fa-solid fa-book"></i> {{
+                                        'Asset.ECRIS' | translate }}</a></li>
+                                <li> <a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/visits']" *ngIf="isVisitEngineer"><i class="fa-solid fa-truck-fast"></i>
+                                        <span class="nav-label"> {{'Asset.Visits' | translate}}</span> </a></li>
+                                <li> <a class="text-truncate" [routerLinkActive]="['active']"
+                                        [routerLink]="['/dash/engineers']" *ngIf="isVisitEngineerManager"><i class="fa-solid fa-users-gear"></i>
+                                        <span class="nav-label"> {{'Asset.Engineers' | translate}}</span> </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div class="col-10 ">
+        <div class="page">
+            <router-outlet> </router-outlet>
+        </div>
+        <footer class="text-center"> Copyright © 2023 by Al-Mostakbal Technology, All Rights Reserved</footer>
+    </div>
+</div>

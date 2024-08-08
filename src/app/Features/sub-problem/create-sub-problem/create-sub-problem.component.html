@@ -1,0 +1,54 @@
+<div class="col-12">
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-3">
+                <label for="problemId" [translate]="'Asset.Problem'"></label>
+                <select [(ngModel)]="subProblemObj.problemId" class="form-control" [ngModelOptions]="{standalone: true}"
+                    (change)="onChange($event)" [value]="0">
+                    <option value="0"> </option>
+                    <option *ngFor="let item of lstProblems" [value]="item.id">
+                        {{lang =='en' ? item.name:item.nameAr}}</option>
+                </select>
+            </div>
+            <div class="col-3">
+                <label for="code" [translate]="'Asset.Code'"> </label>
+                <input type="text" class="form-control" id="code" name="code" [(ngModel)]="subProblemObj.code"
+                    #code="ngModel" [class.is-invalid]="
+                      (code.touched && code.errors) || form.submitted" [class.is-valid]="code.valid && form.submitted"
+                    required />
+            </div>
+            <div class="col-3">
+                <label for="name" [translate]="'Asset.Name'"></label>
+                <input type="text" #name="ngModel" [class.is-invalid]="name.invalid && name.touched"
+                    [class.is-valid]="name.valid" [(ngModel)]="subProblemObj.name" name="name" id="name"
+                    class="form-control" required>
+            </div>
+            <div class="col-3">
+                <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+                <input type="text" #nameAr="ngModel" [class.is-invalid]="nameAr.invalid && nameAr.touched"
+                    [class.is-valid]="name.valid" [(ngModel)]="subProblemObj.nameAr" name="nameAr" id="nameAr"
+                    class="form-control" [placeholder]="'Asset.ArabicName' | translate" required>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success" [translate]="'Asset.Save'"></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

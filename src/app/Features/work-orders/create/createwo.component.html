@@ -1,0 +1,260 @@
+<div class="col-12">
+    <fieldset>
+        <legend> {{'Asset.Request' | translate }} </legend>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <span style="font-weight: bold;"> {{'Asset.SRNumber' | translate }} :
+                </span>&nbsp;{{requestDetailObj.requestCode}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <span style="font-weight: bold;">{{'Asset.AssetName' | translate }} :
+                </span> {{lang == 'en' ? requestDetailObj.assetName:requestDetailObj.assetNameAr}}
+
+            </div>
+            <div class="col-4" [ngStyle]="{'direction': lang === 'en' ? 'ltr': 'ltr'}">
+                {{requestDetailObj.serialNumber}}
+                <span style="font-weight: bold;"> :{{'Asset.Serial' | translate }}
+                </span>
+            </div>
+
+            <div class="col-4">
+                <span style="font-weight: bold;">{{'Asset.Barcode' | translate }} :
+                </span> {{requestDetailObj.barcode}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <span style="font-weight: bold;"> {{'Asset.Subject' | translate }} :
+                </span>&nbsp;{{requestDetailObj.subject}}
+            </div>
+            <div class="col-4">
+                <span style="font-weight: bold;">{{'Asset.Date' | translate }} :
+                </span>&nbsp;{{requestDetailObj.requestDate | date:'dd-MM-yyyy HH:mm'}}
+            </div>
+            <div class="col-4">
+                <span style="font-weight: bold;">{{'Asset.Periority' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? requestDetailObj.periorityName:requestDetailObj.periorityNameAr}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <span style="font-weight: bold;">{{'Asset.SubProblem' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? requestDetailObj.subProblemName:requestDetailObj.subProblemNameAr}}
+            </div>
+            <div class="col-4">
+                <span style="font-weight: bold;">{{'Asset.Type' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? requestDetailObj.requestTypeName:requestDetailObj.requestTypeNameAr}}
+            </div>
+            <div class="col-4">
+                <span style="font-weight: bold;"> {{'Asset.Mode' | translate }} :
+                </span>&nbsp;
+                {{lang == 'en' ? requestDetailObj.modeName:requestDetailObj.modeNameAr}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <span style="font-weight: bold;"> {{'Asset.Description' | translate }} :
+                </span>&nbsp;{{requestDetailObj.description}}
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="row top-buffer" *ngIf="isAdmin">
+        <div class="col-6">
+            <label for="governorate"> {{ 'Asset.Governorate' | translate }} </label>
+            <select class="form-control" id="governorateId" pTooltip="select governorate" tooltipPosition="bottom"
+                name="governorateId" [value]="0" (change)="getCitiesByGovId($event)">
+                <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Governorate' | translate }}
+                </option>
+                <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                    {{ lang == "en" ? gov.name : gov.nameAr }}
+                </option>
+            </select>
+        </div>
+        <div class="col-6">
+            <label for="districtName"> {{ 'Asset.City' | translate }} </label>
+            <select class="form-control" id="city" pTooltip="select city" tooltipPosition="bottom" name="city"
+                [value]="0">
+                <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.City' | translate }} </option>
+                <option *ngFor="let city of lstCities" [value]="city.id">
+                    {{ lang == "en" ? city.name : city.nameAr }}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row top-buffer" *ngIf="isAdmin">
+        <div class="col-6">
+            <label for="organization"> {{ 'Asset.Organization' | translate }} </label>
+            <select class="form-control" id="organization" pTooltip="select organization" tooltipPosition="bottom"
+                name="organization" (change)="getSubOrgByOrgId($event)" [value]="0">
+                <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Organization' | translate }}
+                </option>
+                <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                    {{ lang == "en" ? org.name : org.nameAr }}
+                </option>
+            </select>
+        </div>
+        <div class="col-6">
+            <label for="organization"> {{ 'Asset.SubOrganization' | translate }} </label>
+            <select class="form-control" id="subOrganizationId" pTooltip="select sub organization"
+                tooltipPosition="bottom" name="subOrganizationId" [value]="0" (change)="getHospitalsBySubOrgId($event)">
+                <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.SubOrganization' | translate }}
+                </option>
+                <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                    {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                </option>
+            </select>
+        </div>
+        <div class="col-12">
+            <label for="hospital"> {{ 'Asset.Hospital' | translate }} </label>
+            <select class="form-control" id="hospital" pTooltip="select hospital" tooltipPosition="bottom"
+                name="hospital" [value]="0" (change)="getHospitalId($event)">
+                <option value="0"> {{ 'Asset.Select' | translate }} {{ 'Asset.Hospital' | translate }} </option>
+                <option *ngFor="let host of lstHospitals" [value]="host.id">
+                    {{ lang == "en" ? host.name : host.nameAr }}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+            <label for="WorkOrderNumber">{{'Asset.WorkOrderNumber' | translate }}</label>
+            <input id="name" name="WorkOrderNumber" [(ngModel)]="createWorkOrderObj.workOrderNumber"
+                class="form-control" placeholder="Enter Work Order Number" pInputText
+                [ngModelOptions]="{standalone: true}" disabled>
+        </div>
+        <div class="col-6">
+            <label for="assignedTo">{{'Asset.AssignedTo' | translate }}</label>
+            <select id="assignedTo" class="form-control" name="assignedTo"
+                [(ngModel)]="creatWorkOrderTrackingObj.assignedTo" #assignedTo="ngModel" [value]=""
+                pTooltip="select owner" tooltipPosition="bottom" disabled="true">
+                <option value="">{{'Asset.Select' | translate }} {{'Asset.Eng' | translate }} </option>
+                <option *ngFor="let eng of lstEngEmployees" [value]="eng.userId"
+                    [selected]="eng.userId == creatWorkOrderTrackingObj.assignedTo">
+                    {{eng.name}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-4">
+            <label for="subject ">{{'Asset.Subject' | translate }}</label>
+            <input type="text" #subject="ngModel" [(ngModel)]="createWorkOrderObj.subject" name="subject" id="subject"
+                class="form-control" [placeholder]="'Asset.Subject' | translate" [ngModelOptions]="{standalone: true}">
+        </div>
+        <div class="col-4">
+            <label for="periority">{{'Asset.Periority' | translate }}</label>
+            <select type="text" id="WorkOrderPeriority" class="form-control" name="WorkOrderPeriority"
+                [(ngModel)]="createWorkOrderObj.workOrderPeriorityId" #SubCategory="ngModel" [value]="0"
+                pTooltip="Select SubProblem" tooltipPosition="bottom">
+                <option value="0">{{'Asset.Select' | translate }} {{'Asset.Periority' | translate }}
+                </option>
+                <option *ngFor="let item of lstWorkOrderPeriority" [value]="item.id">
+                    {{ lang == "en" ? item.name : item.nameAr }}
+                </option>
+            </select>
+        </div>
+        <div class="col-4">
+            <label for="type">{{'Asset.TypeWO' | translate }}</label>
+            <select type="text" id="Type" class="form-control" name="Type"
+                [(ngModel)]="createWorkOrderObj.workOrderTypeId" #Type="ngModel" [value]="0"
+                pTooltip="Please,Select Type Name" tooltipPosition="bottom" disabled>
+                <option value="0">{{'Asset.Select' | translate }} {{'Asset.Type' | translate }}</option>
+                <option *ngFor="let item of lstWorkOrderType" [value]="item.id">
+
+                    {{ lang == "en" ? item.name : item.nameAr }}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row  top-buffer">
+        <div class="col-3" hidden>
+            <label for="Request Date">{{'Asset.Date' | translate }}</label>
+            <p-calendar [(ngModel)]="createWorkOrderObj.creationDate" [ngModelOptions]="{standalone: true}"
+                [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true" dateFormat="dd/mm/yy">
+            </p-calendar>
+        </div>
+    </div>
+    <div class="row  top-buffer">
+        <div class="col-12">
+            <label for="description">{{'Asset.Description' | translate }}</label>
+            <textarea class="form-control" id="Note" [(ngModel)]="createWorkOrderObj.note" name="Note"
+                [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <input type="file" multiple #file placeholder="Choose file" (change)="uploadMultipleFile($event)"
+                style="display: none;" (click)="$event.target.value=null">
+            <button type="button" name="btnUpload" class="btn btnUpload" style="margin:0px 10px" (click)="file.click()">
+                <i class="fa fa-upload"></i> {{'Asset.SelectUploadFiles' | translate }}
+            </button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstCreateWorkOrderTracking" dataKey="id"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{ 'Asset.FileName' | translate }}</th>
+                        <th>{{ 'Asset.Title' | translate }}</th>
+                        <th>{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-woDocumentObj let-rowIndex="rowIndex" let-editing="editing">
+                    <tr>
+                        <td>{{woDocumentObj.fileName}}</td>
+                        <td [pEditableColumn]="woDocumentObj.documentName" pEditableColumnField="documentName"
+                            [pEditableColumnRowIndex]="rowIndex">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="woDocumentObj.documentName"
+                                        [ngModelOptions]="{standalone: true}" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{woDocumentObj.documentName}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td>
+                            <span (click)="removeFileFromObjectArray(rowIndex)"><i class="fa-solid fa-times-circle"
+                                    style="color: rgb(123, 9, 9);"></i></span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr *ngIf="lstCreateWorkOrderTracking.length == 0">
+                        <td colspan="4" style="color: rgb(102, 97, 23);" [translate]="'Asset.NoData'">
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <div class="row  top-buffer">
+        <div class="col-12">
+            <button mat-stroked-button [disabled]="isDisabled" (click)="AddworkOrder()" color="primary"
+                mat-button>{{'Asset.Save' | translate }} </button>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{ width: '400px' }">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e; font-weight: bold; font-size: 16pt">
+            {{ "Asset.Save" | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">
+        {{ "Asset.SavedSuccess" | translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '400px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

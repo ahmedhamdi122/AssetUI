@@ -1,0 +1,162 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-9">
+            <h1 class="card-title"> {{ 'Asset.PM' | translate }} </h1>
+        </div>
+        <div class="col-1" style="margin-top: 8px;">
+            <!-- <a [routerLink]="['/dash/wnpm/wnpmcalndr']"><i class="fa fa-calendar fa-2x"></i>
+            </a> -->
+            <a (click)="viewCalendar()"><i class="fa-solid fa-calendar-days fa-2x calendarIcon"></i>
+            </a>
+        </div>
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+
+    </div>
+
+    <div class=" col-12 top-buffer">
+        <div class="collapse row card-filter" id="collapseExample">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col-3">
+                        <label for="startDate">{{'Asset.From' | translate }}</label>
+                        <p-calendar [(ngModel)]="searchDateObj.startDate" name="startDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            [ngModelOptions]="{standalone: true}" (onSelect)="getStartDate($event)" inputId="startDate"
+                            appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-3">
+                        <label for="endDate">{{'Asset.To' | translate }}</label>
+                        <p-calendar [(ngModel)]="searchDateObj.endDate" name="endDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getEndDate($event)" inputId="endDate" appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset2()">
+                            <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                        </button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- <div class="col-12">
+        <mat-nav-list id="qurtr" *ngFor="let quarter of lstFiscalYears">
+            <a mat-list-item style="margin:0px 10px;" mat-stroked-button
+                [ngClass]="{quarter: clickedItem === quarter.yearQuarter}"
+                (click)="getAllAssetTimesByQuarter(quarter.yearQuarter,quarter.yearQuarter)">
+                <span mat-line>
+                    {{quarter.quarterName}}- ({{quarter.year}}-{{quarter.yearValue}})
+                </span>
+            </a>
+        </mat-nav-list>
+    </div> -->
+    <div class="row">
+        <div class="col-12">
+            <p-table [value]="lstAssetsTime" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count"
+                pageLinks="10" (onLazyLoad)="clicktbl($event)" [loading]="loading" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;">{{ 'Asset.AssetName' | translate }} <p-sortIcon
+                                id="{{'Asset.AssetName'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }} <p-sortIcon
+                                id="{{'Asset.Barcode'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}
+                            <p-sortIcon id="{{'Asset.Serial'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Model' | translate }} <p-sortIcon
+                                id="{{'Asset.Model'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Done' | translate }}
+                            <p-sortIcon id="{{'Asset.Done'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Department' | translate }}
+                            <p-sortIcon id="{{'Asset.Done'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.PMDate' | translate }}
+                            <p-sortIcon id="{{'Asset.Date'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.DoneDate' | translate }}
+                            <p-sortIcon id="{{'Asset.DoneDate'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.DueDate' | translate }}
+                            <p-sortIcon id="{{'Asset.DueDate'| translate}}" (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;">
+
+                            <span (click)="viewDetail(item.id)" class="spanpopup">
+                                {{lang=="en" ?item.assetName:item.assetNameAr}}
+                            </span>
+                        </td>
+                        <td style="text-align: inherit;">{{item.barCode}}</td>
+                        <td style="text-align: inherit;">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{item.modelNumber}}</td>
+                        <td style="text-align: inherit;">{{item.isDone}}</td>
+                        <td style="text-align: inherit;">{{lang=="en" ?item.departmentName:item.departmentNameAr}} </td>
+                        <td style="text-align: inherit;">{{item.pmDate | date:'dd-MM-yyyy'}}</td>
+                        <td style="text-align: inherit;">{{item.doneDate | date:'dd-MM-yyyy'}}</td>
+                        <td style="text-align: inherit;">{{item.dueDate | date:'dd-MM-yyyy'}}</td>
+                        <td style="text-align: inherit;">
+                            <span class="viewIcon" (click)="viewAssetTime(item.id)">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
+                            <span pTooltip="{{'Asset.IsDoneTooltip'| translate}}" tooltipPosition="top"
+                                (click)="pmDone(item.id)"><i class="fa fa-wrench"
+                                    style="color:#307037;margin: 0px 5px;"></i></span>
+                            <span pTooltip="{{'Asset.DueDateTooltip'| translate}}" tooltipPosition="top"
+                                (click)="pmDelay(item.id)"><i class="fa fa-clock"
+                                    style="color:#660404;margin: 0px 5px;"></i></span>
+                            <span pTooltip="{{'Asset.Print'| translate}}" tooltipPosition="top"
+                                (click)="printAssetTime(item.id)">
+                                <i class="fa-solid fa-print"
+                                    style="color: #052e55;margin: 0px 5px;cursor: pointer;"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{error.errorMessage}}
+
+    </span>
+</p-dialog>

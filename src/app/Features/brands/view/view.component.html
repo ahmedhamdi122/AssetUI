@@ -1,0 +1,26 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title"> {{ 'Asset.View' | translate }} {{ 'Asset.Brand' | translate }} </h4>
+    </div>
+    <div class="card-body">
+        <div class="row top-buffer">
+            <div class="col-2">
+                <label for="code" [translate]="'Asset.Code'"> </label>
+                {{lang =='en' ? brandObj.code: (+brandObj.code).toLocaleString("ar-SA")}}
+            </div>
+            <div class="col-5">
+                <label for="name" [translate]="'Asset.Name'"></label>
+                {{brandObj.name}}
+            </div>
+            <div class="col-5">
+                <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+                {{brandObj.nameAr}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <button class="btn btn-primary" (click)="back()">{{'Asset.Back' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>

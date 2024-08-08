@@ -1,0 +1,17 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-10">
+            <h4 class="card-title">
+                {{'Asset.ManfacturerPMCalendar' | translate }}
+            </h4>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-success" (click)="back()">{{'Asset.Back' | translate}}</button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <full-calendar id="myCalendar1" [options]="calendarOptions"></full-calendar>
+        </div>
+    </div>
+</div>

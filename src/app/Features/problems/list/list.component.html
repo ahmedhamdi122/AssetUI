@@ -1,0 +1,90 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-3"></div>
+        <div class="col-2">
+            <h4 for="name" [translate]="'Asset.MasterAsset'"></h4>
+        </div>
+        <div class="col-4">
+            <p-autoComplete [(ngModel)]="masterAssetObj" [ngModelOptions]="{standalone: true}"
+                [suggestions]="lstMasterAssets" name="masterAssetId" id="masterAssetId"
+                (completeMethod)="onSelectionChanged($event)" (onSelect)="getObject($event)" field="name"
+                [dropdown]="false" size="400">
+                <ng-template let-masterAssetObj pTemplate="item">
+                    {{masterAssetObj.code}} - {{lang ==="en" ?
+                    masterAssetObj.name:masterAssetObj.nameAr}} - {{lang =="en" ?
+                    masterAssetObj.brandName:masterAssetObj.brandNameAr}} -
+                    {{masterAssetObj.modelNumber}}
+                </ng-template>
+                <ng-template let-masterAssetObj pTemplate="selectedItem">
+                    {{masterAssetObj.code}} - {{lang=="en" ?masterAssetObj.name:masterAssetObj.nameAr}} - {{lang =="en"
+                    ? masterAssetObj.brandName:masterAssetObj.brandNameAr}} -
+                    {{masterAssetObj.modelNumber}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-4">
+            <h4 class="card-title">{{'Asset.Problems' | translate }} </h4>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addProblem()"><i class="fa-solid fa-plus"></i> {{ 'Asset.AddProblem' |
+                translate }}</a>
+        </div>
+        <div class="col-4">
+            <h4 class="card-title">{{ 'Asset.SubProblems' | translate }}</h4>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addSubProblem()"><i class="fa-solid fa-plus"></i>
+                {{ 'Asset.AddSubProblem'| translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+            <p-listbox [options]="problemsList" [(ngModel)]="selectedprobId" [filter]="true" optionLabel="name"
+                optionValue="id">
+                <ng-template let-prob pTemplate="item">
+                    <div (click)="filterSubProblemsByProblemId(prob.id)">
+                        {{prob.code}} - {{lang =='en' ? prob.name:prob.nameAr}}
+                    </div>
+                    <span class="example-spacer"></span>
+                    <span (click)="editProblems(prob.id)"><i class="fa-solid fa-edit"></i></span>
+                    <span (click)="deleteProblem(prob.id)"> <i class="fa-solid fa-trash"></i></span>
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-6">
+            <p-listbox [options]="subProblemsList" [filter]="true" optionLabel="name" optionValue="id">
+                <ng-template let-subProb pTemplate="item">
+                    <div>
+                        {{subProb.code}} - {{lang =='en' ? subProb.name:subProb.nameAr}}
+                    </div>
+                    <span class="example-spacer"></span>
+                    <span (click)="editSubProblem(subProb.id)">
+                        <i class="fa-solid fa-edit"></i></span>
+
+                    <span (click)="deleteSubProblem(subProb.id)">
+                        <i class="fa-solid fa-trash"></i>
+                    </span>
+                </ng-template>
+            </p-listbox>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate
+        }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

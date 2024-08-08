@@ -1,0 +1,130 @@
+<div class="col-12">
+    <form (ngSubmit)="onLocationSubmit()" #addLocatioForm="ngForm">
+
+        <div class="row top-buffer" *ngIf="isAdmin">
+            <div class="col-12">
+                <label for="hospitalId" [translate]="'Asset.Hospitals'">{{'Asset.Hospitals' | translate }}
+                </label>
+                <select id="hospitalId" class="form-control" name="hospitalId" [(ngModel)]="assetMovementObj.hospitalId"
+                #hospitalId="ngModel" [value]="0" (change)="getBuildingByHospitalId($event)">
+                <option value="0">{{'Asset.Select' | translate}} {{'Asset.Hospital' | translate}}
+                </option>
+                <option *ngFor="let host of lstHospitals" [value]="host.id">
+                    {{lang == "en" ? host.name: host.nameAr}}
+                </option>
+            </select>
+            </div>
+        </div>
+    
+    
+        <div class="row top-buffer">
+            <div class="col-6">
+                <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+                <p-autoComplete [(ngModel)]="assetBarCodeObj" [ngModelOptions]="{standalone: true}"
+                    [suggestions]="lstassetDetailBarcodes" name="barcode" id="barcode"
+                    (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)" field="name"
+                    [dropdown]="false">
+                    <ng-template let-assetBarCodeObj pTemplate="item">
+                        {{assetBarCodeObj.barCode}}
+                    </ng-template>
+                    <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                        {{assetBarCodeObj.barCode}}
+                    </ng-template>
+                </p-autoComplete>
+            </div>
+            <div class="col-6">
+                <label for="movementDate"> {{ 'Asset.MoveDate' | translate }}
+                </label>
+                <input type="datetime-local" dir="rtl" class="form-control" id="movementDate" name="movementDate"
+                    [(ngModel)]="assetMovementObj.movementDate" #movementDate="ngModel">
+            </div>
+        </div>
+        <div class="row top-buffer" *ngIf="showBarcode">
+            <div class="col-3">
+                <label for="model" [translate]="'Asset.Department'"></label>
+                <br />
+                {{departmentName}}
+            </div>
+            <div class="col-3">
+                <label for="model" [translate]="'Asset.Serial'"></label>
+                <br />
+                {{serialNumber}}
+            </div>
+
+            <div class="col-3">
+                <label for="brandId" [translate]="'Asset.Brand'"></label>
+                <br />
+                {{brandName}}
+            </div>
+            <div class="col-3">
+                <label for="model" [translate]="'Asset.Model'"></label>
+                <br />
+                {{modelNumber}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="buildingId"> {{ 'Asset.Buildings' | translate }}
+                </label>
+                <select class="form-control" id="buildingId" name="buildingId" #buildingId="ngModel" [value]="0"
+                    [(ngModel)]="assetMovementObj.buildingId" (change)="getFloorsByBuildId($event)">
+                    <option value="0"></option>
+                    <option *ngFor="let build of lstBuildings" [value]="build.id">
+                        {{ lang == "en" ? build.name:build.nameAr}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="floor"> {{ 'Asset.Floors' | translate }} </label>
+                <select class="form-control" id="floorId" name="floorId" #floorId="ngModel" [value]="0"
+                    [(ngModel)]="assetMovementObj.floorId" (change)="getRoomsByfloorId($event)">
+                    <option value="0"></option>
+                    <option *ngFor="let floor of lstFloors" [value]="floor.id">
+                        {{ lang == "en" ? floor.name:floor.nameAr}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="roomId"> {{ 'Asset.Rooms' | translate }}</label>
+                <select class="form-control" id="roomId" name="roomId" #roomId="ngModel" [value]="0"
+                    [(ngModel)]="assetMovementObj.roomId">
+                    <option value="0"></option>
+                    <option *ngFor="let room of lstRooms" [value]="room.id">
+                        {{ lang == "en" ? room.name:room.nameAr}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12">
+                <label for="description"> {{ 'Asset.Description' | translate }} </label>
+                <textarea class="form-control" id="MoveDesc" name="moveDesc" [(ngModel)]="assetMovementObj.moveDesc"
+                    #movementDate="ngModel"></textarea>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button class="btn btn-success" value="save" type="submit">
+                    {{ 'Asset.Save' | translate }}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{errorMessage}}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+    <br />
+    <br />
+    <button class="btn btn-danger " (click)="closeDialogue()"> {{ 'Asset.Close' | translate }}</button>
+</p-dialog>

@@ -1,0 +1,39 @@
+<div class="col-12">
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-4">
+                <label for="code" [translate]="'Asset.Code'"> </label>
+                <input type="text" class="form-control" id="code" name="code" [(ngModel)]="ECRIObj.code" #code="ngModel"
+                    [class.is-invalid]="
+          (code.touched && code.errors) || form.submitted" [class.is-valid]="code.valid && form.submitted" required />
+            </div>
+            <div class="col-4">
+                <label for="name" [translate]="'Asset.Name'"></label>
+                <input type="text" #name="ngModel" [class.is-invalid]="name.invalid && name.touched"
+                    [class.is-valid]="name.valid" [(ngModel)]="ECRIObj.name" name="name" id="name" class="form-control"
+                    required>
+            </div>
+            <div class="col-4">
+                <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+                <input type="text" #nameAr="ngModel" [class.is-invalid]="nameAr.invalid && nameAr.touched"
+                    [class.is-valid]="nameAr.valid" [(ngModel)]="ECRIObj.nameAr" name="nameAr" id="nameAr"
+                    class="form-control" required>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success" [translate]="'Asset.Save'"></button>
+            </div>
+        </div>
+    </form>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{ errorMessage }}</span>
+</p-dialog>

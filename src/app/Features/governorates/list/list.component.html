@@ -1,0 +1,95 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-4">
+            <h1 class="card-title"> {{ 'Asset.Governorates' | translate }} </h1>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addGovernorate()"><i class="fa-solid fa-plus"></i> {{'Asset.AddGovernorate' |
+                translate }}</a>
+        </div>
+        <div class="col-4">
+            <h1 class="card-title"> {{ 'Asset.Cities' | translate }} </h1>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addCity()"><i class="fa-solid fa-plus"></i> {{ 'Asset.AddCity' | translate
+                }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+
+
+            <p-listbox *ngIf="lang =='en'" [options]="lstGovernorates" [(ngModel)]="selectedGovId" [filter]="true"
+                optionLabel="name" optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 190px)' }">
+                <ng-template let-gov pTemplate="item">
+                    <div (click)="filterCitiesByGovernorateId(gov.id)">
+                        <img [src]="gov.logo != null ?imgGovURL+gov.logo:imgNullOrgURL" class="rounded-circle" width="40" height="40" />
+                        {{gov.code}} - {{lang =='en' ? gov.name:gov.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editGovernorate(gov.id)"><i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteGovernorate(gov.id)">
+                            <i class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+
+            <p-listbox *ngIf="lang =='ar'" [options]="lstGovernorates" [(ngModel)]="selectedGovId" [filter]="true"
+                optionLabel="nameAr" optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 190px)' }">
+                <ng-template let-gov pTemplate="item">
+                    <div (click)="filterCitiesByGovernorateId(gov.id)">
+                        <img [src]="gov.logo != null ?imgGovURL+gov.logo:imgNullOrgURL" class="rounded-circle" width="35" height="35" />
+                        {{gov.code}} - {{lang =='en' ? gov.name:gov.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editGovernorate(gov.id)"><i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteGovernorate(gov.id)">
+                            <i class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-6">
+            <p-listbox *ngIf="lang =='en'" [options]="lstCities" [filter]="true" optionLabel="name" optionValue="id"
+                [listStyle]="{ 'max-height': 'calc(100vh - 190px)' }">
+                <ng-template let-city pTemplate="item">
+                    <div>
+                        {{city.code}} - {{lang =='en' ? city.name:city.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editCity(city.id)"><i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteCity(city.id)">
+                            <i class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+            <p-listbox *ngIf="lang =='ar'" [options]="lstCities" [filter]="true" optionLabel="nameAr" optionValue="id"
+                [listStyle]="{ 'max-height': 'calc(100vh - 190px)' }">
+                <ng-template let-city pTemplate="item">
+                    <div>
+                        {{city.code}} - {{lang =='en' ? city.name:city.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editCity(gov.id)"><i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteCity(gov.id)">
+                            <i class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate
+        }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

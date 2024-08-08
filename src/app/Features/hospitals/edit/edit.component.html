@@ -1,0 +1,210 @@
+<div class="col-12">
+    <form (ngSubmit)="EditForm.valid && onSubmit()" #EditForm="ngForm">
+        <mat-tab-group mat-align-tabs="start">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa-solid fa-database" style="margin: 0px 10px;"></i>
+                    {{ 'Asset.Main' | translate }}
+                </ng-template>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <h5 for="Main">{{ "Asset.Main" | translate }}:</h5>
+                    </div>
+                    <div class="col-2">
+                        <label for="code" [translate]="'Asset.Code'">Code</label>
+                        <input type="text" class="form-control" id="code" name="code" [(ngModel)]="hospitalObj.code"
+                            #code="ngModel" disabled />
+                    </div>
+                    <div class="col-2">
+                        <label for="governorate" [translate]="'Asset.Governorate'"></label>
+                        <select class="form-control" id="governorateId" name="governorateId" #governorateId="ngModel"
+                            [(ngModel)]="hospitalObj.governorateId" [disabled]="isGov"
+                            (change)="getCitiesByGovId(hospitalObj.governorateId)">
+                            <option value="0"></option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id"
+                                [selected]="gov.id == hospitalObj.governorateId">
+                                {{lang == "en" ? gov.name:gov.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="city" [translate]="'Asset.City'">City</label>
+                        <select class="form-control" id="city" name="city" #districtName="ngModel"
+                            [(ngModel)]="hospitalObj.cityId" [value]="0" [disabled]="isCity">
+                            <option value="0"> </option>
+                            <option *ngFor="let city of lstCities" [value]="city.id"
+                                [selected]="city.id == hospitalObj.cityId">
+                                {{lang == "en" ? city.name:city.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="organization" [translate]="'Asset.Organization'">Organization</label>
+                        <select class="form-control" id="organization" name="organization"
+                        [(ngModel)]="hospitalObj.organizationId"
+                            (change)="getSubOrgByOrgId($event)" [value]="0" [disabled]="isOrg">
+                            <option value="0"> </option>
+                            <option *ngFor="let org of lstOrganizations" [value]="org.id"
+                                [selected]="org.id == hospitalObj.organizationId">
+                                {{lang == "en" ? org.name:org.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="organization" [translate]="'Asset.SubOrganization'">Sub Organization</label>
+                        <select class="form-control" id="suborganization" name="suborganization" [disabled]="isSubOrg"
+                            [(ngModel)]="hospitalObj.subOrganizationId" #suborganization="ngModel">
+                            <option value="0"> </option>
+                            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id"
+                                [selected]="suborg.id == hospitalObj.subOrganizationId">
+                                {{lang == "en" ? suborg.name:suborg.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-2"></div>
+                    <div class="col-4">
+                        <label for="name" [translate]="'Asset.Name'">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" [(ngModel)]="hospitalObj.name"
+                            #name="ngModel" [class.is-invalid]="name.touched && name.errors || EditForm.submitted"
+                            [class.is-valid]="name.valid && EditForm.submitted" required>
+                    </div>
+                    <div class="col-4">
+                        <label for="nameAr" [translate]="'Asset.ArabicName'">Arabic Name</label>
+                        <input type="text" class="form-control" id="nameAr" name="nameAr"
+                            [(ngModel)]="hospitalObj.nameAr" #nameAr="ngModel"
+                            [class.is-invalid]="nameAr.touched && nameAr.errors || EditForm.submitted"
+                            [class.is-valid]=" nameAr.valid && EditForm.submitted" required>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <h5>{{ "Asset.ContactPerson" | translate }}:</h5>
+                    </div>
+                    <div class="col-2">
+                        <label for="manager" [translate]="'Asset.Manager'">Manager</label>
+                        <input type="text" class="form-control" id="manager" name="managerName"
+                            [(ngModel)]="hospitalObj.managerName" #managerName="ngModel">
+                    </div>
+                    <div class="col-2">
+                        <label for="manager" [translate]="'Asset.ArabicManager'">Manager Arabic Name</label>
+                        <input type="text" class="form-control" id="manager" name="managerNameAr"
+                            [(ngModel)]="hospitalObj.managerNameAr" #managerNameAr="ngModel">
+                    </div>
+                    <div class="col-2">
+                        <label for="mobile" [translate]="'Asset.Mobile'">Mobile</label>
+                        <input  type="text" pattern="[0-9]*" class="form-control" id="mobile" name="mobile"
+                            [(ngModel)]="hospitalObj.mobile" #mobile="ngModel">
+                    </div>
+                    <div class="col-2">
+                        <label for="Email" [translate]="'Asset.EMail'">E-mail</label>
+                        <input type="text" class="form-control" id="Email" name="Email" [(ngModel)]="hospitalObj.email"
+                            #Email="ngModel">
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <h5>{{ "Asset.Contract" | translate }}:</h5>
+                    </div>
+                    <div class="col-4">
+                        <label for="contractName" [translate]="'Asset.Name'"></label>
+                        <input type="text" class="form-control" id="contractName" name="contractName"
+                            [(ngModel)]="hospitalObj.contractName" #contractName="ngModel" />
+                    </div>
+                    <div class="col-2">
+                        <label for="contractStart">{{'Asset.From' | translate }}</label>
+                        <p-calendar [(ngModel)]="hospitalObj.contractStart" name="contractStart" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            [ngModelOptions]="{standalone: true}" (onSelect)="getContractStartDate($event)"
+                            inputId="contractStart" showButtonBar="true" appendTo="body">
+                        </p-calendar>
+                    </div>
+                    <div class="col-2">
+                        <label for="contractEnd">{{'Asset.To' | translate }}</label>
+                        <p-calendar [(ngModel)]="hospitalObj.contractEnd" name="contractEnd" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getContractEndDate($event)" inputId="contractEnd" showButtonBar="true"
+                            appendTo="body">
+                        </p-calendar>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa-solid fa-map-marked-alt" style="margin: 0px 10px;"></i>
+                    {{ 'Asset.Location' | translate }}
+                </ng-template>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="Lat" [translate]="'Asset.Latitude'">Latitude</label>
+                        <input type="text" class="form-control" id="Lat" name="Lat" [(ngModel)]="hospitalObj.latitude"
+                            #lat="ngModel">
+                    </div>
+                    <div class="col-6">
+                        <label for="Long" [translate]="'Asset.Longtitude'">Longtitude</label>
+                        <input type="text" class="form-control" id="Long" name="Long"
+                            [(ngModel)]="hospitalObj.longtitude" #long="ngModel">
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="Adress" [translate]="'Asset.Address'">Address</label>
+                        <textarea class="form-control" id="Adress" type="text" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="hospitalObj.address"></textarea>
+                    </div>
+                    <div class="col-6">
+                        <label for="Adress" [translate]="'Asset.ArabicAddress'">Arabic Address</label>
+                        <textarea class="form-control" id="Adress" type="text" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="hospitalObj.addressAr"></textarea>
+                    </div>
+                </div>
+
+                <div class="row top-buffer">
+                    <div class="col-md-12">
+                        <agm-map style="height: 250px;" [latitude]="mapObj.lat" [longitude]="mapObj.lng" [zoom]="15"
+                            (mapClick)="mapClicked($event)" [disableDefaultUI]="false" [zoomControl]="false">
+                            <agm-marker iconUrl={{curicon}} [latitude]="mapObj.lat" [longitude]="mapObj.lng">
+                            </agm-marker>
+                        </agm-map>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa-solid fa-map-marked-alt" style="margin: 0px 10px"></i>
+                    {{ 'Asset.Departments' | translate }}
+                </ng-template>
+                <ul class="checkbox">
+                    <li *ngFor="let depart of lstDepartments;let i=index">
+                        <input type="checkbox" name="options" id="cb{{i}}" value="{{depart.id}}"
+                            [checked]="(hospitalObj.departments && (-1 !== hospitalObj.departments.indexOf(depart.id)) ? 'checked' : '')"
+                            (change)="getCheckedDepartment(depart, $event)" /><label for="cb{{i}}">
+                            {{lang == "en" ? depart.name:depart.nameAr}}
+                        </label>
+                    </li>
+                </ul>
+            </mat-tab>
+        </mat-tab-group>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button class="btn btn-success" value="save" type="submit"> {{ 'Asset.Save' |translate }}</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;"> {{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

@@ -1,0 +1,89 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-2">
+            <h1 class="card-title"> {{ 'Asset.Employees' | translate }} </h1>
+        </div>
+
+        <div class="col-3">
+            <form>
+                <div class="input-group">
+                    <input pInputText type="search" class="form-control" placeholder="{{'Asset.Search' | translate}}"
+                        (input)="dt2.filterGlobal($event.target.value, 'contains')">
+                </div>
+            </form>
+        </div>
+        <div class="col-5"></div>
+        <div class="col-2">
+            <a class="addbutton" [routerLink]="['/employees/addemployee']"><i class="fa-solid fa-plus"></i> {{
+                'Asset.Create' | translate }}</a>
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table #dt2 [value]="lstEmployees" dataKey="emp.id" [rows]="rows" [(first)]="first"
+                 [rowsPerPageOptions]="[5,10,25,50]" [loading]="loading" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                [paginator]="true" responsiveLayout="scroll" [rowHover]="true"
+                [globalFilterFields]="['name','email','hospitalNameAr','departmentNameAr']">
+                <ng-template pTemplate="header">
+                                        <tr>
+                        <th style="text-align: inherit;">
+                            <p-columnFilter type="text" field="code"></p-columnFilter>
+                        </th>
+                        <th style="text-align: inherit;">
+                            <p-columnFilter type="text" field="name"></p-columnFilter>
+                        </th>
+                        <th style="text-align: inherit;">
+                            <p-columnFilter type="text" field="email"></p-columnFilter>
+                        </th>
+                        <th style="text-align: inherit;">
+                            <p-columnFilter type="text" field="hospitalNameAr"></p-columnFilter>
+                        </th>
+                        <th style="text-align: inherit;">
+                            <p-columnFilter type="text" field="departmentNameAr"></p-columnFilter>
+                        </th>
+                        <th style="text-align: inherit;"></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: inherit;" pSortableColumn="code">{{'Asset.Code' | translate}}
+                            <p-sortIcon field="code"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" pSortableColumn="name">{{'Asset.Name' | translate}}<p-sortIcon field="name">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" pSortableColumn="email">{{'Asset.EMail' | translate}}<p-sortIcon field="email">
+                            </p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" pSortableColumn="hospitalNameAr">{{'Asset.Hospital' | translate}}
+                            <p-sortIcon field="hospitalNameAr"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;" pSortableColumn="departmentNameAr">{{'Asset.Department' |
+                            translate}}<p-sortIcon field="departmentNameAr"></p-sortIcon>
+                        </th>
+                        <th style="text-align: inherit;">{{'Asset.Actions' | translate}}</th>
+                    </tr>
+
+                </ng-template>
+                <ng-template pTemplate="body" let-emp>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en"?emp.code:(+emp.code).toLocaleString("ar-SA")}}</td>
+                        <td style="text-align: inherit;">{{emp.name}}</td>
+                        <td style="text-align: inherit;">{{emp.email}}</td>
+                        <td style="text-align: inherit;">{{lang =="en" ? emp.hospitalName:emp.hospitalNameAr}}</td>
+                        <td style="text-align: inherit;">{{lang =="en" ? emp.departmentName:emp.departmentNameAr}}</td>
+                        <td style="text-align: inherit;">
+                            <a class="editIcon" [routerLink]="['/employees/editemployee',emp.id]" ><i class="fa-solid fa-edit"></i></a>
+                            <a class="deleteIcon" (click)="deleteEmployee(emp.id)" >
+                                <i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="6">No Employees found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

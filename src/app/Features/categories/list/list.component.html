@@ -1,0 +1,111 @@
+<div class="col-12">
+    <div class="row top-buffer"></div>
+    <div class="row top-buffer text-center">
+        <div class="col-3"> </div>
+        <div class="col-2">
+            <h1 class="card-title"> {{ 'Asset.Types' | translate }} </h1>
+        </div>
+        <div class="col-4"> <select class="form-control" name="types" [(ngModel)]="selectedTypeId" [value]="0"
+                (change)="getCategoryByTypeId($event)">
+                <option value="0"></option>
+                <option *ngFor="let item of lstTypes" [value]="item.id">
+                    {{ lang == "en" ? item.name : item.nameAr }}
+                </option>
+            </select>
+        </div>
+        <div class="col-3"> </div>
+
+    </div>
+    <hr>
+    <div class="row top-buffer">
+        <div class="col-4">
+            <h1 class="card-title"> {{ 'Asset.Categories' | translate }} </h1>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addCategory(selectedTypeId)"><i class="fa-solid fa-plus"></i>
+                {{'Asset.AddCategory'
+                | translate }}</a>
+        </div>
+        <div class="col-4">
+            <h1 class="card-title"> {{ 'Asset.SubCategories' | translate }} </h1>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addSubCategory()"><i class="fa-solid fa-plus"></i>
+                {{ 'Asset.AddSubCategory'| translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-6">
+            <p-listbox *ngIf="lang=='en'" [options]="categoriesList" [(ngModel)]="selectedcateId" [filter]="true"
+                optionLabel="name" optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 250px)' }">
+                <ng-template let-cate pTemplate="item">
+                    <div (click)="filterSubCategoriesByCategoryId(cate.id)">
+                        {{cate.code}} - {{lang =='en' ? cate.name:cate.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editCategory(cate.id)"><i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteCategory(cate.id)"> <i
+                                class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+            <p-listbox *ngIf="lang=='ar'" [options]="categoriesList" [(ngModel)]="selectedcateId" [filter]="true"
+                optionLabel="nameAr" optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 250px)' }">
+                <ng-template let-cate pTemplate="item">
+                    <div (click)="filterSubCategoriesByCategoryId(cate.id)">
+                        {{cate.code}} - {{lang =='en' ? cate.name:cate.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editCategory(cate.id)"><i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteCategory(cate.id)"> <i
+                                class="fa-solid fa-trash"></i></span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+        <div class="col-6">
+            <p-listbox *ngIf="lang=='en'" [options]="subCategoriesList" [filter]="true" optionLabel="name"
+                optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 250px)' }">
+                <ng-template let-subCate pTemplate="item">
+                    <div>
+                        {{subCate.code}} - {{lang =='en' ? subCate.name:subCate.nameAr}}
+                    </div>
+                    <div> <span class="editIcon" (click)="editSubCategory(subCate.id)">
+                            <i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteSubCategory(subCate.id)">
+                            <i class="fa-solid fa-trash"></i>
+                        </span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+            <p-listbox *ngIf="lang=='ar'" [options]="subCategoriesList" [filter]="true" optionLabel="nameAr"
+                optionValue="id" [listStyle]="{ 'max-height': 'calc(100vh - 250px)' }">
+                <ng-template let-subCate pTemplate="item">
+                    <div>
+                        {{subCate.code}} - {{lang =='en' ? subCate.name:subCate.nameAr}}
+                    </div>
+                    <div>
+                        <span class="editIcon" (click)="editSubCategory(subCate.id)">
+                            <i class="fa-solid fa-edit"></i></span>
+                        <span class="deleteIcon" (click)="deleteSubCategory(subCate.id)">
+                            <i class="fa-solid fa-trash"></i>
+                        </span>
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+    </div>
+
+
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{errorMessage}}</span>
+</p-dialog>

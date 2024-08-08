@@ -1,0 +1,51 @@
+<div class="col-12">
+  <form class="form-horizontal" (ngSubmit)="onSubmit()" #form="ngForm">
+    <div class="row ">
+      <div class="col-3">
+        <label for="name" [translate]="'Asset.Name'">Name</label>
+        <input type="text" class="form-control" [(ngModel)]="govObj.name" name="orgname" required #name="ngModel"
+          [class.is-invalid]="(name.touched && name.errors) || form.submitted"
+          [class.is-valid]="name.valid && form.submitted" />
+      </div>
+      <div class="col-3">
+        <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+        <input type="text" class="form-control" name="nameAr" [(ngModel)]="govObj.nameAr" />
+      </div>
+      <div class="col-2">
+        <label for="code" [translate]="'Asset.Code'"></label>
+        <input type="text" class="form-control" [(ngModel)]="govObj.code" name="code" required #code="ngModel"
+          [class.is-invalid]="(code.touched && code.errors) || form.submitted"
+          [class.is-valid]="code.valid && form.submitted" />
+      </div>
+      <div class="col-2">
+        <label for="population" [translate]="'Asset.Population'"></label>
+        <input type="text" class="form-control" [(ngModel)]="govObj.population" name="population"
+          #population="ngModel" />
+      </div>
+      <div class="col-2">
+        <label for="area" [translate]="'Asset.Area'"></label>
+        <input type="text" class="form-control" [(ngModel)]="govObj.area" name="area" #area="ngModel" />
+      </div>
+    </div>
+    <div class="row top-buffer">
+      <div class="col-12 text-center">
+        <button class="btn btn-success" value="Save" type="submit"> {{ 'Asset.Save' | translate
+          }}</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+  <ng-template pTemplate="header">
+    <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">Save Data</h6>
+  </ng-template>
+  <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> Data is saved
+    successfully</span>
+</p-dialog>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+  <p-header style="color: rgb(181, 4, 4);"> Error </p-header>
+  <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

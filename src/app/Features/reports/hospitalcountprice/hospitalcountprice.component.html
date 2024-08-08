@@ -1,0 +1,40 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-11">
+            <h4 class="card-title">{{ 'Asset.CountAssetwithTotalPrice' | translate }}
+            </h4>
+        </div>
+        <div class="col-1">
+            <button type="button" pButton pRipple icon="pi pi-file-pdf" id="btnExport" class="p-button-warning download"
+                pTooltip="PDF" tooltipPosition="bottom" (click)="downloadPdf()">
+            </button>
+        </div>
+    </div>
+    <div class="row top-buffer"></div>
+    <div class="row top-buffer" id="contentToConvert">
+        <div class="col-7">
+            <p-chart type="bar" id="hospitalchart" width="100hv" height="calc(100vh - 200px)" [data]="data1"
+                [options]="chartOptions1"></p-chart>
+        </div>
+        <div class="col-5">
+            <p-table styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+                [value]="lstHospitalCountPrice" responsiveLayout="scroll" [rowHover]="true"
+                [scrollable]="true" scrollHeight="calc(100vh - 200px)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>{{'Asset.Name' |translate}}</th>
+                        <th>{{'Asset.Count' |translate}}</th>
+                        <th>{{'Asset.Price' |translate}}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-hos>
+                    <tr>
+                        <td>{{lang=='en'? hos.name:hos.nameAr}}</td>
+                        <td>{{lang=='en'? hos.assetCount:(+hos.assetCount).toLocaleString("ar-SA") }}</td>
+                        <td> {{lang=='en'? hos.assetprice:(+hos.assetprice).toLocaleString("ar-SA") }} </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

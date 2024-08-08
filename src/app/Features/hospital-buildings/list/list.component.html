@@ -1,0 +1,106 @@
+<div class="col-12">
+  <div class="row top-buffer">
+    <div class="col-2"></div>
+    <div class="col-2">
+      <h3 for="hospitals" [translate]="'Asset.Hospitals'"></h3>
+    </div>
+    <div class="col-5"> <select class="form-control" name="hospitalId" [(ngModel)]="selectedHospitalId"
+        [disabled]="isDisabled" [value]="0" (change)="getHospitalId($event)">
+        <option value="0"></option>
+        <option *ngFor="let item of lstHospitals" [value]="item.id" [selected]="item.id == hospitalId">
+          {{ lang == "en" ? item.name : item.nameAr }}
+        </option>
+      </select>
+    </div>
+    <div class="col-3"></div>
+  </div>
+  <hr>
+
+  <div class="row">
+    <div class="col-2">
+      <h1 class="card-title"> {{ 'Asset.Buildings' | translate }} </h1>
+    </div>
+    <div class="col-2">
+      <a class="addbutton" (click)="addBuilding()"><i class="fa-solid fa-plus"></i> {{ "Asset.AddBuilding" | translate
+        }}</a>
+    </div>
+    <div class="col-2">
+      <h1 class="card-title"> {{ 'Asset.Floors' | translate }} </h1>
+    </div>
+    <div class="col-2">
+      <a class="addbutton" (click)="addFloor()"><i class="fa-solid fa-plus"></i> {{ "Asset.AddFloor" | translate }}</a>
+    </div>
+    <div class="col-2">
+      <h1 class="card-title"> {{ 'Asset.Rooms' | translate }} </h1>
+    </div>
+    <div class="col-2">
+      <a class="addbutton" (click)="addRoom()"><i class="fa-solid fa-plus"></i> {{ "Asset.AddRoom" | translate }}</a>
+    </div>
+  </div>
+  <div class="row">
+    <br />
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <p-listbox [options]="lstBuildings" [(ngModel)]="selectedBuildId" [filter]="true" optionLabel="name"
+        optionValue="id">
+        <ng-template let-build pTemplate="item">
+          <div (click)="filterFloorByBuildingId(build.id)">
+            {{ build.code }} - {{ lang == "en" ? build.name : build.nameAr }}
+          </div>
+          <div>
+            <span class="editIcon" (click)="editBuilding(build.id)" *ngIf="isAdmin"><i
+                class="fa-solid fa-edit"></i></span>
+            <span class="deleteIcon" (click)="deleteBuilding(build.id)" *ngIf="isAdmin"> <i
+                class="fa-solid fa-trash"></i></span>
+          </div>
+        </ng-template>
+      </p-listbox>
+    </div>
+    <div class="col-4">
+      <p-listbox [options]="lstFloors" [filter]="true" [(ngModel)]="selectedFloorId" optionLabel="name"
+        optionValue="id">
+        <ng-template let-floor pTemplate="item">
+          <div (click)="filterRoomsByFloorId(floor.id)">
+            {{ floor.code }} - {{ lang == "en" ? floor.name : floor.nameAr }}
+          </div>
+          <div> <span class="editIcon" (click)="editFloor(floor.id)" *ngIf="isAdmin">
+              <i class="fa-solid fa-edit"></i></span>
+            <span class="deleteIcon" (click)="deleteFloor(floor.id)" *ngIf="isAdmin">
+              <i class="fa-solid fa-trash"></i>
+            </span>
+          </div>
+        </ng-template>
+      </p-listbox>
+    </div>
+    <div class="col-4">
+      <p-listbox [options]="lstRooms" [filter]="true" optionLabel="name" optionValue="id">
+        <ng-template let-room pTemplate="item">
+          <div> {{ room.code }} - {{ lang == "en" ? room.name : room.nameAr }}
+          </div>
+          <div> <span class="editIcon" (click)="editRoom(room.id)" *ngIf="isAdmin"><i
+                class="fa-solid fa-edit"></i></span>
+            <span class="deleteIcon" (click)="deleteRoom(room.id)" *ngIf="isAdmin"> <i class="fa-solid fa-trash"></i>
+            </span>
+          </div>
+        </ng-template>
+      </p-listbox>
+    </div>
+  </div>
+
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{ width: '350px' }">
+  <ng-template pTemplate="header">
+    <h6 style="color: #04527e; font-weight: bold; font-size: 16pt">
+      {{ "Asset.Save" | translate }}
+    </h6>
+  </ng-template>
+  <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">
+    {{ "Asset.SavedSuccess" | translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)"> {{'Asset.Error' | translate}} </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>

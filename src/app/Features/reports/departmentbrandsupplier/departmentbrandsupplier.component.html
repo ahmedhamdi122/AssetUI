@@ -1,0 +1,1750 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-10">
+            <h4 class="card-title"> {{'Asset.Generic' | translate }} </h4>
+        </div>
+        <div class="col-2">
+            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
+                aria-controls="collapseExample" class="filterbutton">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+        </div>
+    </div>
+
+
+    <!--------------------------Grouping && Exporting-------------------------------->
+    <div class="row top-buffer">
+        <div class="col-2">
+            <span> {{'Asset.GroupBy'|translate}} </span>
+        </div>
+        <div class="col-4" *ngIf="lang=='en'">
+            <select class="form-control" #assetElement (change)="selectElement(assetElement.value)" value="null">
+                <option></option>
+                <option *ngFor="let assetElement of AssetElements" [value]="assetElement">
+                    {{assetElement}}
+                </option>
+            </select>
+        </div>
+        <div class="col-4" *ngIf="lang=='ar'">
+            <select class="form-control" #assetElement (change)="selectElement(assetElement.value)" value="null">
+                <option [value]="null"> </option>
+                <option *ngFor="let assetElement of AssetElementsAr" [value]="assetElement">
+                    {{assetElement}}
+                </option>
+            </select>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-danger " value="Reset" type="button" id="clcgroupingbtn"
+                (click)="checkGroupingValue()"> {{'Asset.CancelGrouping' | translate }}
+            </button>
+        </div>
+
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-12">
+            <form (ngSubmit)="onFilter()" class="collapse card-filter" id="collapseExample" #searchForm="ngForm">
+
+                <div class="row top-buffer">
+                    <div class="col-4">
+                        <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                        <select class="form-control" id="governorate" #governorateId="ngModel"
+                            [(ngModel)]="filteredObj.governorateId"
+                            pTooltip="{{'Asset.Select' | translate }} {{'Asset.Governorate' | translate }} "
+                            tooltipPosition="top" name="governorate" [value]="0" (change)="getCitiesByGovId($event)">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Governorate' | translate }} --
+                            </option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="city" [translate]="'Asset.Cities'">Cities</label>
+                        <select class="form-control" id="city" #cityId="ngModel" [(ngModel)]="filteredObj.cityId"
+                            pTooltip="{{'Asset.Select' | translate }} {{'Asset.City' | translate }} "
+                            tooltipPosition="top" name="city" [value]="0" (change)="getHospitalsByCityId($event)">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.City' | translate }} --
+                            </option>
+                            <option *ngFor="let ct of lstCities" [value]="ct.id">
+                                {{ lang == "en" ? ct.name : ct.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="col-4">
+                        <label for="hospital" [translate]="'Asset.Hospitals'">{{'Asset.Hospitals' | translate }} --</label>
+                        <br />
+
+                        <p-multiSelect [options]="lstHospitals" [(ngModel)]="selectedOptions"
+                            placeholder="{{'Asset.Select' | translate }} {{'Asset.Hospitals' | translate }}" optionLabel="name" optionValue="id" name="hospitals"
+                            id="hospitals" [style]="{'width':'100%','height':'30px'}" (onChange)="addHospitals($event)">
+                            <ng-template let-value pTemplate="itemSelected">
+                                <div class="inline-flex align-items-center gap-2 px-1" *ngFor="let option of value">
+                                    <div>{{ lang === "en" ? option.name : option.nameAr }}</div>
+                                </div>
+                                <div *ngIf="!value || value.length === 0">-- {{'Asset.Select' | translate }} {{'Asset.Hospitals' | translate }} --</div>
+                            </ng-template>
+                            <ng-template let-host pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div> {{ lang === "en" ? host.name : host.nameAr }}</div>
+                                </div>
+                            </ng-template>
+                        </p-multiSelect>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <a role="button">{{'Asset.Name'|translate}}</a><br />
+                        <p-autoComplete [(ngModel)]="selectedItem" [suggestions]="lstMasterAssets" type="search"
+                            name="masterAssetId" id="masterAssetId" (completeMethod)="onSelectionChanged($event)"
+                            (onSelect)="getObject($event)" field="name" [dropdown]="false"
+                            (onClear)="clearAutoCompelete($event)">
+                            <ng-template let-masterAssetObj pTemplate="item">
+                                {{lang ==="en" ? masterAssetObj.name:masterAssetObj.nameAr}}
+                            </ng-template>
+                            <ng-template let-masterAssetObj pTemplate="selectedItem">
+                                {{lang=="en" ?masterAssetObj.name:masterAssetObj.nameAr}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div class="col-2">
+                        <a role="button">{{'Asset.Department' |translate}}</a><br />
+                        <select class="form-control" #departmentId (click)="filterByDepartment($event)">
+                            <option value="0"></option>
+                            <option *ngFor="let depart of lstDepartments" [value]="depart.id">
+                                {{ lang == "en" ? depart.name : depart.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <a role="button">{{'Asset.Brand' |translate}}</a><br />
+                        <select class="form-control" #brandId (click)="filterByBrand($event)">
+                            <option value="0"></option>
+                            <option *ngFor="let brnd of brndList" [value]="brnd.id">
+                                {{ lang == "en" ? brnd.name : brnd.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <a role="button">{{'Asset.Supplier'|translate}}</a><br />
+                        <select class="form-control" #supplierId (click)="filterBySupplier($event)">
+                            <option value="0"></option>
+                            <option *ngFor="let supplier of supList" [value]="supplier.id">
+                                {{ lang == "en" ? supplier.name : supplier.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <a role="button">{{'Asset.Status'|translate}}</a><br />
+                        <select class="form-control" #statusId (click)="filterByStatus($event)">
+                            <option value="0" style="font-weight: bold;"></option>
+                            <option *ngFor="let sts of statusList" [value]="sts.id">
+                                <span style="font-weight: bold;"> {{ lang == "en" ? sts.name : sts.nameAr }} </span>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        {{'Asset.PurchaseDate'|translate}}
+                    </div>
+                    <div class="col-2">
+                        <a role="button">{{'Asset.From'|translate}}</a><br />
+                        <input type="date" class="form-control" id="purchaseDateFrom" name="purchaseDateFrom"
+                            #purchaseDateFrom (click)="filterByPurchaseDateFrom(purchaseDateFrom.value)">
+                    </div>
+                    <div class="col-2">
+                        <a role="button">{{'Asset.To'|translate}}</a><br />
+                        <input type="date" class="form-control" id="purchaseDateTo" name="purchaseDateTo"
+                            #purchaseDateTo (click)="filterByPurchaseDateTo(purchaseDateTo.value)">
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit" (click)="search()">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                            <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                        </button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!---------------------------------------All Data------------------------------------------------------>
+    <!-- *ngIf="selectedElement==null&&showSearch==false" -->
+    <div class="row tblstyle" id="pdfTable" #pdfTable *ngIf="selectedElement==null&&showSearch==false">
+        <div class="col-md-12">
+            <p-table #dt [value]="lstAssets" [rows]="10"
+                styleClass="p-datatable-sm p-datatable-gridlines p-datatable-responsive-demo" [rowHover]="true"
+                [paginatorTemplate]="customPaginator" dataKey="id" [showCurrentPageReport]="true" [paginator]="true"
+                [lazy]="true" [totalRecords]="count" (onLazyLoad)="clicktbl($event)" [loading]="loading">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Name' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Name' | translate}}" (click)="sort($event)"
+                                style="cursor: pointer; ">
+                            </p-sortIcon>
+                        </th>
+
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Barcode' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Barcode' | translate}}" (click)="sort($event)"
+                                style="cursor: pointer; ">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Serial' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Serial' | translate}}" (click)="sort($event) "
+                                style="cursor: pointer; ">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Model' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Model' | translate}}" (click)="sort($event)"
+                                style="cursor: pointer; ">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Department' |
+                                translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Department' | translate}}" (click)="sort($event)"
+                                style="cursor: pointer; ">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Brand' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Brand' | translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Supplier' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Supplier' | translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.PurchaseDate' |translate}}</strong>
+                            <p-sortIcon id="{{'Asset.PurchaseDate' |translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-asset>
+                    <tr>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.assetName:asset.assetNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.barCode}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.brandName:asset.brandNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.purchaseDate | date:'shortDate'}}</strong>
+                        </td>
+
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <!---------------------------------------All Data for serach------------------------------------------------------>
+    <!-- *ngIf="selectedElement==null&&showSearch==true" -->
+    <div class="row tblstyle" id="pdfTable" #pdfTable *ngIf="selectedElement==null&&showSearch==true">
+        <div class="col-md-12">
+            <p-table #dt [value]="lstAssets2" [rows]="10" styleClass="p-datatable-responsive-demo" [rowHover]="true"
+                dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [showCurrentPageReport]="true" [paginator]="true" [lazy]="true" [totalRecords]="count"
+                (onLazyLoad)="clicktbl2($event)" [loading]="loading">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Name' |translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Name' |translate}}" style="cursor: pointer;"
+                                (click)="sortAfterSearch($event)">
+                            </p-sortIcon>
+                        </th>
+
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Barcode' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Barcode' | translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Serial' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Serial' | translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Model' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Model' | translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Department' |translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Department' |translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Brand' |translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Brand' |translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.Supplier' | translate}}</strong>
+                            <p-sortIcon id="{{'Asset.Supplier' | translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true" style="text-align: inherit;">
+                            <strong>{{'Asset.PurchaseDate'| translate}}</strong>
+                            <p-sortIcon id="{{'Asset.PurchaseDate'| translate}}" (click)="sortAfterSearch($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-asset>
+                    <tr>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.assetName:asset.assetNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.brandName:asset.brandNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{lang == "en"
+                                ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                        <td style="text-align: inherit;"><strong>{{asset.purchaseDate | date:'shortDate'}}</strong>
+                        </td>
+
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td colspan="8" style="text-align: inherit;">
+                            {{'Asset.NoData' | translate }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <!---------------------------------------Grouping by brand--------------------------------------------->
+    <div class="row tblstyle" id="pdfTable" #pdfTable
+        *ngIf="(selectedElement=='Brand' || selectedElement=='الصانع') &&showSearch==false">
+        <div class="col-md-12">
+
+
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                <div class="row" *cdkVirtualFor="let item of brndList " class="example-item">
+                    <div class="col-lg-12">
+                        <br><br>
+                        <mat-expansion-panel [(expanded)]="brandExpanded" (click)="getAssetsByBrandId(item)">
+                            <mat-expansion-panel-header style="background-color: #9ccae4;">
+                                <mat-panel-title>
+                                    <h2>{{lang
+                                        =="en"?item.name:item.nameAr}}</h2>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+            </cdk-virtual-scroll-viewport>
+
+
+        </div>
+    </div>
+    <div class="row tblstyle" id="pdfTable" #pdfTable
+        *ngIf="selectedElement=='Brand' || selectedElement=='الصانع' &&showSearch==true">
+        <div class="col-md-12">
+            <div class="row" *ngFor="let item of lstBrandAsset">
+                <div class="col-lg-12" *ngIf="item.assetList.length>0">
+                    <br><br>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header style="background-color: #9ccae4;">
+                            <mat-panel-title>
+                                <h2>{{lang
+                                    =="en"?item.name:item.nameAr}}</h2>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <!-- <mat-expansion-panel-header style="background-color: silver;" *ngIf="lang==='ar'">
+                                <mat-panel-title>
+                                    <h2 style="background-color:#c7eaf1;height: 50px;">{{item.nameAr}}</h2>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header> -->
+
+                        <p-table #dt [value]="item.assetList" [rows]="10" styleClass="p-datatable-responsive-demo"
+                            [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" class="rowtbl" *ngIf="selectedElement!=null">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="assetName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Name' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="assetName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="barcode" style="text-align: inherit;">
+                                        <strong>{{'Asset.Barcode' | translate}}</strong>
+                                        <p-sortIcon field="barcode">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                                        <strong>{{'Asset.Serial' | translate}}</strong>
+                                        <p-sortIcon field="serialNumber">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="model" style="text-align: inherit;">
+                                        <strong>{{'Asset.Model' | translate}}</strong>
+                                        <p-sortIcon field="model">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Department" style="text-align: inherit;">
+                                        <strong>{{'Asset.Department' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="departmentName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="brandName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Brand' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="brandName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="supplierName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Supplier' | translate}}</strong>
+                                        <p-sortIcon field="supplierName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                                        <strong>{{'Asset.PurchaseDate' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="purchaseDate">
+                                        </p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-asset>
+                                <tr>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.assetName:asset.assetNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.brandName:asset.brandNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                                            date:'shortDate'}}</strong>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </mat-expansion-panel>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-------------------------------------Grouping by Supplier-------------------------------------------->
+    <div class="row tblstyle" id="pdfTable" #pdfTable
+        *ngIf="selectedElement=='Supplier' || selectedElement=='المورد'&&showSearch==true">
+        <div class="col-md-12">
+            <div class="row" *ngFor="let item of lstSupplierAsset">
+                <div class="col-lg-12" *ngIf="item.assetList.length>0">
+                    <br><br>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header style="background-color: #9ccae4;">
+                            <mat-panel-title>
+                                <h2>{{lang
+                                    =="en"?item.name:item.nameAr}}</h2>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <p-table #dt [value]="item.assetList" [rows]="10" styleClass="p-datatable-responsive-demo"
+                            [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" class="rowtbl" *ngIf="selectedElement!=null"
+                            style="overflow: scroll;">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="assetName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Name' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="assetName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="barcode" style="text-align: inherit;">
+                                        <strong>{{'Asset.Barcode' | translate}}</strong>
+                                        <p-sortIcon field="barcode">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                                        <strong>{{'Asset.Serial' | translate}}</strong>
+                                        <p-sortIcon field="serialNumber">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="model" style="text-align: inherit;">
+                                        <strong>{{'Asset.Model' | translate}}</strong>
+                                        <p-sortIcon field="model">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Department" style="text-align: inherit;">
+                                        <strong>{{'Asset.Department' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="departmentName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="brandName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Brand' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="brandName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="supplierName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Supplier' | translate}}</strong>
+                                        <p-sortIcon field="supplierName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                                        <strong>{{'Asset.PurchaseDate' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="purchaseDate">
+                                        </p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-asset>
+                                <tr>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.assetName:asset.assetNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.brandName:asset.brandNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                                            date:'shortDate'}}</strong>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </mat-expansion-panel>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row tblstyle" id="pdfTable" #pdfTable
+        *ngIf="(selectedElement=='Supplier' || selectedElement=='المورد')&&showSearch==false">
+        <div class="col-md-12">
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                <div class="row" *cdkVirtualFor="let item of supList" class="example-item">
+
+                    <div class="col-lg-12">
+                        <br><br>
+                        <mat-expansion-panel (click)="getAssetsBySupplierId(item,1,10)" [(expanded)]="supplierExpanded">
+                            <mat-expansion-panel-header style="background-color: #9ccae4;">
+                                <mat-panel-title>
+                                    <h2>{{lang
+                                        =="en"?item.name:item.nameAr}}</h2>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+
+
+                        </mat-expansion-panel>
+
+                    </div>
+                </div>
+
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+    <!-------------------------------------Grouping by Department -------------------------------------------->
+    <div class="row tblstyle" id="tblDepartment" #pdfTable
+        *ngIf="selectedElement=='Department' || selectedElement=='القسم' &&showSearch==true">
+        <div class="col-md-12">
+            <div class="row" *ngFor="let item of lstDepartmentAsset">
+                <div class="col-lg-12" *ngIf="item.assetList.length>0">
+                    <br><br>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header style="background-color: #9ccae4;">
+                            <mat-panel-title>
+                                <h2>{{lang
+                                    =="en"?item.name:item.nameAr}}</h2>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <!-- <mat-expansion-panel-header style="background-color: silver;" *ngIf="lang==='en'">
+                                <mat-panel-title>
+                                    <h2 style="background-color:#c7eaf1; height: 50px;">{{item.name}}</h2>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-expansion-panel-header style="background-color: silver;" *ngIf="lang==='ar'">
+                                <mat-panel-title>
+                                    <h2 style="background-color:#c7eaf1;height: 50px;">{{item.nameAr}}</h2>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header> -->
+
+                        <p-table #dt [value]="item.assetList" [rows]="10" styleClass="p-datatable-responsive-demo"
+                            [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" class="rowtbl" *ngIf="selectedElement!=null">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="assetName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Name' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="assetName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="barcode" style="text-align: inherit;">
+                                        <strong>{{'Asset.Barcode' | translate}}</strong>
+                                        <p-sortIcon field="barcode">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                                        <strong>{{'Asset.Serial' | translate}}</strong>
+                                        <p-sortIcon field="serialNumber">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="model" style="text-align: inherit;">
+                                        <strong>{{'Asset.Model' | translate}}</strong>
+                                        <p-sortIcon field="model">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Department" style="text-align: inherit;">
+                                        <strong>{{'Asset.Department' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="departmentName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="brandName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Brand' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="brandName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="supplierName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Supplier' | translate}}</strong>
+                                        <p-sortIcon field="supplierName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                                        <strong>{{'Asset.PurchaseDate' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="purchaseDate">
+                                        </p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-asset>
+                                <tr>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.assetName:asset.assetNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.brandName:asset.brandNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                                            date:'shortDate'}}</strong>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </mat-expansion-panel>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row tblstyle" id="tblDepartment" #pdfTable
+        *ngIf="(selectedElement=='Department' || selectedElement=='القسم' )&&showSearch==false">
+        <div class="col-md-12">
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                <div class="row" *cdkVirtualFor="let item of lstDepartments " class="example-item">
+                    <div class="col-lg-12">
+                        <br><br>
+                        <mat-expansion-panel [(expanded)]="departmentExpanded" (click)="getAssetsByDepartmentId(item)">
+                            <mat-expansion-panel-header style="background-color: #9ccae4;">
+                                <mat-panel-title>
+                                    <h2>{{lang
+                                        =="en"?item.name:item.nameAr}}</h2>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+            </cdk-virtual-scroll-viewport>
+
+        </div>
+    </div>
+
+
+
+    <!-------------------------------------Grouping by Governorate -------------------------------------------->
+    <div class="row tblstyle" id="tblGovernorate" #tblGovernorate
+        *ngIf="selectedElement=='Governorate' || selectedElement=='المحافظة' &&showSearch==true">
+        <div class="col-md-12">
+            <div class="row" *ngFor="let item of lstGovernorateAssets">
+                <div class="col-lg-12" *ngIf="item.assetList.length>0">
+                    <br><br>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header style="background-color: #9ccae4;">
+                            <mat-panel-title>
+                                <h2>{{lang=="en"?item.name:item.nameAr}}</h2>
+                            </mat-panel-title>
+
+
+                            <mat-panel-description>
+                                {{item.countAssets}}
+                            </mat-panel-description>
+
+
+                        </mat-expansion-panel-header>
+
+
+                        <p-table #dt [value]="item.assetList" [rows]="10" styleClass="p-datatable-responsive-demo"
+                            [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" class="rowtbl" *ngIf="selectedElement != null">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="assetName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Name' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="assetName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="barcode" style="text-align: inherit;">
+                                        <strong>{{'Asset.Barcode' | translate}}</strong>
+                                        <p-sortIcon field="barcode">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                                        <strong>{{'Asset.Serial' | translate}}</strong>
+                                        <p-sortIcon field="serialNumber">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="model" style="text-align: inherit;">
+                                        <strong>{{'Asset.Model' | translate}}</strong>
+                                        <p-sortIcon field="model">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Department" style="text-align: inherit;">
+                                        <strong>{{'Asset.Department' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="departmentName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="brandName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Brand' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="brandName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="supplierName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Supplier' | translate}}</strong>
+                                        <p-sortIcon field="supplierName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                                        <strong>{{'Asset.PurchaseDate' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="purchaseDate">
+                                        </p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-asset>
+                                <tr>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.assetName:asset.assetNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.brandName:asset.brandNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                                            date:'shortDate'}}</strong>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </mat-expansion-panel>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row tblstyle" id="tblGovernorate" #tblGovernorate
+        *ngIf="(selectedElement=='Governorate' || selectedElement=='المحافظة' )&&showSearch==false">
+        <div class="col-md-12">
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                <div class="row" *cdkVirtualFor="let item of lstGovernorates " class="example-item">
+                    <div class="col-lg-12">
+                        <br><br>
+                        <mat-expansion-panel [(expanded)]="governorateExpanded"
+                            (click)="getAssetsByGovernorateId(item)">
+                            <mat-expansion-panel-header style="background-color: #9ccae4;">
+                                <mat-panel-title>
+                                    <h2>{{lang
+                                        =="en"?item.name:item.nameAr}}</h2>
+                                </mat-panel-title>
+
+                                <mat-panel-description>
+                                    {{item.countAssets}}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+            </cdk-virtual-scroll-viewport>
+
+        </div>
+    </div>
+
+
+    <!-------------------------------------Grouping by City -------------------------------------------->
+    <div class="row tblstyle" id="tblCity" #tblCity
+        *ngIf="selectedElement=='City' || selectedElement=='المدينة' &&showSearch==true">
+        <div class="col-md-12">
+            <div class="row" *ngFor="let item of lstCityAssets">
+                <div class="col-lg-12" *ngIf="item.assetList.length>0">
+                    <br><br>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header style="background-color: #9ccae4;">
+                            <mat-panel-title>
+                                <h2>{{lang=="en"?item.name:item.nameAr}}</h2>
+                            </mat-panel-title>
+
+
+                            <mat-panel-description>
+                                {{item.countAssets}}
+                            </mat-panel-description>
+
+
+                        </mat-expansion-panel-header>
+
+
+                        <p-table #dt [value]="item.assetList" [rows]="10" styleClass="p-datatable-responsive-demo"
+                            [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" class="rowtbl" *ngIf="selectedElement != null">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="assetName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Name' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="assetName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="barcode" style="text-align: inherit;">
+                                        <strong>{{'Asset.Barcode' | translate}}</strong>
+                                        <p-sortIcon field="barcode">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                                        <strong>{{'Asset.Serial' | translate}}</strong>
+                                        <p-sortIcon field="serialNumber">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="model" style="text-align: inherit;">
+                                        <strong>{{'Asset.Model' | translate}}</strong>
+                                        <p-sortIcon field="model">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Department" style="text-align: inherit;">
+                                        <strong>{{'Asset.Department' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="departmentName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="brandName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Brand' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="brandName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="supplierName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Supplier' | translate}}</strong>
+                                        <p-sortIcon field="supplierName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                                        <strong>{{'Asset.PurchaseDate' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="purchaseDate">
+                                        </p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-asset>
+                                <tr>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.assetName:asset.assetNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.brandName:asset.brandNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                                            date:'shortDate'}}</strong>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </mat-expansion-panel>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row tblstyle" id="tblCity" #tblCity
+        *ngIf="(selectedElement=='City' || selectedElement=='المدينة')&&showSearch==false">
+        <div class="col-md-12">
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                <div class="row" *cdkVirtualFor="let item of lstCities " class="example-item">
+                    <div class="col-lg-12">
+                        <br><br>
+                        <mat-expansion-panel [(expanded)]="cityExpanded" (click)="getAssetsByCityId(item)">
+                            <mat-expansion-panel-header style="background-color: #9ccae4;">
+                                <mat-panel-title>
+                                    <h2>{{lang
+                                        =="en"?item.name:item.nameAr}}</h2>
+                                </mat-panel-title>
+
+                                <mat-panel-description>
+                                    {{item.countAssets}}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+            </cdk-virtual-scroll-viewport>
+
+        </div>
+    </div>
+
+
+
+    <!-------------------------------------Grouping by Hospital -------------------------------------------->
+    <div class="row tblstyle" id="tblHospital" #tblHospital
+        *ngIf="selectedElement=='Hospital' || selectedElement=='المستشفى' &&showSearch==true">
+        <div class="col-md-12">
+            <div class="row" *ngFor="let item of lstHospitalAssets">
+                <div class="col-lg-12" *ngIf="item.assetList.length>0">
+                    <br><br>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header style="background-color: #9ccae4;">
+                            <mat-panel-title>
+                                <h2>{{lang=="en"?item.name:item.nameAr}}</h2>
+                            </mat-panel-title>
+
+
+                            <mat-panel-description>
+                                {{item.countAssets}}
+                            </mat-panel-description>
+
+
+                        </mat-expansion-panel-header>
+
+
+                        <p-table #dt [value]="item.assetList" [rows]="10" styleClass="p-datatable-responsive-demo"
+                            [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                            [showCurrentPageReport]="true" class="rowtbl" *ngIf="selectedElement != null">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="assetName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Name' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="assetName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="barcode" style="text-align: inherit;">
+                                        <strong>{{'Asset.Barcode' | translate}}</strong>
+                                        <p-sortIcon field="barcode">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                                        <strong>{{'Asset.Serial' | translate}}</strong>
+                                        <p-sortIcon field="serialNumber">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="model" style="text-align: inherit;">
+                                        <strong>{{'Asset.Model' | translate}}</strong>
+                                        <p-sortIcon field="model">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="Department" style="text-align: inherit;">
+                                        <strong>{{'Asset.Department' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="departmentName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="brandName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Brand' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="brandName">
+                                        </p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="supplierName" style="text-align: inherit;">
+                                        <strong>{{'Asset.Supplier' | translate}}</strong>
+                                        <p-sortIcon field="supplierName">
+                                        </p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                                        <strong>{{'Asset.PurchaseDate' |
+                                            translate}}</strong>
+                                        <p-sortIcon field="purchaseDate">
+                                        </p-sortIcon>
+                                    </th>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-asset>
+                                <tr>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.assetName:asset.assetNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.serialNumber}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.model}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.brandName:asset.brandNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{lang == "en"
+                                            ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                                    <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                                            date:'shortDate'}}</strong>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </mat-expansion-panel>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row tblstyle" id="tblHospital" #tblHospital
+        *ngIf="(selectedElement=='Hospital' || selectedElement=='المستشفى')&&showSearch==false">
+        <div class="col-md-12">
+            <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+                <div class="row" *cdkVirtualFor="let item of lstHospitals " class="example-item">
+                    <div class="col-lg-12">
+                        <br><br>
+                        <mat-expansion-panel [(expanded)]="cityExpanded" (click)="getAssetsByHospitalId(item)">
+                            <mat-expansion-panel-header  class="right-aligned-header" style="background-color: #9ccae4;">
+                                <mat-panel-title>
+                                    <h2>{{lang=="en"?item.name:item.nameAr}}</h2>
+                                </mat-panel-title>
+
+                                <mat-panel-description>
+                                    {{item.countAssets}}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </div>
+                </div>
+            </cdk-virtual-scroll-viewport>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{errorMessage}}
+    </span>
+</p-dialog>
+
+
+<p-dialog [(visible)]="departmentVisible" appendTo="body" modal="true" (onHide)="afterCloseDepartmentDialog()">
+
+    <ng-template pTemplate="header">
+        <h2 [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold','text-align':'center' }
+     : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{lang=='en'?departmentNameAtDialog:departmentNameAtDialogAr}}- ({{departmentCountAtDialog}}) </h2>
+
+
+
+    </ng-template>
+    <p-table #dt [value]="listAssetsGroupByDepartment" [rows]="10" styleClass="p-datatable-responsive-demo"
+        [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"
+        class="rowtbl" *ngIf="selectedElement!=null" [ngStyle]="lang=='en'?{'direction':'ltr'}:{'direction':'rtl'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="assetName" style="text-align: inherit;">
+                    <strong>{{'Asset.Name' |
+                        translate}}</strong>
+                    <p-sortIcon field="assetName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="barcode" style="text-align: inherit;">
+                    <strong>{{'Asset.Barcode' | translate}}</strong>
+                    <p-sortIcon field="barcode">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                    <strong>{{'Asset.Serial' | translate}}</strong>
+                    <p-sortIcon field="serialNumber">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="model" style="text-align: inherit;">
+                    <strong>{{'Asset.Model' | translate}}</strong>
+                    <p-sortIcon field="model">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department" style="text-align: inherit;">
+                    <strong>{{'Asset.Department' |
+                        translate}}</strong>
+                    <p-sortIcon field="departmentName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="brandName" style="text-align: inherit;">
+                    <strong>{{'Asset.Brand' |
+                        translate}}</strong>
+                    <p-sortIcon field="brandName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="supplierName" style="text-align: inherit;">
+                    <strong>{{'Asset.Supplier' | translate}}</strong>
+                    <p-sortIcon field="supplierName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                    <strong>{{'Asset.PurchaseDate' |
+                        translate}}</strong>
+                    <p-sortIcon field="purchaseDate">
+                    </p-sortIcon>
+                </th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-asset>
+            <tr>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.assetName:asset.assetNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong>
+                </td>
+                <td style="text-align: inherit;">
+                    <strong>{{asset.serialNumber}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{asset.model}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.brandName:asset.brandNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                        date:'shortDate'}}</strong>
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+
+
+    <ng-template pTemplate="emptymessage" let-columns>
+        <tr *ngIf=" departmentCountAtDialog==0">
+            <td colspan="8" style="text-align: inherit;">
+                {{'Asset.NoData' | translate }}
+            </td>
+        </tr>
+    </ng-template>
+
+</p-dialog>
+
+<p-dialog [(visible)]="brandVisible" appendTo="body" modal="true" (onHide)="afterCloseBrandtDialog()">
+
+    <ng-template pTemplate="header">
+        <h2 [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold','text-align':'center' }
+     : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{lang=='en'?brandNameAtDialog:brandNameAtDialogAr}}- ( {{brandCountAtDialog}}) </h2>
+
+
+
+    </ng-template>
+    <p-table #dt [value]="listAssetsGroupByBrand" [rows]="10" styleClass="p-datatable-responsive-demo"
+        [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true"
+        class="rowtbl" *ngIf="selectedElement!=null" [ngStyle]="lang=='en'?{'direction':'ltr'}:{'direction':'rtl'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="assetName" style="text-align: inherit;">
+                    <strong>{{'Asset.Name' |
+                        translate}}</strong>
+                    <p-sortIcon field="assetName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="barcode" style="text-align: inherit;">
+                    <strong>{{'Asset.Barcode' | translate}}</strong>
+                    <p-sortIcon field="barcode">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                    <strong>{{'Asset.Serial' | translate}}</strong>
+                    <p-sortIcon field="serialNumber">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="model" style="text-align: inherit;">
+                    <strong>{{'Asset.Model' | translate}}</strong>
+                    <p-sortIcon field="model">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department" style="text-align: inherit;">
+                    <strong>{{'Asset.Department' |
+                        translate}}</strong>
+                    <p-sortIcon field="departmentName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="brandName" style="text-align: inherit;">
+                    <strong>{{'Asset.Brand' |
+                        translate}}</strong>
+                    <p-sortIcon field="brandName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="supplierName" style="text-align: inherit;">
+                    <strong>{{'Asset.Supplier' | translate}}</strong>
+                    <p-sortIcon field="supplierName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                    <strong>{{'Asset.PurchaseDate' |
+                        translate}}</strong>
+                    <p-sortIcon field="purchaseDate">
+                    </p-sortIcon>
+                </th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-asset>
+            <tr>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.assetName:asset.assetNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong>
+                </td>
+                <td style="text-align: inherit;">
+                    <strong>{{asset.serialNumber}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{asset.model}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.brandName:asset.brandNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                        date:'shortDate'}}</strong>
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+
+
+    <ng-template pTemplate="emptymessage" let-columns>
+        <tr *ngIf=" brandCountAtDialog==0">
+            <td colspan="8" style="text-align: inherit;">
+                {{'Asset.NoData' | translate }}
+            </td>
+        </tr>
+    </ng-template>
+
+</p-dialog>
+
+<p-dialog [(visible)]="supplierVisible" appendTo="body" modal="true" (onHide)="afterCloseSuppliertDialog()">
+    <ng-template pTemplate="header">
+        <h2 [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold','text-align':'center' }
+     : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{lang=='en'?supplierNameAtDialog:supplierNameAtDialogAr}}- ( {{supplierCountAtDialog}}) </h2>
+    </ng-template>
+    <p-table #dt [value]="listAssetsGroupBySupplier" [rows]="10" styleClass="p-datatable-responsive-demo"
+        [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" [paginator]="true" [lazy]="true" [totalRecords]="count"
+        (onLazyLoad)="clickSupplierTable($event)" [loading]="loading"
+        [ngStyle]="lang=='en'?{'direction':'ltr'}:{'direction':'rtl'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="assetName" style="text-align: inherit;">
+                    <strong>{{'Asset.Name' |
+                        translate}}</strong>
+                    <p-sortIcon field="assetName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="barcode" style="text-align: inherit;">
+                    <strong>{{'Asset.Barcode' | translate}}</strong>
+                    <p-sortIcon field="barcode">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                    <strong>{{'Asset.Serial' | translate}}</strong>
+                    <p-sortIcon field="serialNumber">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="model" style="text-align: inherit;">
+                    <strong>{{'Asset.Model' | translate}}</strong>
+                    <p-sortIcon field="model">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department" style="text-align: inherit;">
+                    <strong>{{'Asset.Department' |
+                        translate}}</strong>
+                    <p-sortIcon field="departmentName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="brandName" style="text-align: inherit;">
+                    <strong>{{'Asset.Brand' |
+                        translate}}</strong>
+                    <p-sortIcon field="brandName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="supplierName" style="text-align: inherit;">
+                    <strong>{{'Asset.Supplier' | translate}}</strong>
+                    <p-sortIcon field="supplierName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                    <strong>{{'Asset.PurchaseDate' |
+                        translate}}</strong>
+                    <p-sortIcon field="purchaseDate">
+                    </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-asset>
+            <tr>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.assetName:asset.assetNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong>
+                </td>
+                <td style="text-align: inherit;">
+                    <strong>{{asset.serialNumber}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{asset.model}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.brandName:asset.brandNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                        date:'shortDate'}}</strong>
+                </td>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="8" style="text-align: inherit;">
+                    {{'Asset.NoData' | translate }}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+
+<p-dialog [(visible)]="governorateVisible" appendTo="body" modal="true" (onHide)="afterCloseGovernorateDialog()"
+    [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}">
+    <ng-template pTemplate="header">
+        <h2 [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold','text-align':'center' }
+     : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{lang=='en'?governorateNameAtDialog:governorateNameAtDialogAr}}- ( {{governorateCountAtDialog}}) </h2>
+    </ng-template>
+    <p-table #dt [value]="listAssetsGroupByGovernorate" [rows]="10" styleClass="p-datatable-responsive-demo"
+        [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" [paginator]="true" [lazy]="true" [totalRecords]="count"
+        (onLazyLoad)="clickSupplierTable($event)" [loading]="loading"
+        [ngStyle]="lang=='en'?{'direction':'ltr'}:{'direction':'rtl'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="assetName" style="text-align: inherit;">
+                    <strong>{{'Asset.Name' |
+                        translate}}</strong>
+                    <p-sortIcon field="assetName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="barcode" style="text-align: inherit;">
+                    <strong>{{'Asset.Barcode' | translate}}</strong>
+                    <p-sortIcon field="barcode">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                    <strong>{{'Asset.Serial' | translate}}</strong>
+                    <p-sortIcon field="serialNumber">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="model" style="text-align: inherit;">
+                    <strong>{{'Asset.Model' | translate}}</strong>
+                    <p-sortIcon field="model">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department" style="text-align: inherit;">
+                    <strong>{{'Asset.Department' |
+                        translate}}</strong>
+                    <p-sortIcon field="departmentName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="brandName" style="text-align: inherit;">
+                    <strong>{{'Asset.Brand' |
+                        translate}}</strong>
+                    <p-sortIcon field="brandName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="supplierName" style="text-align: inherit;">
+                    <strong>{{'Asset.Supplier' | translate}}</strong>
+                    <p-sortIcon field="supplierName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                    <strong>{{'Asset.PurchaseDate' |
+                        translate}}</strong>
+                    <p-sortIcon field="purchaseDate">
+                    </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-asset>
+            <tr>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.assetName:asset.assetNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong>
+                </td>
+                <td style="text-align: inherit;">
+                    <strong>{{asset.serialNumber}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{asset.model}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.brandName:asset.brandNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                        date:'shortDate'}}</strong>
+                </td>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="8" style="text-align: inherit;">
+                    {{'Asset.NoData' | translate }}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+
+<p-dialog [(visible)]="cityVisible" appendTo="body" modal="true" (onHide)="afterCloseCityDialog()"
+    [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}">
+    <ng-template pTemplate="header">
+        <h2 [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold','text-align':'center' }
+     : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{lang=='en'?cityNameAtDialog:cityNameAtDialogAr}}- ( {{cityCountAtDialog}}) </h2>
+    </ng-template>
+    <p-table #dt [value]="listAssetsGroupByCity" [rows]="10" styleClass="p-datatable-responsive-demo" [rowHover]="true"
+        dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" [paginator]="true" [lazy]="true" [totalRecords]="count"
+        (onLazyLoad)="clickSupplierTable($event)" [loading]="loading"
+        [ngStyle]="lang=='en'?{'direction':'ltr'}:{'direction':'rtl'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="assetName" style="text-align: inherit;">
+                    <strong>{{'Asset.Name' |
+                        translate}}</strong>
+                    <p-sortIcon field="assetName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="barcode" style="text-align: inherit;">
+                    <strong>{{'Asset.Barcode' | translate}}</strong>
+                    <p-sortIcon field="barcode">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                    <strong>{{'Asset.Serial' | translate}}</strong>
+                    <p-sortIcon field="serialNumber">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="model" style="text-align: inherit;">
+                    <strong>{{'Asset.Model' | translate}}</strong>
+                    <p-sortIcon field="model">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department" style="text-align: inherit;">
+                    <strong>{{'Asset.Department' |
+                        translate}}</strong>
+                    <p-sortIcon field="departmentName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="brandName" style="text-align: inherit;">
+                    <strong>{{'Asset.Brand' |
+                        translate}}</strong>
+                    <p-sortIcon field="brandName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="supplierName" style="text-align: inherit;">
+                    <strong>{{'Asset.Supplier' | translate}}</strong>
+                    <p-sortIcon field="supplierName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                    <strong>{{'Asset.PurchaseDate' |
+                        translate}}</strong>
+                    <p-sortIcon field="purchaseDate">
+                    </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-asset>
+            <tr>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.assetName:asset.assetNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong>
+                </td>
+                <td style="text-align: inherit;">
+                    <strong>{{asset.serialNumber}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{asset.model}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.brandName:asset.brandNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                        date:'shortDate'}}</strong>
+                </td>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="8" style="text-align: inherit;">
+                    {{'Asset.NoData' | translate }}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+<p-dialog [(visible)]="hospitalVisible" appendTo="body" modal="true" (onHide)="afterCloseHospitalDialog()"
+    [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}">
+    <ng-template pTemplate="header">
+        <h2 [ngStyle]="lang =='en' ? {'font-size': '40px','color': '#1683c2','font-weight': 'bold'}
+     : {  'font-size': '30px','color': '#1683c2','font-weight': 'bold'}">
+            {{lang=='en'?hospitalNameAtDialog:hospitalNameAtDialogAr}} - ({{hospitalCountAtDialog}}) </h2>
+    </ng-template>
+    <p-table #dt [value]="listAssetsGroupByHospital" [rows]="10" styleClass="p-datatable-responsive-demo" [rowHover]="true"
+        dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" [paginator]="true" [lazy]="true" [totalRecords]="count"
+        (onLazyLoad)="clickSupplierTable($event)" [loading]="loading"
+        [ngStyle]="lang=='en'?{'direction':'ltr'}:{'direction':'rtl'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="assetName" style="text-align: inherit;">
+                    <strong>{{'Asset.Name' |
+                        translate}}</strong>
+                    <p-sortIcon field="assetName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="barcode" style="text-align: inherit;">
+                    <strong>{{'Asset.Barcode' | translate}}</strong>
+                    <p-sortIcon field="barcode">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="serialNumber" style="text-align: inherit;">
+                    <strong>{{'Asset.Serial' | translate}}</strong>
+                    <p-sortIcon field="serialNumber">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="model" style="text-align: inherit;">
+                    <strong>{{'Asset.Model' | translate}}</strong>
+                    <p-sortIcon field="model">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="Department" style="text-align: inherit;">
+                    <strong>{{'Asset.Department' |
+                        translate}}</strong>
+                    <p-sortIcon field="departmentName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="brandName" style="text-align: inherit;">
+                    <strong>{{'Asset.Brand' |
+                        translate}}</strong>
+                    <p-sortIcon field="brandName">
+                    </p-sortIcon>
+                </th>
+
+                <th pSortableColumn="supplierName" style="text-align: inherit;">
+                    <strong>{{'Asset.Supplier' | translate}}</strong>
+                    <p-sortIcon field="supplierName">
+                    </p-sortIcon>
+                </th>
+                <th pSortableColumn="purchaseDate" style="text-align: inherit;">
+                    <strong>{{'Asset.PurchaseDate' |
+                        translate}}</strong>
+                    <p-sortIcon field="purchaseDate">
+                    </p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-asset>
+            <tr>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.assetName:asset.assetNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.barcode}}</strong>
+                </td>
+                <td style="text-align: inherit;">
+                    <strong>{{asset.serialNumber}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{asset.model}}</strong>
+                </td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.departmentName:asset.departmentNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.brandName:asset.brandNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{lang == "en"
+                        ?asset.supplierName:asset.supplierNameAr}}</strong></td>
+                <td style="text-align: inherit;"><strong>{{asset.purchaseDate |
+                        date:'shortDate'}}</strong>
+                </td>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td colspan="8" style="text-align: inherit;">
+                    {{'Asset.NoData' | translate }}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

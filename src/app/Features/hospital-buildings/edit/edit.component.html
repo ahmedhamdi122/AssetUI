@@ -1,0 +1,66 @@
+<div class="col-12">
+    <form class="form-horizontal" (ngSubmit)="onSubmit()" #form="ngForm">
+        <div class="row top-buffer">
+            <div class="col-2">
+                <label for="code" [translate]="'Asset.Code'"></label>
+                <input type="text" class="form-control" [(ngModel)]="buildObj.code" name="code" required #code="ngModel"
+                    [class.is-invalid]="(code.touched && code.errors) || form.submitted"
+                    [class.is-valid]="code.valid && form.submitted" />
+            </div>
+            <div class="col-4">
+                <label for="hospitals" [translate]="'Asset.Hospitals'"></label>
+                <select [(ngModel)]="buildObj.hospitalId" class="form-control" [ngModelOptions]="{standalone: true}"
+                    [value]="0">
+                    <option value="0"> </option>
+                    <option *ngFor="let item of lstHospitals" [value]="item.id"
+                        [selected]="item.id == buildObj.hospitalId">
+                        {{lang =='en' ? item.name:item.nameAr}}</option>
+                </select>
+            </div>
+
+            <div class="col-3">
+                <label for="name" [translate]="'Asset.Name'"></label>
+                <input type="text" class="form-control" [(ngModel)]="buildObj.name" name="orgname" required
+                    #name="ngModel" [class.is-invalid]="(name.touched && name.errors) || form.submitted"
+                    [class.is-valid]="name.valid && form.submitted" />
+            </div>
+            <div class="col-3">
+                <label for="buildnameAr" [translate]="'Asset.ArabicName'">Arabic Name</label>
+                <input type="text" class="form-control" name="buildnameAr" [(ngModel)]="buildObj.nameAr" required
+                    #buildnameAr="ngModel"
+                    [class.is-invalid]="(buildnameAr.touched && buildnameAr.errors) || form.submitted"
+                    [class.is-valid]="buildnameAr.valid && form.submitted" />
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-6">
+                <label for="brief" [translate]="'Asset.Brief'"></label>
+                <textarea type="text" class="form-control" [(ngModel)]="buildObj.brief" name="brief"></textarea>
+            </div>
+            <div class="col-6">
+                <label for="briefAr" [translate]="'Asset.BriefAr'"></label>
+                <textarea type="text" class="form-control" [(ngModel)]="buildObj.briefAr" name="briefAr"></textarea>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button class="btn btn-success" value="Save" type="submit"> {{ "Asset.Save" | translate }}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;"> {{ "Asset.Save" | translate
+            }}</h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ "Asset.SavedSuccess" |
+        translate }}</span>
+</p-dialog>
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> Error </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

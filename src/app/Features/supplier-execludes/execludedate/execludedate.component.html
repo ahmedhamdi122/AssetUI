@@ -1,0 +1,56 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;"
+            [translate]="'Asset.ExecludeDate'"></h4>
+    </div>
+    <div class="card-body">
+
+
+        <div class="row">
+            <div class="col-12">
+                <label for="exdate" [translate]="'Asset.AssetName'">:</label>
+                {{assetName}}
+            </div>
+        </div>
+        <form #form="ngForm" (ngSubmit)="onSubmit()">
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="statusId" [translate]="'Asset.Status'"></label>
+                    <mat-radio-group [(ngModel)]="selectedStatusId" (change)="getSelecteditem()"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="supplierExecludeObj.statusId">
+                        <mat-radio-button [value]="item.id" name="status{{i}}"
+                            *ngFor="let item of lstStatus;let i = index" [checked]="item.checked">
+                            {{lang == "en" ? item.name:item.nameAr}}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+
+            <div class="row top-buffer" *ngIf="isDate">
+                <div class="col-12">
+                    <label for="exdate" [translate]="'Asset.ExecludeDate'"></label>
+                    <input type="date" [(ngModel)]="supplierExecludeObj.execludeDate" class="form-control"
+                        name="execludeDate" />
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary pull-center btn-sm" [translate]="'Asset.Save'"
+                        style="margin:0px 5px;background-color: #1483c2;border-color: #1483c2"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>

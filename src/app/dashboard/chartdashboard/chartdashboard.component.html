@@ -1,0 +1,742 @@
+<div class="col-12">
+    <div class=" row col top-buffer ">
+        <h4 class="card-title"> {{'Asset.DashBoard' | translate }} </h4>
+    </div>
+    <div class="row row-cols-1 row-cols-xxl-6 row-cols-lg-3 row-cols-md-2 top-buffer">
+        <div class="col-4">
+            <div class="card widget-icon-box shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-muted text-uppercase fs-13 mt-0">{{'Asset.Hospitals' | translate}}</h5>
+                            <h4 class="my-3">{{lang=='en' ? totalHospitals:totalHospitals.toLocaleString("ar-SA")}}</h4>
+                            <p class="mb-0 text-muted text-truncate text-more" (click)="displayHospitalsInDialog()">
+                                <span class=" a1 me-1"><i class=" fa-solid fa-eye"></i></span>
+                                <span> {{'Asset.moreInfo' | translate}}</span>
+                            </p>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title a1 rounded rounded-3 fs-3">
+                                <i class="fa-solid fa-hospital" ></i>
+                            </span>
+                        </div>
+                    </div>
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+        <div class="col-4">
+            <div class="card widget-icon-box shadow">
+                <div class="card-body ">
+                    <div class="d-flex justify-content-between">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-muted text-uppercase fs-13 mt-0">
+                                {{'Asset.Assets' | translate}}</h5>
+                            <h4 class="my-3"> {{lang=='en' ? totalHospitalAssets:
+                                totalHospitalAssets.toLocaleString("ar-SA")}}</h4>
+                            <p class="mb-0 text-muted text-truncate text-more"
+                                (click)="displayHospitalAssetsInDialog()">
+                                <span class=" a2 me-1"><i class=" fa-solid fa-eye"></i></span>
+                                <span> {{'Asset.moreInfo' | translate}}</span>
+                            </p>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title a2 text-bg-info rounded rounded-3 fs-3 ">
+                                <i class="fa-solid fa-building"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+
+        <div [ngClass]="(currentUser.hospitalId > 0  || currentUser.supplierId > 0 ) ? 'col-4': 'col-4'">
+            <div class="card widget-icon-box shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-muted text-uppercase fs-13 mt-0">{{'Asset.Brands' | translate}}</h5>
+                            <h4 class="my-3">{{lang=='en' ?totalBrands :totalBrands.toLocaleString("ar-SA")}}</h4>
+                            <p class="mb-0 text-muted text-truncate text-more" (click)="displayBrandsInDialog()">
+                                <span class="a3 me-1"><i class=" fa-solid fa-eye"></i></span>
+                                <span> {{'Asset.moreInfo' | translate}}</span>
+                            </p>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title a3 text-bg-danger rounded rounded-3 fs-3  ">
+                                <i class="fa-solid fa-award"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+    </div>
+    <div class="row top-buffer row-cols-1 row-cols-xxl-6 row-cols-lg-3 row-cols-md-2">
+        <div [ngClass]="(currentUser.hospitalId > 0 || currentUser.supplierId > 0) ? 'col-4': 'col-4'">
+            <div class="card widget-icon-box shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-muted text-uppercase fs-13 mt-0">{{'Asset.Suppliers' | translate}}</h5>
+                            <h4 class="my-3">{{lang=='en' ? totalSuppliers: totalSuppliers.toLocaleString("ar-SA")}}
+                            </h4>
+                            <p class="mb-0 text-muted text-truncate text-more" (click)="displaySuppliersInDialog()">
+                                <span class=" a4 me-1"><i class=" fa-solid fa-eye"></i></span>
+                                <span> {{'Asset.moreInfo' | translate}}</span>
+                            </p>
+                        </div>
+                        <div class=" flex-shrink-0">
+                            <span class="avatar-title a4 text-bg-primary rounded rounded-3 fs-3 ">
+                                <i class="fa-solid fa-warehouse"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+
+        <div [ngClass]="(currentUser.hospitalId > 0 || currentUser.supplierId > 0) ? 'col-4': 'col-4'">
+            <div class="card widget-icon-box shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-muted text-uppercase fs-13 mt-0">
+                                {{'Asset.Requests' | translate}}
+                            </h5>
+                            <h4 class="my-3">{{lang=='en' ? totalRequests: totalRequests.toLocaleString("ar-SA")}}</h4>
+                            <p class="mb-0 text-muted text-truncate text-more" (click)="displayTicketInDialog()">
+                                <span class=" a5 me-1"><i class=" fa-solid fa-eye"></i></span>
+                                <span> {{'Asset.moreInfo' | translate}}</span>
+                            </p>
+                        </div>
+                        <div class=" flex-shrink-0">
+                            <span class="avatar-title a5  rounded rounded-3 fs-3 ">
+                                <i class="fa-solid fa-ticket"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+
+        <div [ngClass]="(currentUser.hospitalId > 0 || currentUser.supplierId > 0) ? 'col-4': 'col-4'">
+            <div class="card widget-icon-box shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-muted text-uppercase fs-13 mt-0">{{'Asset.WorkOrders' | translate}}</h5>
+                            <h4 class="my-3">{{lang=='en' ? totalWorkOrders: totalWorkOrders.toLocaleString("ar-SA")}}
+                            </h4>
+                            <p class="mb-0 text-muted text-truncate text-more" (click)="displayWOInDialog()">
+                                <span class=" a6 me-1"><i class=" fa-solid fa-eye"></i></span>
+                                <span> {{'Asset.moreInfo' | translate}}</span>
+                            </p>
+                        </div>
+                        <div class="avatar-sm flex-shrink-0">
+                            <span class="avatar-title a6 text-bg-dark rounded rounded-3 fs-3 ">
+                                <i class="fa-solid fa-cogs"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+    </div> <!-- end row -->
+    <div class="row top-buffer row-cols-1 row-cols-xxl-6 row-cols-lg-3 row-cols-md-2" id="contentToConvert">
+        <div class="col-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5> {{ 'Asset.AssetBrands' | translate }}</h5>
+                    <p-chart type="bar" [data]="assetsByBrands" [options]="assetBrandOptions">
+                    </p-chart>
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+        <div class="col-4">
+            <div class="card shadow" style="height: 100% !important;">
+                <div class="card-body">
+                    <h5> {{ 'Asset.HospitalAssets' | translate }}</h5>
+                    <p-chart type="doughnut" [data]="assetByHospitals" [options]="assetOptions" height="320px">
+                    </p-chart>
+                </div> <!-- end card-body-->
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+    </div>
+    <div class="row top-buffer " id="contentToConvert">
+        <div class="col-12">
+            <div class="card shadow text-center" style="height:40px">
+                <div class="card-body" style="margin-top: -10px;">
+                    <h4> {{'Asset.CardsTitle' | translate }} </h4>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row top-buffer row-cols-1 row-cols-xxl-6 row-cols-lg-3 row-cols-md-2" id="contentToConvert">
+        <div class="col-3">
+            <div class="card shadow  p-card">
+
+                <div class="d-flex justify-content-between p-2"
+                    [ngStyle]="lstAssetsWarrantyEndBefore3Monthes.length >0 ? {'color': 'red'} : {  'color': 'green'}">
+                    <div class="text-uppercase fs-13 mt-0 p-2" (click)="displayAssetsBefore3MonthesDialogue()"> <i
+                            class="fa-solid fa-bell" style="font-size:24px; cursor: pointer;"></i></div>
+                    <div class="p-2">
+                        <h5>{{'Asset.WarrantyAssetsPeriodTime' | translate }}</h5>
+                    </div>
+                    <div class="p-2">
+                        <h5>{{warrantyCount}}</h5>
+                    </div>
+                </div>
+
+
+
+                <div class="card-body">
+                    <p style="margin-top: -20px;" (click)="displayAssetsBefore3MonthesDialogue()" class="text-center"
+                        *ngIf="lstAssetsWarrantyEndBefore3Monthes.length > 0">
+                        <span class="viewIcon" style="cursor: pointer;"><i class="fa-solid fa-eye"></i></span>
+                        <span> {{'Asset.moreInfo' | translate}}</span>
+                    </p>
+                    <p-dialog appendTo="body" [(visible)]="displayAssetsBefore3Monthes" appendTo="body"
+                        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                        <div class="col-12">
+
+                            <h4 [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                                {{'Asset.WarrantyAssetsPeriodTime' | translate }}</h4>
+                        </div>
+
+                        <mat-radio-group style="display: block;"
+                            [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                            [(ngModel)]="selectedItem" (change)="onWarrantyItemChange($event)" name="gcat"
+                            id="gduration">
+                            <mat-radio-button [value]="item.id" *ngFor="let item of lstDuration">
+                                {{lang=='en'?item.name:item.nameAr}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                        <div class="row top-buffer" style="padding:10px 0px;"></div>
+                        <p-table [value]="lstAssetsWarrantyEndBefore3Monthes"
+                            styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                            [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                            responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10"
+                            [totalRecords]="warrantyCount" pageLinks="10" (onLazyLoad)="pageWarranty($event)">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="text-align: inherit;">{{ 'Asset.Name' | translate }}
+                                    </th>
+                                    <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate}}
+                                    </th>
+                                    <th style="text-align: inherit;">{{ 'Asset.Serial' | translate}}
+                                    </th>
+                                    <th style="text-align: inherit;">{{ 'Asset.Brand' | translate}}
+                                    </th>
+                                    <th style="text-align: inherit;">{{ 'Asset.Department' | translate}}
+                                    </th>
+                                    <th style="text-align: inherit;">{{ 'Asset.Duration' | translate}}
+                                    </th>
+                                    <th style="text-align: inherit;">
+                                        {{'Asset.Actions'|translate}}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item>
+                                <tr>
+                                    <td style="text-align: inherit;" class="spanpopup" (click)="viewDetail(item.id)">
+                                        {{lang==en?item.assetName:item.assetNameAr}}</td>
+                                    <td style="text-align: inherit;">{{item.barCode}} </td>
+                                    <td style="text-align: inherit;">{{item.serial}} </td>
+                                    <td style="text-align: inherit;">
+                                        {{lang=='en'?item.brandName:item.brandNameAr}}
+                                    </td>
+                                    <td style="text-align: inherit;">
+                                        {{lang=='en'?item.departmentName:item.departmentNameAr}}
+                                    </td>
+                                    <td style="text-align: inherit;">{{item.endWarrantyDate}} </td>
+                                    <td style="text-align: inherit;">
+                                        <a [routerLink]="['/dash/hospitalassets/detail/',item.id]">
+                                            <i class="fas fa-eye"
+                                                style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage" let-columns>
+                                <tr>
+                                    <td colspan="7" style="text-align: inherit;">
+                                        {{'Asset.NoData' | translate }}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-dialog>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-3">
+            <div class="card shadow text-center p-card">
+                <div class="d-flex justify-content-between p-2"
+                    [ngStyle]="totalCount > 0 ? {'color': 'red'} : {  'color': 'green'}">
+                    <div class="text-uppercase fs-13 mt-0 p-2" (click)="displayAssetPeriorityDialogue()"> <i
+                            class="fa-solid fa-bell" style="font-size:24px;cursor: pointer;"></i></div>
+                    <div class="p-2">
+                        <h5>{{'Asset.AssetPeriorityError' | translate }}</h5>
+                    </div>
+                    <div class="p-2">
+                        <h5>{{totalCount}}</h5>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="card-body">
+                    <p style="margin-top: -20px;" (click)="displayAssetPeriorityDialogue()"
+                        *ngIf="totalCount > 0">
+                        <span class="viewIcon" style="cursor: pointer;"><i class="fa-solid fa-eye"></i></span>
+                        <span> {{'Asset.moreInfo' | translate}}</span>
+                    </p>
+                    <p-dialog appendTo="body" [(visible)]="displayAssetPeriorities" appendTo="body"
+                        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                        [(ngModel)]="selectedPeriorityItem">
+                        <div class="col-12">
+
+                            <h4 [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                                {{'Asset.AssetPeriorityError' | translate }}</h4>
+
+                            <mat-radio-group style="display: block;"
+                                [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                                [(ngModel)]="selectedPeriorityItem" (change)="onPeriorityChange($event)"
+                                name="gperiority" id="gperiority">
+                                <mat-radio-button [value]="0">{{ 'Asset.All' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="item.id" *ngFor="let item of lstAssetPeriorities">
+                                    {{lang == 'en' ?item.name:item.nameAr}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                            <div class="top-buffer"></div>
+                            <p-table [value]="lstHighPeriorityRequest"
+                                [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10"
+                                [totalRecords]="periorityCount" pageLinks="10"
+                                (onLazyLoad)="loadPeriorityRequest($event)">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="text-align: inherit;">{{'Asset.Name' | translate }} </th>
+                                        <th style="text-align: inherit;">{{'Asset.Barcode' | translate}} </th>
+                                        <th style="text-align: inherit;">{{'Asset.Serial' | translate}} </th>
+                                        <th style="text-align: inherit;">{{'Asset.Model' | translate}} </th>
+                                        <th style="text-align: inherit;">{{'Asset.Department' | translate}}</th>
+                                        <th style="text-align: inherit;">{{'Asset.Brand' | translate}}</th>
+                                        <th style="text-align: inherit;">{{'Asset.SRNumber' | translate}} </th>
+                                        <th style="text-align: inherit;"> {{'Asset.Actions'|translate}}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-item>
+                                    <tr>
+                                        <td style="text-align: inherit;">
+                                            <span [ngStyle]="{'color': item.color}" (click)="viewDetail(item.id)">
+                                                {{lang=="en" ? item.assetName:item.assetNameAr}}
+                                            </span>
+                                        </td>
+                                        <td style="text-align: inherit;">{{item.barcode}} </td>
+                                        <td style="text-align: inherit;">{{item.serialNumber}} </td>
+                                        <td style="text-align: inherit;">{{item.modelNumber}} </td>
+                                        <td style="text-align: inherit;">
+                                            {{lang==en?item.departmentName:item.departmentNameAr}} </td>
+                                        <td style="text-align: inherit;">{{lang==en?item.brandName:item.brandNameAr}}
+                                        </td>
+                                        <td style="text-align: inherit;">{{item.requestCode}} </td>
+                                        <td style="text-align: inherit;">
+                                            <span class="viewIcon" (click)="viewRequest(item.id)">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+
+                        </div>
+
+                    </p-dialog>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="card shadow text-center p-card">
+
+                <div class="d-flex justify-content-between p-2"
+                    [ngStyle]="lstMasterContracts.length >0 ? {'color': 'red'} : {  'color': 'green'}">
+                    <div class="text-uppercase fs-13 mt-0 p-2" (click)="displayMasterContractDialogue()"> <i
+                            class="fa-solid fa-bell" style="font-size:24px;cursor: pointer;"></i></div>
+                    <div class="p-2">
+                        <h5>{{'Asset.EndContracts' | translate }}</h5>
+                    </div>
+                    <div class="p-2">
+                        <h5>{{contractCount}}</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p style="margin-top: -20px;" (click)="displayMasterContractDialogue()" class="text-center"
+                        *ngIf="lstMasterContracts.length > 0">
+                        <span class="viewIcon" style="cursor: pointer;"><i class="fa-solid fa-eye"></i></span>
+                        <span> {{'Asset.moreInfo' | translate}}</span>
+                    </p>
+
+                    <p-dialog appendTo="body" [(visible)]="displayMasterContract" appendTo="body"
+                        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                        <div class="col-12">
+                            <h4 [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                                {{'Asset.EndContracts' | translate }}</h4>
+                            <mat-radio-group style="display: block;"
+                                [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                                [(ngModel)]="selectedContractItem" (change)="onContractItemChange($event)"
+                                name="gcontract" id="gcontract">
+                                <mat-radio-button [value]="item.id" *ngFor="let item of lstContractDuration">
+                                    {{lang=='en'?item.name:item.nameAr}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                            <div class="top-buffer"></div>
+                            <p-table [value]="lstMasterContracts" [paginator]="true"
+                                [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                                [lazy]="true" [rows]="10" [totalRecords]="contractCount" pageLinks="10"
+                                (onLazyLoad)="alertContractsEndBefore3Months($event)"
+                                styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                                responsiveLayout="scroll">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="text-align: inherit;">{{ 'Asset.ContractNumber' | translate }}
+                                        </th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Date' | translate}}
+                                        </th>
+                                        <th style="text-align: inherit;">{{ 'Asset.To' | translate }}
+                                        <th style="text-align: inherit;">{{ 'Asset.Subject' | translate}}
+                                        </th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Cost' | translate}}
+                                        </th>
+                                        <th style="text-align: inherit;">{{'Asset.Actions'|translate}}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-item>
+                                    <tr>
+                                        <td style="text-align: inherit;">{{item.contractNumber}}</td>
+                                        <td style="text-align: inherit;">{{item.contractDate | date:'yyyy-MM-dd'}}</td>
+                                        <td style="text-align: inherit;">{{item.endDate | date:'yyyy-MM-dd'}}</td>
+                                        <td style="text-align: inherit;">{{item.subject}} -
+                                            {{lang=="en"?item.supplierName :item.supplierNameAr}}</td>
+                                        <td style="text-align: inherit;">{{item.cost}}</td>
+                                        <td style="text-align: inherit;">
+                                            <a class="viewIcon" (click)="viewContract(item.id)">
+                                                <i class="fa-solid fa-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage" let-columns>
+                                    <tr>
+                                        <td colspan="6" style="text-align: inherit;">
+                                            {{'Asset.NoData' | translate }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-dialog>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="card shadow text-center p-card">
+
+                <div class="d-flex justify-content-between p-2"
+                    [ngStyle]="listDelayHospitalAssetFixes.length >0 ? {'color': 'red'} : {  'color': 'green'}">
+                    <div class="text-uppercase fs-13 mt-0 p-2" (click)="displayExternalFixDelayDialogue()"> <i
+                            class="fa-solid fa-bell" style="font-size:24px;cursor: pointer;"></i></div>
+                    <div class="p-2">
+                        <h5>{{'Asset.ExternalFixDelay72Hours' | translate }}</h5>
+                    </div>
+                    <div class="p-2">
+                        <h5>{{countexternalfix}}</h5>
+                    </div>
+                </div>
+
+
+                <div class="card-body">
+
+                    <p style="margin-top: -20px;" (click)="displayExternalFixDelayDialogue()" class="text-center"
+                        *ngIf="listDelayHospitalAssetFixes.length > 0">
+                        <span class="viewIcon" style="cursor: pointer;"><i class="fa-solid fa-eye"></i></span>
+                        <span> {{'Asset.moreInfo' | translate}}</span>
+                    </p>
+                    <p-dialog appendTo="body" [(visible)]="displayExternalFixDelay" appendTo="body"
+                        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                        <div class="col-12">
+
+                            <h4 [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+                                {{'Asset.ExternalFixDelay72Hours' | translate }}</h4>
+
+                            <p-table [value]="listDelayHospitalAssetFixes"
+                                [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction"
+                                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+                                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10"
+                                [totalRecords]="countexternalfix" pageLinks="10" (onLazyLoad)="loadExternalFix($event)">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="text-align: inherit;">{{ 'Asset.OutDate' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Name' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Brand' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Model' | translate }} </th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Serial' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Barcode' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Supplier' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.Department' | translate }}</th>
+                                        <th style="text-align: inherit;">{{ 'Asset.ExpectedDate' | translate }}</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-item>
+                                    <tr>
+                                        <td style="text-align: inherit;">{{item.outDate | date:'dd-MM-yyyy'}}</td>
+                                        <td style="text-align: inherit;">
+                                            <span class="spanpopup" (click)="viewDetail(item.id)">
+                                                {{lang=="en" ? item.assetName:item.assetNameAr}}
+                                            </span>
+                                        </td>
+                                        <td style="text-align: inherit;">{{lang =="en" ?
+                                            item.brandName:item.brandNameAr}}
+                                        </td>
+                                        <td style="text-align: inherit;">{{item.modelNumber}}</td>
+                                        <td style="text-align: inherit;">{{item.serialNumber}}</td>
+                                        <td style="text-align: inherit;">{{item.barcode}}</td>
+                                        <td style="text-align: inherit;">{{lang =="en" ?
+                                            item.supplierName:item.supplierNameAr}}</td>
+                                        <td style="text-align: inherit;">{{lang =="en" ?
+                                            item.departmentName:item.departmentNameAr}} </td>
+                                        <td style="text-align: inherit;">{{item.expectedDate| date:'dd-MM-yyyy'}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage" let-columns>
+                                    <tr>
+                                        <td colspan="9" style="text-align: inherit;">
+                                            {{'Asset.NoData' | translate }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-dialog>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" [(visible)]="displayHospitals" appendTo="body"
+    [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.Hospitals' | translate }}
+    </h4>
+    <div [routerLink]="['/dash/hospitals']" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+        [dir]="direction" style="cursor: pointer;">
+        <span class="a1 me-1"><i class=" fa-solid fa-eye"></i></span>
+        <span style="padding: 5px 5px;">{{'Asset.ReadMore' | translate }}</span>
+    </div>
+    <p-table [value]="listHospitals" name="dtHospitals"
+        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.Code' | translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Name' | translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Governorate' | translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.City' | translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Organization'| translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.SubOrganization' | translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;">{{lang =="en" ? item.code: (+item.code).toLocaleString("ar-SA")}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.name:item.nameAr}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.governorateName:item.governorateNameAr}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.cityName:item.cityNameAr}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.orgName:item.orgNameAr}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.subOrgName:item.subOrgNameAr}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</p-dialog>
+<p-dialog [(visible)]="displaySuppliers" appendTo="body" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+    [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.Suppliers' | translate }}
+    </h4>
+    <div *ngIf="isAdmin" [routerLink]="['/dash/suppliers']" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+        [dir]="direction" style="cursor: pointer;"><span class="a4 me-1"><i class=" fa-solid fa-eye"></i></span>
+        <span style="padding: 5px 5px;">{{'Asset.ReadMore' | translate }}</span>
+    </div>
+    <p-table [value]="listSuppliers" name="dtSuppliers"
+        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.Code' | translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Name' | translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;">{{lang =="en" ? item.code: (+item.code).toLocaleString("ar-SA")}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.name:item.nameAr}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+<p-dialog [(visible)]="displayBrands" appendTo="body" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+    [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.Brands' | translate }}
+    </h4>
+    <div *ngIf="isAdmin" [routerLink]="['/dash/brands']" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+        [dir]="direction" style="cursor: pointer;">
+        <span class="a3 me-1"><i class=" fa-solid fa-eye"></i></span>
+        <span style="padding: 5px 5px;">{{'Asset.ReadMore' | translate }}</span>
+    </div>
+
+    <p-table [value]="listBrands" name="dtBrands" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+        responsiveLayout="scroll" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.Code' | translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Name' | translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;">{{lang =="en" ? item.code: (+item.code).toLocaleString("ar-SA")}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.name:item.nameAr}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+<p-dialog [(visible)]="displayAssets" appendTo="body" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+    [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.Assets' | translate }}
+    </h4>
+    <div *ngIf="isAdmin" [routerLink]="['/dash/assets']" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+        [dir]="direction" style="cursor: pointer;">
+        <span class="a2 me-1"><i class=" fa-solid fa-eye"></i></span>
+        <span style="padding: 5px 5px;">{{'Asset.ReadMore' | translate }}</span>
+    </div>
+
+    <p-table [value]="listHospitalAssets" name="dtAssets"
+        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.Code' | translate }} </th>
+                <th style="text-align: inherit;">{{ 'Asset.Name' | translate }} </th>
+                <th style="text-align: inherit;">{{ 'Asset.Brand' | translate }} </th>
+                <th style="text-align: inherit;">{{ 'Asset.Model' | translate }} </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;"> {{item.barcode}} </td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.assetName:item.assetNameAr}}</td>
+                <td style="text-align: inherit;">{{lang =="en" ? item.brandName:item.brandNameAr}}</td>
+                <td style="text-align: inherit;"> {{item.model}} </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+<p-dialog [(visible)]="displayTicket" appendTo="body" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+    [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.Requests' | translate }}
+    </h4>
+    <p-table [value]="allRequests" name="requestTbl"
+        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.Barcode' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Name' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Brand' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Model' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Subject' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Date' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Close' |translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;"> {{item.barcode}} </td>
+                <td style="text-align: inherit;"> {{lang=="en" ? item.assetName:item.assetNameAr}} </td>
+                <td style="text-align: inherit;"> {{lang=="en" ? item.brandName:item.brandNameAr}} </td>
+                <td style="text-align: inherit;"> {{ item.modelNumber}} </td>
+                <td style="text-align: inherit;"> {{item.subject}} </td>
+                <td style="text-align: inherit;"> {{item.requestDate | date:'dd/MM/yyyy'}} </td>
+                <td style="text-align: inherit;"> {{item.closedDate}} </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+<p-dialog [(visible)]="displayWO" appendTo="body" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+    [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.WorkOrders' | translate }}
+    </h4>
+    <p-table [value]="listWO" name="woTbl" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+        responsiveLayout="scroll" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.WorkOrderNumber' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Barcode' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Name' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Brand' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Model' |translate }}</th>
+                <th style="text-align: inherit;">{{ 'Asset.Date' |translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;"> {{item.workOrderNumber}} </td>
+                <td style="text-align: inherit;"> {{item.barCode}} </td>
+                <td style="text-align: inherit;"> {{lang=="en" ?item.assetName:item.assetNameAr}}</td>
+                <td style="text-align: inherit;"> {{lang=="en" ?item.brandName:item.brandNameAr}}</td>
+                <td style="text-align: inherit;"> {{item.modelNumber}}</td>
+                <td style="text-align: inherit;"> {{item.creationDate | date:"dd/MM/yyyy"}} </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+<p-dialog [(visible)]="displayDepartments" appendTo="body" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}"
+    [dir]="direction">
+    <h4 class="card-title" [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">{{
+        'Asset.Departments' | translate }}
+    </h4>
+    <p-table [value]="listDepartments" name="departmentTbl"
+        styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines" responsiveLayout="scroll"
+        [ngStyle]="{'text-align': lang == 'en' ? 'left': 'right'}" [dir]="direction">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: inherit;">{{ 'Asset.Name' |translate }}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="text-align: inherit;"> {{lang=="en" ?item.name:item.nameAr}} </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{ errorMessage }}</span>
+</p-dialog>

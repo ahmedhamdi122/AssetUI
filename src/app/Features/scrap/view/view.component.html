@@ -1,0 +1,108 @@
+<div class="top-buffer">
+  <div class="card">
+    <div class="card-body">
+
+      <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+        {{'Asset.Main' | translate }} </h3>
+
+
+      <div class="row top-buffer">
+        <div class="col-md-4">
+          <span style="font-weight: bold;">{{'Asset.Name' | translate }} :
+          </span>{{lang == 'en' ? scrapObj.assetName:scrapObj.assetNameAr}}
+        </div>
+        <div class="col-md-4">
+          <span style="font-weight: bold;">{{'Asset.Serial' | translate }} :
+          </span>{{scrapObj.serialNumber}}
+        </div>
+
+        <div class="col-md-4">
+          <span style="font-weight: bold;">{{'Asset.Barcode' | translate }} :
+          </span>{{scrapObj.barcode}}
+        </div>
+      </div>
+
+      <div class="row top-buffer">
+        <div class="col-md-4">
+          <span style="font-weight: bold;">{{'Asset.Brand' | translate }} :
+          </span>{{lang == 'en' ? scrapObj.brandName:scrapObj.brandNameAr}}
+        </div>
+        <div class="col-md-4">
+          <span style="font-weight: bold;"> {{'Asset.Model' | translate }} :
+          </span>{{scrapObj.model}}
+        </div>
+        <div class="col-md-4">
+          <span style="font-weight: bold;"> {{'Asset.Department' | translate }} :
+          </span>{{scrapObj.departmentName}}
+        </div>
+      </div>
+      <br>
+      <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+        {{'Asset.ScrapDetails' | translate }} </h3>
+
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <span style="font-weight: bold;"> {{'Asset.ScrapNo' | translate }} :
+          </span>{{scrapObj.scrapNo}}
+        </div>
+      </div>
+      <div class="row top-buffer">
+        <div class="col-md-6">
+          <span style="font-weight: bold;"> {{'Asset.Comment' | translate }} :
+          </span>&nbsp;{{scrapObj.comment}}
+        </div>
+        <div class="col-md-6">
+          <span style="font-weight: bold;">{{'Asset.ScrapDate' | translate }} :
+          </span>&nbsp;{{ scrapObj.scrapDate| date: "yyyy-MM-dd" }}
+        </div>
+      </div>
+
+      <div class="row top-buffer">
+        <div class="col-md-12">
+          <span style="font-weight: bold;"> {{'Asset.Reasons' | translate }} :
+          </span>&nbsp;
+          <div *ngFor="let itm of lstScrapReasons;let idx= index">
+            <li>
+              {{lang == 'en' ? itm.scrapReasonName:itm.scrapReasonNameAr}}
+            </li>
+          </div>
+
+
+        </div>
+      </div>
+      <br>
+      <h3 class="card-title" style="font-weight: bold;background-color: #cedef1; padding: 0px 10px;">
+        {{'Asset.Attachments' | translate }} </h3>
+
+      <div class="row top-buffer">
+        <table class="table table-bordered table-striped table-hover" style="width: 100%">
+          <thead>
+            <tr>
+              <th>{{ "Asset.Name" | translate }}</th>
+              <th>{{ "Asset.Title" | translate }}</th>
+              <th style="text-align: center">
+                {{ "Asset.Download" | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of lstScrapAttachment">
+              <td>{{ doc.fileName }}</td>
+              <td>{{ doc.title }}</td>
+              <td style="text-align: center">
+                <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files" tooltipPosition="bottom">
+                  <i class="fa-solid fa fa-download" style="color: #61bb20"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+  <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+  <span style="color: rgb(181, 4, 4); font-weight: bold">
+    {{ errorMessage }}</span>
+</p-dialog>

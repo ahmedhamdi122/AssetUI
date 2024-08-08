@@ -1,0 +1,36 @@
+@import url("../../../assets/CSS/loginStyle.css");
+
+.page {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  direction: ltr;
+  font-family: sans-serif;
+}
+
+.form-control {
+  border-radius: 20px !important;
+  padding-left: 20px !important;
+  height: 45px !important;
+  color: #1b54af !important;
+}
+
+.card-body {
+  border-radius: 50px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 30px;
+  margin-top: -70px;
+}
+
+.btn {
+  width: 150px;
+  border-radius: 30px;
+  background: #1b54af;
+  color: white;
+}
+ 
+.btn:hover {
+  box-shadow: 2px 2px 5px rgba(29, 20, 20);
+  color: white;
+  font-weight: bolder;
+}

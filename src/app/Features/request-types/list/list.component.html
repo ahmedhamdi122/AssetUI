@@ -1,0 +1,51 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-2">
+            <h1 class="card-title"> {{ 'Asset.requestTypes' | translate }} </h1>
+        </div>
+        <div class="col-8">
+            <button class="btn excelIcon" (click)="exportExcel()" pTooltip="{{'Asset.ExportExcel'| translate}}"
+                tooltipPosition="top"> <i class="fa-solid fa-file-excel fa-2xl"></i></button>
+            <button class="btn pdfIcon" (click)="exportPDF()" pTooltip="{{'Asset.ExportPdf'| translate}}"
+                tooltipPosition="top"> <i class="fa-solid fa-file-pdf fa-2xl"></i></button>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" (click)="addRequestType()"><i class="fa-solid fa-plus"></i> {{ 'Asset.Create' |
+                translate }}</a>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table #dt dataKey="id" [rowHover]="true" [value]="reqTypesList"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="false" [rows]="10" [loading]="loading" [totalRecords]="count" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th  style="text-align: inherit;">{{ 'Asset.Code' | translate }}<p-sortIcon id="{{'Asset.Code' | translate }}"
+                                (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th  style="text-align: inherit;">{{ 'Asset.Name' | translate }} <p-sortIcon id="{{'Asset.Name' | translate }}"
+                                (click)="sort($event)">
+                            </p-sortIcon>
+                        </th>
+                        <th  style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-req>
+                    <tr>
+                        <td  style="text-align: inherit;">
+                            {{lang=="en"?req.code:(+req.code).toLocaleString("ar-SA")}}</td>
+                        <td  style="text-align: inherit;">{{lang =="en" ? req.name:req.nameAr}}</td>
+                        <td  style="text-align: inherit;">
+                            <a class="editIcon" (click)="editRequestType(req.id)"><i class="fa-solid fa-edit"></i></a>
+                            <a class="deleteIcon" (click)="deleteRequestType(req.id)"><i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="card">
+
+    <div class="card-body" style="margin-top: -20px;">
+
+        <form (ngSubmit)="onSubmit()" #wnpmForm="ngForm">
+
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <label for="notes" [translate]="'Asset.Comment'"></label>
+                    <textarea #comment="ngModel" name="comment" id="comment" class="form-control"
+                        [ngModelOptions]="{standalone: true}" [(ngModel)]="manfacturerPMAssetTaskObj.comment"
+                        [placeholder]="'Asset.Comment' | translate"></textarea>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="isAgency">
+                <div class="col-12">
+                    <label for="agencyId" [translate]="'Asset.Agency'"></label>
+                    <select class="form-control" id="agencyId"
+                        pTooltip="{{'Asset.Select' | translate }} {{'Asset.Adency' | translate }}" tooltipPosition="top"
+                        name="agencyId" [(ngModel)]="manfacturerPMAssetTaskObj.agencyId" [value]="0">
+                        <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Agency' | translate }} --
+                        </option>
+                        <option *ngFor="let supplier of lstSuppliers" [value]="supplier.id">
+                            {{ lang == "en" ? supplier.name : supplier.nameAr }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="isDoneDate">
+                <div class="col-12">
+                    <label for="duedate" [translate]="'Asset.Date'"></label>
+                    <p-calendar #dueDate="ngModel" [ngModelOptions]="{standalone: true}" dateFormat="d/m/yy"
+                        [showIcon]="true" inputId="icon" appendTo="body" yearRange="1900:2050" [monthNavigator]="true"
+                        [yearNavigator]="true" [(ngModel)]="manfacturerPMAssetTaskObj.doneDate"
+                        [defaultDate]="manfacturerPMAssetTaskObj.doneDate">
+                    </p-calendar>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="isDelay">
+                <div class="col-12">
+                    <label for="duedate" [translate]="'Asset.Date'"></label>
+                    <p-calendar #dueDate="ngModel" [ngModelOptions]="{standalone: true}" dateFormat="d/m/yy"
+                        [showIcon]="true" inputId="icon" appendTo="body" yearRange="1900:2050" [monthNavigator]="true"
+                        [yearNavigator]="true" [(ngModel)]="manfacturerPMAssetTaskObj.dueDate"
+                        [defaultDate]="manfacturerPMAssetTaskObj.dueDate">
+                    </p-calendar>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12">
+                    <button [disabled]="isDisabled" class="btn btn-primary pull-center btn-sm" value="save"
+                        type="submit" style="margin-top: 20px;background-color: #1483c2;border-color: #1483c2;">
+                        {{ 'Asset.Save' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<p-dialog [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;">{{errorMessage}}</span>
+</p-dialog>
+
+
+
+
+<p-dialog [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e;font-weight: bold;font-size: 16pt;">{{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate
+        }}</span>
+
+    <br />
+    <br />
+    <button class="btn btn-primary pull-center btn-md"
+        style="margin: 0px 5px;background-color: #fe7f83 !important;border-color:#fe7f83" (click)="closeDialogue()"> {{
+        'Asset.Close' | translate }}</button>
+</p-dialog>

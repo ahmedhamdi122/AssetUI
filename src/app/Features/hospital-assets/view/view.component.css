@@ -1,0 +1,21 @@
+@media print {
+    button {
+        display: none;
+    }
+
+    #non-printable {
+        display: none;
+    }
+
+    #printable {
+        display: block;
+    }
+
+
+    @page {
+        /* margin: 0.005cm; */
+        position: relative;
+        /* margin: 10mm 10mm 10mm 10mm; */
+        white-space: nowrap;
+    }
+}

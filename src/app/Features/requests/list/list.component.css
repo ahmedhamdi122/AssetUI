@@ -1,0 +1,50 @@
+.mat-list-test {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.mat-list-base .mat-list-item.mat-list-item-test {
+  display: initial;
+  width: auto;
+}
+
+
+/* .p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+  display: none !important;
+} */
+
+
+th {
+  /* border: 1px solid black; */
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold !important;
+}
+
+
+@media print {
+  button {
+    display: none;
+  }
+
+  #non-printable {
+    display: none;
+  }
+
+  #printable {
+    display: block;
+  }
+
+
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+  }
+}
+
+@page {
+  margin: -50px 0px -10px 0px;
+  size: A4 portrait;
+
+}

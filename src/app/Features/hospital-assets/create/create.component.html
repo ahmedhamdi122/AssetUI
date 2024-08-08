@@ -1,0 +1,433 @@
+<div class="col-12">
+    <form #AddAssetForm="ngForm">
+        <mat-tab-group mat-align-tabs="start">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa-solid fa-database" style="margin: 0px 20px"></i>
+                    {{ 'Asset.Identification' | translate }}
+                </ng-template>
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <label for="code" [translate]="'Asset.Code'">Code</label>
+                        <input type="text" class="form-control" id="code" name="code" #code="ngModel" autofocus required
+                            [(ngModel)]="assetObj.code"
+                            [class.is-invalid]="code.touched && code.errors || AddAssetForm.submitted"
+                            [class.is-valid]="code.valid && AddAssetForm.submitted">
+                    </div>
+                    <div class="col-3">
+                        <label for="masterCode" [translate]="'Asset.MasterAsset'">Asset</label>
+                        <p-autoComplete [(ngModel)]="masterAssetObj" appendTo="body"
+                            [ngModelOptions]="{standalone: true}" [suggestions]="lstMasterAssets" name="masterAssetId"
+                            id="masterAssetId" (completeMethod)="onSelectionChanged($event)"
+                            (onSelect)="getObject($event)" field="name" [dropdown]="false">
+                            <ng-template let-masterAssetObj pTemplate="item">
+                                {{lang=="en"
+                                ?masterAssetObj.name:masterAssetObj.nameAr}} 
+                            </ng-template>
+                            <ng-template let-masterAssetObj pTemplate="selectedItem">
+                                {{lang=="en"
+                                ?masterAssetObj.name:masterAssetObj.nameAr}} 
+                            </ng-template>
+                        </p-autoComplete>
+
+                        <select class="form-control" id="assetBrand" name="assetBrand" [value]="0" (change)="getModel($event)">
+                            <option value="0"> </option>
+                            <option *ngFor="let brnd of lstBrands" [value]="brnd.id">
+                                {{ lang == "en" ? brnd.name : brnd.nameAr }}
+                            </option>
+                        </select>
+
+
+
+                        <select class="form-control" id="assetModel" name="assetModel" [value]="0">
+                            <option value="0"> </option>
+                            <option *ngFor="let mdls of lstModels" [value]="mdls.id">
+                                {{ mdls }}
+                            </option>
+                        </select>
+
+                
+
+
+                    </div>
+                    <div class="col-2">
+                        <label for="assetStatus" [translate]="'Asset.Status'"></label>
+                        <select class="form-control" id="assetStatus" name="assetStatus" #assetStatus="ngModel"
+                            [value]="0" [(ngModel)]="selectedAssetStatusId">
+                            <option value="0"> </option>
+                            <option *ngFor="let sts of lstAssetStatus" [value]="sts.id">
+                                {{ lang == "en" ? sts.name : sts.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="serialNumber" [translate]="'Asset.Serial'">Serial Number</label>
+                        <input type="text" class="form-control" id="serialNumber" name="serialNumber"
+                            [(ngModel)]="assetObj.serialNumber" #serialNumber="ngModel">
+                    </div>
+                    <div class="col-2">
+                        <label for="barcode" [translate]="'Asset.Barcode'">Barcode</label>
+                        <input type="text" class="form-control" id="barcode" name="barcode"
+                            [(ngModel)]="assetObj.barcode" #barcode="ngModel">
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="remarks" [translate]="'Asset.Remarks'">Remarks</label>
+                        <textarea type="text" class="form-control" id="remarks" name="remarks"
+                            [(ngModel)]="assetObj.remarks" #remarks="ngModel">
+                            </textarea>
+                    </div>
+                </div>
+           
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <input type="file" multiple #file placeholder="Choose file"
+                            (change)="uploadMultipleFile($event)" style="display: none;">
+                        <button type="button" name="btnUpload" class="btn btnUpload" style="margin:0px 10px"
+                            (click)="file.click()">
+                            <i class="fa fa-upload"></i> {{'Asset.SelectUploadFiles' |
+                            translate }}
+                        </button>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <p-table [value]="lstAssetDetailDocument" dataKey="id"
+                            styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="text-align: inherit;">{{ 'Asset.FileName' | translate }}</th>
+                                    <th style="text-align: inherit;">{{ 'Asset.Title' | translate }}</th>
+                                    <th style="text-align: inherit;"></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-assetDetailDocument let-rowIndex="rowIndex"
+                                let-editing="editing">
+                                <tr>
+                                    <td style="text-align: inherit;">{{assetDetailDocument.fileName}}</td>
+                                    <td style="text-align: inherit;" [pEditableColumn]="assetDetailDocument.title"
+                                        pEditableColumnField="title" [pEditableColumnRowIndex]="rowIndex">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input pInputText [(ngModel)]="assetDetailDocument.title"
+                                                    [ngModelOptions]="{standalone: true}" />
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{assetDetailDocument.title}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+                                    <td style="text-align: inherit;">
+                                        <span (click)="removeFileFromObjectArray(rowIndex)"><i
+                                                class="fa-solid fa-times-circle"
+                                                style="color: rgb(123, 9, 9);"></i></span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa fa-map-marker" style="margin: 0px 20px"></i>
+                    {{ 'Asset.Location' | translate }}
+                </ng-template>
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="governorate" [translate]="'Asset.Governorate'"></label>
+                        <select class="form-control" id="governorate" pTooltip="{{'Asset.Governorate' | translate}}"
+                            tooltipPosition=" bottom" name="governorate" #governorateId="ngModel" [disabled]="isGov"
+                            (change)="getCitiesByGovId($event)" [value]="0" [(ngModel)]="selectedGovernorateId">
+                            <option value="0">{{ 'Asset.Select' | translate }} {{'Asset.Governorate' |
+                                translate
+                                }}
+                            </option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id"
+                                [selected]="gov.id==selectedGovernorateId">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="cityId" [translate]="'Asset.City'"></label>
+                        <select class="form-control" id="city" pTooltip="{{'Asset.City' | translate}}"
+                            tooltipPosition="bottom" name="city" [value]="0" [disabled]="isCity"
+                            [(ngModel)]="selectedCityId" #cityId="ngModel">
+                            <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.City' | translate }}
+                            </option>
+                            <option *ngFor="let city of lstCities" [value]="city.id">
+                                {{ lang == "en" ? city.name : city.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-3">
+                        <label for="organization" [translate]="'Asset.Organization'"></label>
+                        <select class="form-control" id="organization" pTooltip="{{'Asset.Organization' | translate}}"
+                            tooltipPosition="bottom" name="organization" (change)="getSubOrgByOrgId($event)" [value]="0"
+                            [disabled]="isOrg" #organizationId="ngModel" [(ngModel)]="assetObj.organizationId">
+                            <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.Organization' |
+                                translate }}</option>
+                            <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                {{ lang == "en" ? org.name : org.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-3">
+                        <label for="organization" [translate]="'Asset.SubOrganization'"></label>
+                        <select class="form-control" id="suborganization"
+                            pTooltip="{{'Asset.SubOrganization' | translate}}" tooltipPosition="bottom"
+                            name="suborganization" [value]="0" [disabled]="isSubOrg"
+                            (change)="getHospitalsBySubOrgId($event)" #subOrganizationId="ngModel"
+                            [(ngModel)]="assetObj.subOrganizationId">
+                            <option value="0">{{ 'Asset.Select' | translate }} {{ 'Asset.SubOrganization' |
+                                translate }}</option>
+                            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-4">
+                        <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                        <select class="form-control" id="hospital" name="hospital" #hospitalId="ngModel"
+                            [(ngModel)]="assetObj.hospitalId" pTooltip="{{'Asset.Hospital' | translate}}"
+                            tooltipPosition="bottom" (change)="getDepartmentsofHospital($event)" [disabled]="isDisabled"
+                            [disabled]="isHospital">
+                            <option value="0">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Hospital' | translate
+                                }}--</option>
+                            <option *ngFor="let hospital of lstHospitals" [value]="hospital.id">
+                                {{ lang == "en" ? hospital.name:hospital.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="employeeId" [translate]="'Asset.Owner'"></label>
+
+                        <p-multiSelect appendTo="body" [options]="lstEmployees" [(ngModel)]="selectedEmployees"
+                            [ngModelOptions]="{standalone: true}" optionLabel="name" optionValue="id" autoWidth="false"
+                            [style]="{'width':'100%','height':'30px','margin-top':'3px','border-radius':'10px'}">
+                        </p-multiSelect>
+                    </div>
+                    <div [ngClass]="(isHospitalManager && canAddDepartment) == true ? 'col-2': 'col-3'">
+                        <label for="departmentId" [translate]="'Asset.Departments'">Departments</label>
+                        <select class="form-control" id="departmentId" name="departmentId" #departmentId="ngModel"
+                            [value]="0" [(ngModel)]="assetObj.departmentId"
+                            pTooltip="{{'Asset.Department' | translate}}" tooltipPosition="bottom">
+                            <option value="0">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Department' |
+                                translate
+                                }}--</option>
+                            <option *ngFor="let depart of lstHospitalDepartments" [value]="depart.departmentId">
+                                {{ lang == "en" ? depart.departmentName:depart.departmentNameAr}}
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div style="margin-top: 25px;"
+                        [ngClass]="(isAdmin || isHospitalManager || canAddDepartment) == true ? 'col-1': ''"
+                        *ngIf="isAdmin || isHospitalManager || canAddDepartment">
+                        <span (click)="addDepartment()" style="display: inline;">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-4">
+                        <label for="building" [translate]="'Asset.Buildings'">Buildings</label>
+                        <select class="form-control" id="buildingId" name="buildingId" #buildingId="ngModel"
+                            [value]="null" [(ngModel)]="assetObj.buildingId" pTooltip="{{'Asset.BUilding' | translate}}"
+                            tooltipPosition="bottom" (change)="getFloorsByBuildId($event)">
+                            <option value="null">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Building' | translate
+                                }}
+                                --</option>
+                            <option *ngFor="let build of lstBuildings" [value]="build.id">
+                                {{ lang == "en" ? build.name:build.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="floor" [translate]="'Asset.Floors'">Floors</label>
+                        <select class="form-control" id="floorId" name="floorId" #floorId="ngModel" [value]="null"
+                            [(ngModel)]="assetObj.floorId" pTooltip="{{'Asset.Floor' | translate}}"
+                            tooltipPosition="bottom" (change)="getRoomsByfloorId($event)">
+                            <option value="null">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Floor' | translate }}
+                                --
+                            </option>
+                            <option *ngFor="let floor of lstFloors" [value]="floor.id">
+                                {{ lang == "en" ? floor.name:floor.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="room" [translate]="'Asset.Rooms'">Rooms</label>
+                        <select class="form-control" id="roomId" name="roomId" #roomId="ngModel" [value]="null"
+                            [(ngModel)]="assetObj.roomId" pTooltip="{{'Asset.Room' | translate}}"
+                            tooltipPosition="bottom">
+                            <option value="null">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Room' | translate }}
+                                --
+                            </option>
+                            <option *ngFor="let room of lstRooms" [value]="room.id">
+                                {{ lang == "en" ? room.name:room.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa-solid fa-code-branch" style="margin: 0px 20px"></i>
+                    {{ 'Asset.Purchase' | translate }}
+                </ng-template>
+                <div class="row top-buffer">
+
+                    <div class="col-2">
+                        <label for="poNumber" [translate]="'Asset.PONumber'"></label>
+                        <input type="text" class="form-control" id="poNumber" name="poNumber" placeholder="PO Number"
+                            [(ngModel)]="assetObj.poNumber" #poNumber="ngModel"
+                            pTooltip="{{'Asset.PONumber' | translate}}" tooltipPosition="bottom">
+                    </div>
+                    <div class="col-2">
+                        <label for="depreciationRate" [translate]="'Asset.DepreciationRate'"></label>
+                        <input type="number" class="form-control" id="depreciationRate" name="depreciationRate"
+                            placeholder="PO Number" [(ngModel)]="assetObj.depreciationRate" #depreciationRate="ngModel"
+                            pTooltip="{{'Asset.DepreciationRate' | translate}}" tooltipPosition="bottom">
+                    </div>
+
+                    <div class="col-2">
+                        <label for="costcenter" [translate]="'Asset.CostCenter'"></label>
+                        <input type="text" class="form-control" id="costCenter" name="costCenter"
+                            placeholder="Cost Center" [(ngModel)]="assetObj.costCenter" #costCenter="ngModel"
+                            pTooltip="{{'Asset.CostCenter' | translate}}" tooltipPosition="bottom">
+                    </div>
+                    <div [ngClass]="(isHospitalManager && canAddSupplier) == true ? 'col-2': 'col-3'">
+                        <label for="supplier" [translate]="'Asset.Suppliers'">Suppliers</label>
+                        <select type="text" id="supplierId" class="form-control" name="supplierId"
+                            [(ngModel)]="assetObj.supplierId" #supplierId="ngModel" [value]="null"
+                            pTooltip="{{'Asset.Supplier' | translate}}" tooltipPosition="bottom">
+                            <option [value]="null">-- {{ 'Asset.Select' | translate }} {{ 'Asset.Supplier' |
+                                translate
+                                }}
+                                --</option>
+                            <option *ngFor="let supply of lstSuppliers" [value]="supply.id">
+                                {{lang == "en" ? supply.name:supply.nameAr}}
+                            </option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 25px;"
+                        [ngClass]="(isAdmin || isHospitalManager || canAddSupplier) == true ? 'col-1': ''"
+                        *ngIf="isAdmin || isHospitalManager ||  canAddSupplier">
+                        <span (click)="addSupplier()">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </div>
+                    <div class="col-2">
+                        <label for="price" [translate]="'Asset.Price'">Price</label>
+                        <input type="text" id="price" class="form-control" name="price" [(ngModel)]="assetObj.price"
+                            #price="ngModel" pTooltip="{{'Asset.Price' | translate}}" tooltipPosition="bottom" />
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-3">
+                        <label for="purchaseDate" [translate]="'Asset.PurchaseDate'"></label>
+                        <input type="date" class="form-control" id="purchaseDate" name="purchaseDate"
+                            placeholder="{{'Asset.PurchaseDate' | translate}}" [(ngModel)]="assetObj.purchaseDate"
+                            #purchaseDate="ngModel" pTooltip="Purchase Date" tooltipPosition="bottom">
+                    </div>
+                    <div class="col-3">
+                        <label for="date" [translate]="'Asset.ReceivingDate'">Receiving Date</label>
+                        <input type="date" class="form-control" id="receivingDate" name="receivingDate"
+                            placeholder="Installation Date" [(ngModel)]="assetObj.receivingDate"
+                            #receivingDate="ngModel" pTooltip="{{'Asset.ReceivingDate' | translate}}"
+                            tooltipPosition="bottom">
+
+                    </div>
+                    <div class="col-3">
+                        <label for="date" [translate]="'Asset.InstallationDate'">Installation Date</label>
+                        <input type="date" class="form-control" id="installationDate" name="installationDate"
+                            placeholder="Installation Date" [(ngModel)]="assetObj.installationDate"
+                            #installationDate="ngModel" pTooltip="{{'Asset.InstallationDate' | translate}}"
+                            tooltipPosition="bottom">
+
+                    </div>
+                    <div class="col-3">
+                        <label for="date" [translate]="'Asset.OperationDate'">Operation Date</label>
+                        <input type="date" class="form-control" id="operationDate" name="operationDate"
+                            [(ngModel)]="assetObj.operationDate" #operationDate="ngModel">
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="fa-solid fa-info" style="margin: 0px 20px"></i>
+                    {{ 'Asset.Warranty' | translate }}
+                </ng-template>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="warrantyStart" [translate]="'Asset.WarrantyStart'">Warranty Start</label>
+                        <input type="date" class="form-control" id="warrantyStart" name="warrantyStart"
+                            placeholder="Warranty Start" [(ngModel)]="assetObj.warrantyStart" #warrantyStart="ngModel">
+                    </div>
+                    <div class="col-6">
+                        <label for="warrantyEnd" [translate]="'Asset.WarrantyEnd'">Warranty End</label>
+                        <input type="date" class="form-control" id="warrantyEnd" name="warrantyEnd"
+                            placeholder="Warranty End" [(ngModel)]="assetObj.warrantyEnd" #warrantyEnd="ngModel"
+                            (change)="getDifferenceInMonths()">
+                    </div>
+                    <div class="col-3">
+                        <label for="warrantyExpires" [translate]="'Asset.WarrantyExpires'">Warranty Expires</label>
+                        <input type="text" class="form-control" id="warrantyExpires" name="warrantyExpires"
+                            [(ngModel)]="assetObj.warrantyExpires" (change)="getLastWarrantyDate($event.target.value)"
+                            #warrantyExpires="ngModel" />
+                    </div>
+                    <div class="col-3">
+                        <label style="padding-top: 35px;">
+                            {{'Asset.Months' | translate}}</label>
+                    </div>
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button class="btn btn-success" value="save" type="button" (click)="onSubmit()"> {{ 'Asset.Save' |
+                    translate }}
+                </button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;"> {{ 'Asset.Save' | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ 'Asset.SavedSuccess' |
+        translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+
+    <span style="color: red;">
+        {{error.errorMessage}}
+
+    </span>
+</p-dialog>

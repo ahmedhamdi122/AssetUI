@@ -1,0 +1,296 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title"
+            [ngStyle]="lang =='en' ? {'font-size': '25px','color': '#1683c2','font-weight': 'bold'} : {  'font-size': '25px','color': '#1683c2','font-weight': 'bold','margin-left': '175px'}">
+            {{'Asset.HospitalAssets' | translate }}
+
+            <span *ngIf="currentUser.govName != '' || currentUser.govNameAr != ''"> {{ lang == "en" ? "- "
+                +currentUser.govName:"- " + currentUser.govNameAr}}</span>
+
+            <span *ngIf="currentUser.cityName != '' || currentUser.cityNameAr != ''">{{ lang == "en" ? "- " +
+                currentUser.cityName: "- " + currentUser.cityNameAr}}</span>
+
+            <span *ngIf="currentUser.orgName != '' || currentUser.orgNameAr != ''">{{ lang == "en" ? "-
+                "+currentUser.orgName: "- " +currentUser.orgNameAr}}</span>
+
+            <span *ngIf="currentUser.subOrgName != '' || currentUser.subOrgNameAr != ''">{{ lang == "en" ? "-
+                "+currentUser.subOrgName: "- " +currentUser.subOrgNameAr}}</span>
+
+            <span *ngIf="currentUser.hospitalName != '' || currentUser.hospitalNameAr != ''"> {{ lang == "en" ? "-
+                "+currentUser.hospitalName: "- " +currentUser.hospitalNameAr}}
+            </span>
+        </h4>
+        <div style="padding-top: 10px;" [ngStyle]="lang =='en' ? {'text-align': 'right'} : {  'text-align': 'left'}">
+            <a style="width: 180px;cursor: pointer;" class="searchIcon search" (click)="toggle()">
+                <i class="fa-solid fa-search" style="margin: 0px 10px 0px 10px;"></i>
+                {{'Asset.AdvancedSearch' | translate }}
+                <input type="hidden" value="{{buttonName}}" />
+            </a>
+            <br />
+            <br />
+            <button (click)="download()" class="btn btn-primary">Download PDF</button>
+            <!-- <button (click)="createPdf()">Create PDF 11</button> -->
+        </div>
+
+
+
+
+    </div>
+    <div class="card-body" style="margin-top: -20px;">
+        <form (ngSubmit)="onSearch()" #searchForm="ngForm">
+            <fieldset *ngIf="show">
+                <legend>{{'Asset.Search' | translate }}</legend>
+
+                <div class="row top-buffer">
+                    <div class="col-2">
+                        <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                        <select class="form-control" id="governorate" pTooltip="select governorate" [disabled]="isGov"
+                            tooltipPosition="bottom" name="governorate" #governorateId="ngModel" [value]="0"
+                            [(ngModel)]="searchObj.governorateId" (change)="getCitiesByGovId(searchObj.governorateId)">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Governorate' | translate }} --
+                            </option>
+                            <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                {{ lang == "en" ? gov.name : gov.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                        <select class="form-control" id="city" pTooltip="select city" tooltipPosition="bottom"
+                            name="cityId" #cityId="ngModel" [(ngModel)]="searchObj.cityId" [disabled]="isCity">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.City' | translate }} --
+                            </option>
+                            <option *ngFor="let city of lstCities" [value]="city.id">
+                                {{ lang == "en" ? city.name : city.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                        <select class="form-control" id="organization" pTooltip="select organization" [disabled]="isOrg"
+                            tooltipPosition="bottom" name="organization" [(ngModel)]="searchObj.organizationId"
+                            (change)="getSubOrgByOrgId($event)" [value]="0">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Organization' | translate }}
+                                --</option>
+                            <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                {{ lang == "en" ? org.name : org.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="organization" [translate]="'Asset.SubOrganizations'">Sub Organization</label>
+                        <select class="form-control" id="suborganization" pTooltip="select sub organization"
+                            tooltipPosition="bottom" name="suborganization" [value]="0" [disabled]="isSubOrg"
+                            (change)="getHospitalsBySubOrgId($event)" [(ngModel)]="searchObj.subOrganizationId"
+                            #suborganization="ngModel">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.SubOrganization' | translate
+                                }} --</option>
+                            <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                        <select class="form-control" id="hospitalId" [disabled]="isHospital" pTooltip="select hospital"
+                            tooltipPosition="bottom" name="hospitalId" [(ngModel)]="searchObj.hospitalId" [value]="0"
+                            (change)="getAssetsByHospitalId($event)">
+                            <option value="0">--{{'Asset.Select' | translate }} {{'Asset.Hospital' | translate }} --
+                            </option>
+                            <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                {{ lang == "en" ? host.name : host.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="orginId" [translate]="'Asset.Origins'">Origins</label>
+                        <select class="form-control" id="orginId" pTooltip="select origin" tooltipPosition="bottom"
+                            name="orginId" [(ngModel)]="searchObj.originId" [value]="0">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Origin' | translate }} --
+                            </option>
+                            <option *ngFor="let orgn of lstOrigins" [value]="orgn.id">
+                                {{ lang == "en" ? orgn.name : orgn.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+
+                <div class="row top-buffer">
+
+                    <div class="col-1">
+                        <label for="code" [translate]="'Asset.Code'"></label>
+                        <input type="text" class="form-control" id="code" pTooltip="{{'Asset.Code' |translate}}"
+                            tooltipPosition="bottom" name="code" [(ngModel)]="searchObj.code" />
+                    </div>
+
+                    <div class="col-3">
+                        <label for="assettId" [translate]="'Asset.Name'"></label>
+                        <select class="form-control" id="assetId" pTooltip="select asset" tooltipPosition="bottom"
+                            name="assetId" [(ngModel)]="searchObj.assetId" [value]="0">
+                            <option value="0">--{{'Asset.Select' | translate }} {{'Asset.Name' | translate }} --
+                            </option>
+                            <option *ngFor="let itm of lstHospitalAssets" [value]="itm.id">
+                                {{ lang == "en" ? itm.assetName : itm.assetNameAr }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-2">
+                        <label for="model" [translate]="'Asset.Model'"></label>
+                        <input type="text" class="form-control" id="model" pTooltip="{{'Asset.Model' |translate}}"
+                            tooltipPosition="bottom" name="model" [(ngModel)]="searchObj.model" />
+
+                    </div>
+
+                    <div class="col-3">
+                        <label for="supplierId" [translate]="'Asset.Suppliers'">Suppliers</label>
+                        <select class="form-control" id="supplierId" pTooltip="select supplier" tooltipPosition="bottom"
+                            name="supplierId" [(ngModel)]="searchObj.supplierId" [value]="0">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Supplier' | translate }} --
+                            </option>
+                            <option *ngFor="let supply of lstSuppliers" [value]="supply.id">
+                                {{ lang == "en" ? supply.name : supply.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label for="brandId" [translate]="'Asset.Brands'">Brands</label>
+                        <select class="form-control" id="brandId" pTooltip="select brand" tooltipPosition="bottom"
+                            name="brandId" [(ngModel)]="searchObj.brandId" [value]="0">
+                            <option value="0">-- {{'Asset.Select' | translate }} {{'Asset.Brand' | translate }} --
+                            </option>
+                            <option *ngFor="let brnd of lstBrands" [value]="brnd.id">
+                                {{ lang == "en" ? brnd.name : brnd.nameAr }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+
+                <div class="row top-buffer" [ngStyle]="lang =='en' ? {'float': 'right'} : {  'float': 'left'}"
+                    style="margin: 0px 20px 0px 0px;">
+
+                    <button class="btn btn-primary pull-center btn-sm" value="save" type="submit"
+                        style="margin: 0px 5px;background-color: #1483c2;border-color: #1483c2;width: 70px;">
+                        {{'Asset.Search' | translate }}
+                    </button> <button class="btn btn-primary pull-center btn-sm" value="Reset" type="button"
+                        style="background-color: #1483c2;border-color: #1483c2;width: 70px;" (click)="reset()">
+                        {{'Asset.Reset' | translate }}
+                    </button>
+
+
+                </div>
+
+            </fieldset>
+
+
+        </form>
+
+        <div class="row top-buffer" style="margin-top: 20px;">
+            <div class="col-12">
+
+
+
+                <p-table [value]="lstAssets" styleClass="p-datatable-sm p-datatable-striped p-datatable-gridlines"
+                    responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count"
+                    pageLinks="10" (onLazyLoad)="clicktbl($event)" [loading]="loading" [columns]="selectedColumns">
+
+                    <ng-template pTemplate="caption">
+                        <p-multiSelect [options]="cols" [(ngModel)]="_selectedColumns" optionLabel="header"
+                            selectedItemsLabel="{0} {{columnsSelected}}" [style]="{minWidth: '200px'}"
+                            [placeholder]="'Asset.ChooseColumns' |translate"></p-multiSelect>
+                    </ng-template>
+
+                    <ng-template pTemplate="header" let-cols>
+                        <tr>
+                            <th></th>
+                            <th>{{'Asset.Qr' | translate }}</th>
+                            <ng-container *ngFor="let col of cols">
+
+                                <th style="text-align: inherit;" [sortable]="true" style="text-align: inherit;">
+                                    {{col.header}}
+                                    <p-sortIcon id="{{col.header | translate}}" (click)="sort($event)">
+                                    </p-sortIcon>
+                                </th>
+                            </ng-container>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-columns="columns">
+
+                        <tr>
+
+
+
+                            <td style="text-align: inherit;">
+                                <p-checkbox name="groupname" [value]="item" name="ckbxQR"
+                                    (click)="checked(item,item.qrFilePath)" [(ngModel)]="selectedQrFilePath">
+                                </p-checkbox>
+                            </td>
+                            <td style="text-align: inherit;" pFrozenColumn>
+                                <ngx-qrcode class="qr" [value]="item.qrFilePath" [elementType]="img"
+                                    id="{{item.qrFilePath}}" [width]="width" [height]="height"
+                                    [errorCorrectionLevel]="correctionLevel">
+                                </ngx-qrcode>
+                            </td>
+                            <ng-container *ngFor="let col of columns">
+                                <td style="text-align: inherit;" *ngIf="col.field != 'qrFilePath' && col.field !='brandName' && col.field !='brandNameAr'
+                                     && col.field !='assetName' && col.field !='assetNameAr'
+                                     && col.field != 'supplierName' && col.field != 'supplierNameAr'">
+                                    {{item[col.field]}}</td>
+                                <td style="text-align: inherit;"
+                                    *ngIf="col.field =='assetName' || col.field =='assetNameAr'">
+                                    <a [routerLink]="['/dash/hospitalassets/detail/',item.id]"
+                                        style="text-decoration: underline;">{{lang=="en" ?
+                                        item.assetName:item.assetNameAr}} - {{item.model}}</a>
+                                </td>
+                                <td style="text-align: inherit;"
+                                    *ngIf="(col.field == 'supplierName') || (col.field == 'supplierNameAr')">
+                                    {{lang=="en" ? item.supplierName:item.supplierNameAr}}
+                                </td>
+                                <td style="text-align: inherit;"
+                                    *ngIf="(col.field == 'brandName') || (col.field == 'brandNameAr')">
+                                    {{lang=="en" ? item.brandName:item.brandNameAr}}
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="paginatorleft" *ngIf="lang == 'en'" let-state>
+                        {{'Asset.Showing' | translate }} {{(state.page * state.rows) + 1}}
+                        {{'Asset.To' | translate }}
+                        {{state.rows * (state.page + 1)}} {{'Asset.OF' | translate }}
+                        {{count}}
+                        {{'Asset.Entries' | translate }}
+                    </ng-template>
+                    <ng-template pTemplate="paginatorright" *ngIf="lang == 'ar'" let-state>
+                        {{'Asset.Showing' | translate }} {{((state.page * state.rows) + 1).toLocaleString('ar-EG')}}
+                        {{'Asset.To' | translate }}
+                        {{(state.rows * (state.page + 1)).toLocaleString('ar-EG')}} {{'Asset.OF' | translate }}
+                        {{(count)?.toLocaleString('ar-EG')}}
+                        {{'Asset.Entries' | translate }}
+                    </ng-template>
+                </p-table>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

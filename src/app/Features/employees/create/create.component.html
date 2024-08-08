@@ -1,0 +1,170 @@
+<div class="col-12">
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-3">
+                <label for="governorate" [translate]="'Asset.Governorate'"></label>
+                <select class="form-control" id="governorate" name="governorate" [(ngModel)]="employeeObj.governorateId"
+                    [value]="0" (change)="getCitiesByGovId($event)" [disabled]="isDisabled">
+                    <option value="0"></option>
+                    <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                        {{ lang == "en" ? gov.name : gov.nameAr }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-3">
+                <label for="cityId" [translate]="'Asset.City'"></label>
+                <select class="form-control" id="city" name="city" [value]="0" [(ngModel)]="employeeObj.cityId"
+                    [disabled]="isDisabled">
+                    <option value="0"></option>
+                    <option *ngFor="let city of lstCities" [value]="city.id">
+                        {{ lang == "en" ? city.name : city.nameAr }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-3">
+                <label for="organization" [translate]="'Asset.Organization'"></label>
+                <select class="form-control" id="organization" [(ngModel)]="employeeObj.organizationId"
+                    name="organization" (change)="getSubOrgByOrgId($event)" [value]="0" [disabled]="isDisabled">
+                    <option value="0"></option>
+                    <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                        {{ lang == "en" ? org.name : org.nameAr }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-3">
+                <label for="organization" [translate]="'Asset.SubOrganization'"></label>
+                <select class="form-control" id="suborganization" [(ngModel)]="employeeObj.subOrganizationId"
+                    name="suborganization" [value]="0" (change)="getHospitalsBySubOrgId($event)"
+                    [disabled]="isDisabled">
+                    <option value="0"></option>
+                    <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                        {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-3">
+                <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                <select class="form-control" id="hospitalId" name="hospitalId" #hospitalId="ngModel" [value]="0"
+                    [(ngModel)]="employeeObj.hospitalId" (change)="getDepartmentsofHospital($event)"
+                    [disabled]="isDisabled">
+                    <option value="0"></option>
+                    <option *ngFor="let hospital of lstHospitals" [value]="hospital.id">
+                        {{ lang == "en" ? hospital.name:hospital.nameAr}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-3">
+                <label for="departmentId" [translate]="'Asset.Departments'"></label>
+                <select [value]="0" [(ngModel)]="employeeObj.departmentId" name="departmentId" class="form-control">
+                    <option value="0"> </option>
+                    <option *ngFor="let item of lstDepartments" value="{{item.id}}">{{lang=="en" ? item.name:
+                        item.nameAr}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-2">
+                <label for="code" [translate]="'Asset.Code'"> </label>
+                <input type="text" class="form-control" id="code" name="code" [(ngModel)]="employeeObj.code"
+                    #code="ngModel" [class.is-invalid]=" (code.touched && code.errors) || form.submitted"
+                    [class.is-valid]="code.valid && form.submitted" required />
+            </div>
+            <div class="col-5">
+                <label for="name" [translate]="'Asset.Name'"></label>
+                <input type="text" #name="ngModel" [class.is-invalid]="name.invalid && name.touched"
+                    [class.is-valid]="name.valid" [(ngModel)]="employeeObj.name" name="name" id="name"
+                    class="form-control" required>
+            </div>
+            <div class="col-5">
+                <label for="nameAr" [translate]="'Asset.ArabicName'"></label>
+                <input type="text" #nameAr="ngModel" [class.is-invalid]="nameAr.invalid && nameAr.touched"
+                    [class.is-valid]="nameAr.valid" [(ngModel)]="employeeObj.nameAr" name="nameAr" id="nameAr"
+                    class="form-control" required>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-6">
+                <label for="Address" [translate]="'Asset.Address'"></label>
+                <textarea type="text" #address="ngModel" name="address" id="address" class="form-control"
+                    [(ngModel)]="employeeObj.address"></textarea>
+            </div>
+            <div class="col-6">
+                <label for="AddressAr" [translate]="'Asset.ArabicAddress'"></label>
+                <textarea type="text" #addressAr="ngModel" name="addressAr" id="addressAr" class="form-control"
+                    [(ngModel)]="employeeObj.addressAr"></textarea>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-4">
+                <label for="Email" [translate]="'Asset.EMail'"></label>
+                <input type="email" class="form-control" #email="ngModel"
+                    [class.is-invalid]="email.invalid && email.touched" [class.is-valid]="email.valid"
+                    [(ngModel)]="employeeObj.email" required name="email">
+                <small [hidden]="email.valid || email.untouched" id="email" [translate]="'Asset.messege'"></small>
+            </div>
+            <div class="col-4">
+                <label for="Email" [translate]="'Asset.CardId'"></label>
+                <input type="number" class="form-control" #cardId="ngModel" [(ngModel)]="employeeObj.cardId"
+                    name="cardId" max="14">
+            </div>
+            <div class="col-4">
+                <label for="dob" [translate]="'Asset.DOB'"></label>
+                <br />
+                <mat-form-field appearance="fill">
+                    <input matInput [matDatepicker]="dob" [value]="employeeObj.dob | date:'yyyy-MM-dd'">
+                    <mat-datepicker-toggle matSuffix [for]="dob"></mat-datepicker-toggle>
+                    <mat-datepicker #dob></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-3">
+                <label for="WhatsApp" [translate]="'Asset.WhatsApp'"></label>
+                <input type="text" class="form-control" #WhatsApp="ngModel" name="whatsApp"
+                    [(ngModel)]="employeeObj.whatsApp">
+            </div>
+            <div class="col-3">
+                <label for="Phone" [translate]="'Asset.Phone'"></label>
+                <input class="form-control" type="number" #phone="ngModel" name="phone" [(ngModel)]="employeeObj.phone">
+            </div>
+            <div class="col-3">
+                <label for="genderId" [translate]="'Asset.Gender'"></label>
+                <select name="genderId" #genderId="ngModel" [(ngModel)]="employeeObj.genderId" class="form-control"
+                    [value]="0">
+                    <option value="0"> </option>
+                    <option *ngFor="let item of lstGender" value="{{item.id}}"
+                        [selected]="item.id == employeeObj.genderId">{{lang=="en" ? item.name:
+                        item.nameAr}}</option>
+                </select>
+            </div>
+            <div class="col-3">
+                <label for="classificationId" [translate]="'Asset.Classification'"></label>
+                <select name="classificationId" #classificationId="ngModel" [(ngModel)]="employeeObj.classificationId"
+                    class="form-control" [value]="0">
+                    <option value="0"> </option>
+                    <option *ngFor="let item of lstClasses" value="{{item.id}}"
+                        [selected]="item.id == employeeObj.classificationId">{{lang=="en" ? item.name:
+                        item.nameAr}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-success" [translate]="'Asset.Save'"></button>
+            </div>
+        </div>
+    </form>
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="display">
+    <ng-template pTemplate="header">
+        <h6>{{ 'Asset.Save' | translate }} </h6>
+    </ng-template>
+    <span> {{ 'Asset.SavedSuccess' | translate }}</span>
+</p-dialog>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay">
+    <p-header> {{ 'Asset.Error' | translate }} </p-header>
+    <span> {{ errorMessage }}</span>
+</p-dialog>

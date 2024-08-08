@@ -1,0 +1,373 @@
+<!-- <p-toast position="top-right" key="tr" [baseZIndex]="10000"></p-toast> -->
+<div class="container card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 30px;color: #1683c2;font-weight: bold;">
+            Track {{'Asset.WorkOrder' | translate }}
+        </h4>
+    </div>
+    <fieldset>
+        <legend> Service Request</legend>
+        <div class="row top-buffer">
+            <div class="col-md-3">
+                <span style="font-weight: bold;"> {{'Asset.SRSubject' | translate }} :
+                </span>&nbsp;{{requestObj.subject}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;"> {{'Asset.Code' | translate }} :
+                </span>&nbsp;{{requestObj.requestCode}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.Date' | translate }} :
+                </span>&nbsp;{{requestObj.requestDate | date:'dd-MM-yyyy HH:mm'}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.SubProblem' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? requestObj.subProblemName:requestObj.subProblemNameAr}}
+            </div>
+
+        </div>
+        <div class="row top-buffer">
+
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.Type' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? requestObj.requestTypeName:requestObj.requestTypeNameAr}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;"> {{'Asset.Mode' | translate }} :
+                </span>&nbsp;
+                {{lang == 'en' ? requestObj.modeName:requestObj.modeNameAr}}
+            </div>
+
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.Name' | translate }} :
+                </span>&nbsp; {{lang == 'en' ? requestObj.assetName:requestObj.assetNameAr}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.Serial' | translate }} :
+                </span>&nbsp;{{requestObj.serialNumber}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-4">
+                <span style="font-weight: bold;">{{'Asset.Periority' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? requestObj.periorityName:requestObj.periorityNameAr}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-12">
+                <span style="font-weight: bold;"> {{'Asset.Description' | translate }} : </span>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-12">
+                <span>&nbsp;{{requestObj.description}} </span>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend> Work Order </legend>
+
+        <div class="row top-buffer">
+            <div class="col-md-3">
+                <span style="font-weight: bold;"> {{'Asset.Subject' | translate }} :
+                </span>&nbsp;{{workOrderObj.subject}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;"> {{'Asset.workOrderNumber' | translate }} :
+                </span>&nbsp;{{workOrderObj.workOrderNumber}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.StartDate' | translate }} :
+                </span>&nbsp;{{workOrderObj.plannedStartDate | date:'dd-MM-yyyy HH:mm'}}
+            </div>
+            <div class="col-md-3">
+                <span style="font-weight: bold;">{{'Asset.EndDate' | translate }} :
+                </span>&nbsp;{{workOrderObj.plannedEndDate | date:'dd-MM-yyyy HH:mm'}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-4">
+                <span style="font-weight: bold;">{{'Asset.Type' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? workOrderObj.typeName:workOrderObj.typeNameAr}}
+            </div>
+            <div class="col-md-4">
+                <span style="font-weight: bold;">{{'Asset.Periority' | translate }} :
+                </span>&nbsp;{{lang == 'en' ? workOrderObj.periorityName:workOrderObj.periorityName}}
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-12">
+                <span style="font-weight: bold;"> {{'Asset.Notes' | translate }} :</span>
+            </div>
+        </div>
+        <div class="row top-buffer">
+            <div class="col-md-12">
+                <span>&nbsp;{{workOrderObj.note}}
+                </span>
+            </div>
+        </div>
+
+        <div class="row top-buffer">
+            <div class="col-md-12">
+                <fieldset>
+                    <legend>{{'Asset.TrackDetails' | translate }}</legend>
+                    <p-table [value]="lstTracks">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="text-align: inherit;">{{'Asset.Status' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.CreatedBy' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Name' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.StartDate' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.EndDate' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Notes' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-i>
+                            <tr>
+                                <td style="text-align: inherit;">{{lang== 'en'?
+                                    i.workOrderStatusName:i.workOrderStatusNameAr}}</td>
+                                <td style="text-align: inherit;">{{i.createdBy}}</td>
+                                <td style="text-align: inherit;">{{i.assignedTo}}</td>
+                                <td style="text-align: inherit;">{{i.actualStartDate| date:'dd-MM-yyyy HH:mm'}}</td>
+                                <td style="text-align: inherit;">{{i.actualEndDate| date:'dd-MM-yyyy HH:mm'}}</td>
+                                <td style="text-align: inherit;">{{i.notes}}</td>
+
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </fieldset>
+            </div>
+        </div>
+
+
+    </fieldset>
+
+
+
+    <div class="row top-buffer" *ngIf="isClosed">
+        <div class="col-12">
+            <mat-horizontal-stepper [linear]="isLinear" #stepper>
+                <p-toast position="top-right" key="tr" [baseZIndex]="10000"></p-toast>
+                <mat-step [stepControl]="firstFormGroup">
+                    <ng-template matStepLabel>Track Work Order</ng-template>
+
+                    <div class="row top-buffer" *ngIf="!isTLHospitalManager">
+
+                        <div class="col-3">
+                            <label for="workOrderStatusId">{{'Asset.Status' | translate }} </label>
+                            <select type="text" id="workOrderStatusId" class="form-control" name="workOrderStatusId"
+                                [(ngModel)]="creatWorkOrderTrackingObj.workOrderStatusId" #workOrderStatusId="ngModel"
+                                [value]="0" pTooltip="select owner" tooltipPosition="bottom">
+                                <option value="0">{{'Asset.Select' | translate }} {{'Asset.Status' | translate }}
+                                </option>
+                                <option *ngFor="let sts of lstWOStatus" [value]="sts.id">
+                                    {{ lang =="en"? sts.name: sts.nameAr}}
+                                </option>
+                            </select>
+                        </div>
+                        <!-- *ngIf="isHide"  -->
+                        <div class="col-3">
+                            <label for="assignedTo">{{'Asset.Eng' | translate }}</label>
+                            <select id="assignedTo" class="form-control" name="assignedTo"
+                                [(ngModel)]="creatWorkOrderTrackingObj.assignedTo" #assignedTo="ngModel" [value]=""
+                                pTooltip="select owner" tooltipPosition="bottom">
+                                <option value="">{{'Asset.Select' | translate }} {{'Asset.Eng' | translate }} </option>
+                                <option *ngFor="let eng of lstEngEmployees" [value]="eng.id">
+                                    {{eng.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label for="Acutals Date">Acutal Start Date</label>
+                            <input type="date" (change)="GetActualStartDate($event)" class="form-control" id="Acutal"
+                                name="Acutal" placeholder="Acutal Start Date"
+                                [(ngModel)]="creatWorkOrderTrackingObj.actualStartDate" required
+                                min="{{minDate | date:'yyyy-MM-dd'}}" pTooltip="Please,Enter Acutal Start Date"
+                                tooltipPosition="bottom">
+                        </div>
+                        <div class="col-3">
+                            <label for="AcutalE Date">Actual End Date</label>
+                            <input type="date" class="form-control" id="ActualE" name="ActualE"
+                                placeholder="Actual End Date" [(ngModel)]="creatWorkOrderTrackingObj.actualEndDate"
+                                required min="{{ActualStartDate | date:'yyyy-MM-dd'}}"
+                                pTooltip="Please,Enter Actual End Date" tooltipPosition="bottom">
+                        </div>
+
+                    </div>
+
+                    <div class="row  top-buffer">
+                        <div class="p-field col-md-12">
+                            <label for="description">{{'Asset.Notes' | translate }}</label>
+                            <textarea class="form-control" id="Note" [(ngModel)]="creatWorkOrderTrackingObj.notes"
+                                pInputTextarea name="Note" rows="3" [ngModelOptions]="{standalone: true}"
+                                cols="63"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="row  top-buffer">
+                        <div class="col-12">
+
+                            <div class="col-6">
+
+                                <div *ngIf="isTLHospitalManager">
+                                    <button mat-stroked-button (click)="closeWorkOrder()" color="primary"
+                                        mat-button>{{'Asset.Save'
+                                        |
+                                        translate }} </button>
+                                </div>
+
+                                <div *ngIf="!isTLHospitalManager">
+                                    <button mat-stroked-button (click)="AddworkOrder()" color="primary"
+                                        mat-button>{{'Asset.Save' |
+                                        translate }} </button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <button mat-stroked-button class="ml-2" color="primary" mat-button
+                                    matStepperNext>{{'Asset.Next'
+                                    |
+                                    translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </mat-step>
+                <!-- <mat-step>
+            <ng-template matStepLabel>Tasks</ng-template>
+            <div style="margin-bottom:10px;" class="p-field-checkbox"
+                *ngFor="let task of lstAssetWorkOrderTask; let i = index">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p-checkbox name="group2[i]" value="task" [value]="task" [(ngModel)]="lstSelectedCreateTasks"
+                            [inputId]="task.id"></p-checkbox>
+                        <label [for]="task.id">{{task.name}}</label>
+                        <input type="text" value="task" [value]="task" name="group[i]"
+                            [(ngModel)]="lstSelectedCreateComments[i]" class="form-control"
+                            placeholder="write your comment" />
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" (click)="AddTasksToDB()">Submit</button>
+        </mat-step> -->
+                <mat-step [stepControl]="secondFormGroup" *ngIf="!isTLHospitalManager">
+                    <ng-template matStepLabel>{{'Asset.AddDocuments' | translate }}</ng-template>
+                    <div class="row top-buffer">
+                        <div class="col-12">
+                            <label for="docmentName"> {{'Asset.DocumentTitle' | translate }}</label>
+                            <input #documentName="ngModel" class="form-control" type="text" pInputText
+                                placeholder="{{'Asset.DocumentTitle' | translate }}"
+                                [(ngModel)]="CreateWorkOrderAttachmentObj.documentName">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+
+                            <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)"
+                                style="display:none;">
+
+                            <button type="button" class="btn btn-outline-success"
+                                style="margin-top: 20px;margin-left: 10px;" (click)="file.click()"> <i
+                                    class="fa fa-upload"
+                                    style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.SelectDocument'
+                                |
+                                translate }}
+                            </button>
+
+                            <button class="btn btn-outline-primary" style="margin-top: 20px;float: right;"
+                                (click)="Savedoctolist()" [ngStyle]="{'float': lang == 'en' ? 'right': 'left'}">
+                                <i class="fa fa-plus"
+                                    style="color: #007bff; cursor: pointer;margin: 0px 5px;"></i>{{'Asset.AddDocumentToList'
+                                |
+                                translate }}</button>
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>{{'Asset.Name' | translate }}</th>
+                                        <th>{{'Asset.DocumentTitle' | translate }}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let i of lstCreateWorkOrderTracking">
+                                        <td>{{i.fileName}}</td>
+                                        <td>{{i.documentName}}</td>
+                                        <td>
+                                            <span (click)="removeFileFromObjectArray(i)"><i class="fa-solid fa-times-circle"
+                                                    style="color: rgb(123, 9, 9);"></i></span>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="lstCreateWorkOrderTracking.length == 0">
+                                        <td colspan="3" style="color: rgb(102, 97, 23);" [translate]="'Asset.NoData'">
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                            <button class="btn btn-primary pull-center btn-sm"
+                                [disabled]="lstCreateWorkOrderTracking.length == 0"
+                                (click)="SaveimageToDB()">{{'Asset.SaveFiles' | translate
+                                }}</button>
+                        </div>
+                    </div>
+
+
+                    <div class="row top-buffer">
+                        <div class="col-md-2">
+                            <button mat-stroked-button color="primary" mat-button matStepperPrevious>{{'Asset.Previous'
+                                |
+                                translate }}</button>
+                        </div>
+                        <div class="col-md-9"></div>
+                        <div class="col-md-1">
+                            <button mat-stroked-button color="primary" mat-button matStepperNext>{{'Asset.Next' |
+                                translate
+                                }}</button>
+                        </div>
+                    </div>
+                </mat-step>
+                <mat-step *ngIf="!isTLHospitalManager">
+                    <ng-template matStepLabel>{{'Asset.Finish' | translate }}</ng-template>
+                    <p>You are now done.</p>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <button mat-stroked-button color="primary" mat-button matStepperPrevious>{{'Asset.Previous'
+                                |
+                                translate }}</button>
+                        </div>
+                        <div class="col-md-8"></div>
+                        <div class="col-md-2">
+                            <button mat-stroked-button (click)="stepper.reset()" (click)="CloseStipper()"
+                                color="primary" mat-button>{{'Asset.Finish' | translate }}</button>
+                        </div>
+                    </div>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{ width: '350px' }">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e; font-weight: bold; font-size: 16pt">
+            {{ "Asset.Save" | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">
+        {{ "Asset.SavedSuccess" | translate }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

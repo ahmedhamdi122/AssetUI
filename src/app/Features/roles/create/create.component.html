@@ -1,0 +1,48 @@
+<div class="col-12">
+    <div class="card-body">
+        <form class="form-horizontal" (ngSubmit)="form.valid" #form="ngForm">
+
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <label for="name" [translate]="'Asset.RoleCategory'"></label>
+                    <select class="form-control" name="roleCategoryId" id="roleCategoryId"
+                        class="form-control ng-dirty ng-invalid p-mr-2" [value]="0"
+                        (change)="changeRoleCategoryId($event)" [value]="0" [(ngModel)]="roleObj.roleCategoryId">
+                        <option value="0">
+                        </option>
+                        <option *ngFor="let item of lstRoleCategories" [value]="item.id">
+                            {{ item.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <label for="name" class="control-label required" [translate]="'Asset.Name'"></label>
+                    <input type="text" class="form-control" pTooltip="Enter  name" tooltipPosition="bottom" id="name"
+                        name="name" #name="ngModel" [(ngModel)]="roleObj.name" autofocus required
+                        [class.is-invalid]="(name.touched && name.errors) || (name.untouched && name.errors) || form.submitted"
+                        [class.is-valid]="name.valid && form.submitted">
+                </div>
+                <div class="col-4">
+                    <label for="name" class="control-label required" [translate]="'Asset.DisplayName'"></label>
+                    <input type="text" class="form-control" pTooltip="Enter display name" tooltipPosition="bottom"
+                        id="displayName" name="displayName" #displayName="ngModel" [(ngModel)]="roleObj.displayName"
+                        autofocus required
+                        [class.is-invalid]="(displayName.touched && displayName.errors) || (displayName.untouched && displayName.errors) || form.submitted"
+                        [class.is-valid]="displayName.valid && form.submitted">
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-12 text-center">
+                    <button class="btn btn-success" value="save" (click)="onSubmit()"> {{ 'Asset.Save' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>

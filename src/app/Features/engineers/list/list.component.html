@@ -1,0 +1,81 @@
+<div class="col-12">
+  <div class="row top-buffer">
+    <div class="col-8">
+      <h4 class="card-title"> {{ 'Asset.Engineers' | translate }} </h4>
+    </div>
+    <div class="col-2">
+      <a class="addbutton" (click)="addEngineer()"><i class="fa-solid fa-plus"></i> {{ 'Asset.Create' |
+        translate }}</a>
+    </div>
+    <div class="col-2">
+      <a data-bs-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="true"
+        aria-controls="collapseExample1" class="filterbutton">
+        <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}</a>
+    </div>
+  </div>
+ <!-- <div class="row top-buffer col-12">
+     <table class="p-datatable-striped p-datatable-sm p-datatable-gridlines" id="firstTable" datatable [dtOptions]="dtOptions"
+      [dtTrigger]="dtTrigger">
+      <thead>
+        <tr>
+          <th style="text-align: inherit;"> {{ 'Asset.Name' | translate }} </th>
+          <th style="text-align: inherit;">{{'Asset.Phone' | translate }} </th>
+          <th style="text-align: inherit;"> {{ 'Asset.EMail' | translate }} </th>
+          <th style="text-align: inherit;"> {{ 'Asset.CardId' | translate }} </th>
+          <th style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let eng of lstEngineers">
+          <td style="text-align: inherit;">{{ lang == "en" ? eng.name : eng.nameAr }}</td>
+          <td style="text-align: inherit;">{{eng.phone}}</td>
+          <td style="text-align: inherit;">{{eng.email}}</td>
+          <td style="text-align: inherit;">{{eng.cardId}}</td>
+          <td style="text-align: inherit;">
+            <span class="viewIcon" (click)="viewEngineer(eng.id)"><i class="fa-solid fa-eye"></i> </span>
+            <a class="editIcon" [routerLink]="['/engineers/editengineer',eng.id]"><i class="fa-solid fa-edit"></i></a>
+            <a class="deleteIcon" (click)="deleteEngineer(eng.id)"> <i class="fa-solid fa-trash"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p-paginator [rows]="5" [totalRecords]="count" (onPageChange)="clicktbl($event)"></p-paginator> 
+ </div>-->
+
+    <div class="row">
+      <div class="col-12">
+        <p-table [value]="lstEngineers" name="engineerTbl"
+          styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+          [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count" pageLinks="10"
+          (onLazyLoad)="clicktbl($event)" [rowHover]="true">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="text-align: inherit;"> {{ 'Asset.Name' | translate }} </th>
+              <th style="text-align: inherit;">{{'Asset.Phone' | translate }} </th>
+              <th style="text-align: inherit;"> {{ 'Asset.EMail' | translate }} </th>
+              <th style="text-align: inherit;"> {{ 'Asset.CardId' | translate }} </th>
+              <th style="text-align: inherit;">{{ 'Asset.Actions' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-eng>
+            <tr>
+              <td style="text-align: inherit;">{{ lang == "en" ? eng.name : eng.nameAr }}</td>
+              <td style="text-align: inherit;">{{eng.phone}}</td>
+              <td style="text-align: inherit;">{{eng.email}}</td>
+              <td style="text-align: inherit;">{{eng.cardId}}</td>
+              <td style="text-align: inherit;">
+                <span class="viewIcon" (click)="viewEngineer(eng.id)"><i class="fa-solid fa-eye"></i> </span>
+                <a class="editIcon" [routerLink]="['/engineers/editengineer',eng.id]"><i
+                    class="fa-solid fa-edit"></i></a>
+                <a class="deleteIcon" (click)="deleteEngineer(eng.id)"> <i class="fa-solid fa-trash"></i></a>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+
+
+ 
+</div>

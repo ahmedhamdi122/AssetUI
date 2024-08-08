@@ -1,0 +1,19 @@
+ /*::ng-deep .cdk-overlay-container mat-datepicker-content{
+    z-index:20000 !important;
+  }
+
+  p-dialog-mask p-component-overlay p-dialog-mask-scrollblocker 
+
+  .cdk-overlay-container{ z-index: 20000 !important; }
+
+
+  .mat-datepicker-toggle{
+    color: #000;
+    z-index: 20000 !important
+}  */
+
+ .mat-form-field {
+   text-align: right !important;
+   right: 0px !important;
+   top: 0px !important;
+ }

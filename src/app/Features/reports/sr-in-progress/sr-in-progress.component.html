@@ -1,0 +1,86 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-11">
+            <h4 class="card-title"> {{'Asset.SRInProgress' | translate }} </h4>
+        </div>
+        <div class="col-1"> <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="generatePDF()"
+                pTooltip="PDF" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button></div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-10">
+            <form #form="ngForm" (ngSubmit)="onSubmit()">
+                <div class="row top-buffer">
+                    <div class="col-4">
+                        <label for="icon">{{'Asset.From' | translate }}</label>
+                        <p-calendar [(ngModel)]="requestDateObj.startDate" name="startDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            [ngModelOptions]="{standalone: true}" (onSelect)="getStartDate($event)" inputId="icon"
+                            appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-4">
+                        <label for="icon">{{'Asset.To' | translate }}</label>
+                        <p-calendar [(ngModel)]="requestDateObj.endDate" name="endDate" [showIcon]="true"
+                            [yearNavigator]="true" yearRange="1900:2030" [monthNavigator]="true"
+                            (onSelect)="getEndDate($event)" inputId="icon" appendTo="body" showButtonBar="true">
+                        </p-calendar>
+                    </div>
+                    <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                            <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                        </button></div>
+                    <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                            <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                        </button></div>
+                       
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <p-table [value]="lstRequests" id="requestTbl" name="requestTbl"
+                styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" responsiveLayout="scroll"
+                [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count" [rowHover]="true" pageLinks="10"
+                (onLazyLoad)="clicktbl($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: inherit;"> {{'Asset.AssetName' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Barcode' | translate }}</th>
+                        <th style="text-align: inherit;">{{'Asset.Serial' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Subject' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.Date' | translate }} </th>
+                        <th style="text-align: inherit;"> {{'Asset.Periority' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.Notes' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.WorkOrderNotes' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.WorkOrderDate' | translate }}</th>
+                        <th style="text-align: inherit;"> {{'Asset.RequestUser' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td style="text-align: inherit;">{{lang=="en"?item.assetName:item.assetNameAr}}</td>
+                        <td style="text-align: inherit;" field="barcode">{{item.barcode}}</td>
+                        <td style="text-align: inherit;" field="serialNumber">{{item.serialNumber}}</td>
+                        <td style="text-align: inherit;">{{item.subject}}</td>
+                        <td style="text-align: inherit;">{{item.requestDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;"> <i [ngClass]="item.periorityIcon" [ngStyle]="{'color': item.periorityColor}"></i>{{lang=="en" ? item.periorityName: item.periorityNameAr}}</td>
+                        <td style="text-align: inherit;">{{item.description}}</td>
+                        <td style="text-align: inherit;">{{item.workOrderNote}}</td>
+                        <td style="text-align: inherit;">{{item.workOrderDate | date:'dd-MM-yyyy HH:mm'}}</td>
+                        <td style="text-align: inherit;">{{item.userName}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="dateError">
+    <ng-template pTemplate="header">
+        <h4 style="color: red;">{{ 'Asset.DateError' | translate }}</h4>
+    </ng-template>
+    <span style="color: red;">
+        {{errorMessage}}
+
+    </span>
+</p-dialog>

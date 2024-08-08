@@ -1,0 +1,17 @@
+.mat-list {
+  display: flex;
+  flex-flow: row wrap;
+
+}
+
+.mat-list-base .mat-list-item.mat-list-item {
+  display: initial;
+  width: auto;  
+}
+
+.form-check-inline .form-check-input {
+  position: static;
+  margin-top: 0;
+  margin-right: 0.3125rem;
+  margin-left: 10px;
+}

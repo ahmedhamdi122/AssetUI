@@ -1,0 +1,35 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col">
+        <h4 class="card-title"> {{'Asset.Create' | translate }} {{'Asset.PMCalendar' | translate }}
+        </h4></div>
+    </div>
+    <div class="row top-buffer"></div>
+    <form (ngSubmit)="onSubmit()" #wnpmForm="ngForm">
+        <div class="row top-buffer">
+            <div class="col-1"> <h5>{{'Asset.Year' | translate }}</h5></div>
+            <div class="col-2"> <p-dropdown [options]="years" placeholder="Select Year"
+                    (onChange)="selectAssetTimeYear(ddlYear.value)" [ngModelOptions]="{standalone: true}" #ddlYear
+                    [(ngModel)]="selectedYear" optionLabel="name" optionValue="name" [dropdown]="true"></p-dropdown>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-success" [translate]="'Asset.Save'"></button>
+            </div>
+        </div>
+    </form>
+
+</div>
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{width: '350px'}">
+    <p-header style="color: rgb(181, 4, 4);"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4);font-weight: bold;"> {{errorMessage}}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{width: '350px'}">
+    <ng-template pTemplate="header">
+        <h6 [translate]="''" style="color: #04527e;font-weight: bold;font-size: 16pt;"> {{ "Asset.Save" | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green;font-weight: bold;font-size: 12pt;text-align: center;"> {{ "Asset.SavedSuccess" |
+        translate
+        }}</span>
+</p-dialog>

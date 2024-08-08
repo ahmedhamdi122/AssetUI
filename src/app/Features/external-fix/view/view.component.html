@@ -1,0 +1,114 @@
+<div class="row" [dir]="textDir">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    {{ 'Asset.ViewExternalFix' | translate }}
+                </h4>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="outNumber">{{'Asset.OutNumber' | translate }}</label>
+                        {{externalFixObj.outNumber}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="name">{{'Asset.Name' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.assetName:externalFixObj.assetNameAr}}
+                    </div>
+                    <div class="col-6">
+                        <label for="model">{{'Asset.Model' | translate }}</label>
+                        {{externalFixObj.modelNumber}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="barcode">{{'Asset.Barcode' | translate }}</label>
+                        {{externalFixObj.barcode}}
+                    </div>
+                    <div class="col-6">
+                        <label for="Long">{{'Asset.Serial' | translate }}</label>
+                        {{externalFixObj.serialNumber}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="supplier">{{'Asset.Supplier' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.supplierName:externalFixObj.supplierNameAr}}
+                    </div>
+                    <div class="col-6">
+                        <label for="nameAr">{{'Asset.Brand' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.brandName:externalFixObj.brandNameAr}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="Adress">{{'Asset.Department' | translate }}</label>
+                        {{lang=='en' ?externalFixObj.departmentName:externalFixObj.departmentNameAr}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-6">
+                        <label for="outDate">{{'Asset.OutDate' | translate }}</label>
+                        {{externalFixObj.outDate | date:'dd-MM-yyyy'}}
+                    </div>
+                    <div class="col-6">
+                        <label for="expectedDate">{{'Asset.ExpectedDate' | translate }}</label>
+                        {{externalFixObj.expectedDate | date:'dd-MM-yyyy'}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <label for="notes">{{'Asset.Notes' | translate }}</label>
+                        {{externalFixObj.notes}}
+                    </div>
+                </div>
+                <div class="row top-buffer">
+                    <div class="col-12">
+                        <fieldset>
+                            <legend>{{'Asset.Comming' | translate }}</legend>
+                            <div class="col-6">
+                                <label for="comingDate">{{'Asset.ComingDate' | translate }}</label>
+                                {{externalFixObj.comingDate | date:'dd-MM-yyyy'}}
+                            </div>
+                            <div class="col-6 top-buffer">
+                                <label for="comingNotes">{{'Asset.ComingNotes' | translate }}</label>
+                                {{externalFixObj.comingNotes }}
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+            <div class="row top-buffer" *ngIf="externalFixObj.listExternalFixFiles.length >0">
+                <div class="col-12">
+                    <p-table #dt dataKey="id" [rowHover]="true" [value]="externalFixObj.listExternalFixFiles"
+                        styleClass="p-datatable-sm  p-datatable-striped p-datatable-gridlines"
+                        responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>{{ 'Asset.FileName' | translate }}<p-sortIcon id="{{'Asset.Name' | translate }}"
+                                        (click)="sort($event)"></p-sortIcon>
+                                </th>
+                                <th>{{ 'Asset.Title' | translate }} <p-sortIcon id="{{'Asset.Name' | translate }}"
+                                        (click)="sort($event)"></p-sortIcon>
+
+                                <th>{{ 'Asset.Download' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item>
+                            <tr>
+                                <td>{{item.fileName}}</td>
+                                <td>{{item.title}}</td>
+                                <td>
+                                    <a (click)="downloadFile(item.fileName)" pTooltip="View Files"
+                                        tooltipPosition="bottom">
+                                        <i class="fa-solid fa fa-download"></i></a>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

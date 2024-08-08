@@ -1,0 +1,249 @@
+<div class="card">
+    <div class="card-header cardHeader">
+        <h4 class="card-title" style="font-size: 40px;color: #1683c2;font-weight: bold;" [translate]="''">
+            {{'Asset.Edit' | translate }} {{'Asset.WorkOrder' | translate }}
+        </h4>
+        <div style="margin:10px 10px 0px 10px;">
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="close()">{{'Asset.Close' |
+                translate}}</button>
+        </div>
+    </div>
+
+
+    <div class="card-body">
+        <fieldset>
+            <legend>{{'Asset.ServiceRequest' | translate }}</legend>
+
+            <div class="row top-buffer" style="text-align: center;">
+                <div class="col-12">
+                    <span style="font-weight: bold;">{{'Asset.AssetName' | translate }} :
+                    </span>&nbsp; {{lang == 'en' ? requestObj?.assetName:requestObj?.assetNameAr}}
+                    -
+                    &nbsp;{{requestObj?.serialNumber}}
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-4">
+                    <span style="font-weight: bold;"> {{'Asset.Subject' | translate }} :
+                    </span>&nbsp;{{requestObj?.subject}}
+                </div>
+                <div class="col-4">
+                    <span style="font-weight: bold;"> {{'Asset.SRNumber' | translate }} :
+                    </span>&nbsp;{{requestObj?.requestCode}}
+                </div>
+                <div class="col-4">
+                    <span style="font-weight: bold;">{{'Asset.Date' | translate }} :
+                    </span>&nbsp;{{requestObj?.requestDate | date:'dd-MM-yyyy HH:mm'}}
+                </div>
+
+
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-3">
+                    <span style="font-weight: bold;">{{'Asset.SubProblem' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestObj?.subProblemName:requestObj?.subProblemNameAr}}
+                </div>
+                <div class="col-md-3">
+                    <span style="font-weight: bold;">{{'Asset.Type' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestObj?.requestTypeName:requestObj?.requestTypeNameAr}}
+                </div>
+                <div class="col-md-3">
+                    <span style="font-weight: bold;"> {{'Asset.Mode' | translate }} :
+                    </span>&nbsp;
+                    {{lang == 'en' ? requestObj?.modeName:requestObj?.modeNameAr}}
+                </div>
+                <div class="col-3">
+                    <span style="font-weight: bold;">{{'Asset.Periority' | translate }} :
+                    </span>&nbsp;{{lang == 'en' ? requestObj?.periorityName:requestObj?.periorityNameAr}}
+                </div>
+
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-md-12">
+                    <span style="font-weight: bold;"> {{'Asset.Description' | translate }} : </span>
+                </div>
+            </div>
+            <div class="row top-buffer">
+                <div class="col-md-12">
+                    <span>&nbsp;{{requestObj?.description}} </span>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>{{'Asset.Edit' | translate }} {{'Asset.WorkOrder' | translate }}</legend>
+
+
+
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="Subject ">{{'Asset.Subject' | translate }}</label><br>
+                    <input id="name" name="WorkOrder" [(ngModel)]="editWorkOrderObj.subject" class="form-control"
+                        [disabled]="isDisabled" placeholder="Enter Subject" pInputText
+                        [ngModelOptions]="{standalone: true}">
+                </div>
+                <div class="col-6">
+                    <label for="WorkOrderNumber">{{'Asset.WorkOrderNumber' | translate
+                        }}</label><br>
+                    <input id="name" name="WorkOrderNumber" [(ngModel)]="editWorkOrderObj.workOrderNumber"
+                        class="form-control" disabled placeholder="Enter Work Order Number" pInputText
+                        [ngModelOptions]="{standalone: true}">
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="Sub Problem">{{'Asset.Periority' | translate }}</label><br>
+                    <select type="text" id="WorkOrderPeriority" class="form-control" name="WorkOrderPeriority"
+                        [(ngModel)]="editWorkOrderObj.workOrderPeriorityId" #SubCategory="ngModel" [value]="0"
+                        pTooltip="Please,Select SubProblem" tooltipPosition="bottom" [disabled]="isDisabled">
+                        <option value="0">Select Work Order Periority</option>
+                        <option *ngFor="let item of lstWorkOrderPeriority" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="Type">{{'Asset.Type' | translate }}</label><br>
+                    <select type="text" id="Type" class="form-control" name="Type" [disabled]="isDisabled"
+                        [(ngModel)]="editWorkOrderObj.workOrderTypeId" #Type="ngModel" [value]="0"
+                        pTooltip="Please,Select Type Name" tooltipPosition="bottom">
+                        <option value="0">Select Type Name</option>
+                        <option *ngFor="let item of lstWorkOrderType" [value]="item.id">
+                            {{item.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row top-buffer">
+                <div class="col-6">
+                    <label for="Plannded Start Date">{{'Asset.PlannedStartDate' | translate }}</label><br>
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <input matInput [matDatepicker]="picker" [min]="minDate" class="form-control"
+                            [value]="editWorkOrderObj.plannedStartDate | date:'yyyy-MM-dd'" [disabled]="isDisabled"
+                            placeholder="Input & change Date" (dateChange)="GetActualStartDate($event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-6">
+                    <label for="Plannded End Date">{{'Asset.PlannedEndDate' | translate }}</label><br>
+                    <mat-form-field appearance="fill">
+                        <input matInput [matDatepicker]="picker3" class="form-control" [min]="minplannedStartDate"
+                            [value]="editWorkOrderObj.plannedEndDate | date:'yyyy-MM-dd'" [disabled]="isDisabled"
+                            placeholder="Input & change Date" (dateChange)="GetActualEndDate($event)">
+                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3" hidden>
+                    <label for="Request Date">{{'Asset.Date' | translate }}</label><br>
+                    <input type="date" [(ngModel)]="editWorkOrderObj.creationDate" [disabled]="isDisabled">
+                </div>
+            </div>
+            <div class="row">
+                <div class="p-field col-md-12">
+                    <label for="description">{{'Asset.Notes' | translate }}</label><br>
+                    <textarea class="form-control" id="note" [(ngModel)]="editWorkOrderObj.note" name=" note"
+                        [ngModelOptions]="{standalone: true}" [disabled]="isDisabled"></textarea>
+                </div>
+
+            </div>
+
+        </fieldset>
+
+
+        <div class="row top-buffer">
+
+            <div class="col-7">
+                <fieldset>
+                    <legend>Work Orders Tracks</legend>
+                    <p-table [value]="lstTracks">
+                        <ng-template pTemplate="header">
+                            <tr [ngStyle]="lang =='en' ? {'text-align': 'left'} : {  'text-align': 'right'}">
+                                <th style="text-align: inherit;">{{'Asset.Status' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.CreatedBy' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.assignedTo' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.StartDate' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.EndDate' | translate }}</th>
+                                <th style="text-align: inherit;">{{'Asset.Notes' | translate }}</th>
+                                <th>{{'Asset.Documents' | translate }}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-trk>
+                            <tr>
+                                <td style="text-align: inherit;">{{lang== 'en'?
+                                    trk.workOrderStatusName:trk.workOrderStatusNameAr}}</td>
+                                <td style="text-align: inherit;">{{trk.createdBy}}</td>
+                                <td style="text-align: inherit;">{{trk.assignedTo}}</td>
+                                <td style="text-align: inherit;">{{trk.actualStartDate| date:'dd-MM-yyyy
+                                    HH:mm'}}
+                                </td>
+                                <td style="text-align: inherit;">{{trk.actualEndDate| date:'dd-MM-yyyy HH:mm'}}
+                                </td>
+                                <td style="text-align: inherit;">{{trk.notes}}</td>
+                                <td>
+
+                                    <a (click)="getDocuments(trk.id)" pTooltip="View Files" tooltipPosition="bottom">
+                                        <i class="fa-solid fa-file"
+                                            style="color: #d58308; cursor: pointer;margin: 0px 5px;"></i></a>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </fieldset>
+            </div>
+
+            <div class="col-5" *ngIf="isShowFiles">
+                <fieldset>
+                    <legend>{{'Asset.TrackDocuments' | translate }}</legend>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th> {{'Asset.Name' | translate }}</th>
+                                <th> {{'Asset.Title' | translate }}</th>
+                                <th> {{'Asset.Download' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let doc of lstDocuments">
+                                <td> {{doc.fileName}}</td>
+                                <td>{{doc.documentName}}</td>
+                                <td>
+                                    <a (click)="downloadFile(doc.fileName)" pTooltip="Download Files"
+                                        tooltipPosition="bottom">
+                                        <i class="fa-solid fa fa-download" style="color: #61bb20;"></i></a>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="display" [style]="{ width: '350px' }">
+    <ng-template pTemplate="header">
+        <h6 style="color: #04527e; font-weight: bold; font-size: 16pt">
+            {{ "Asset.Save" | translate }}
+        </h6>
+    </ng-template>
+    <span style="color: green; font-weight: bold; font-size: 12pt; text-align: center">
+        {{ "Asset.SavedSuccess" | translate }}</span>
+</p-dialog>
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>

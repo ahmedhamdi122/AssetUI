@@ -1,0 +1,30 @@
+
+.header {
+    background: #3476ae 0 0 no-repeat padding-box;
+    border: 1px solid #707070;
+    height: 55px;
+  }
+  
+  .title {
+    color: #fff;
+    font: 700 22px/27px 'Segoe UI';
+    margin: 13px 13px 13px 36px;
+    text-align: left;
+  }
+  
+  .horizontal-rule {
+    border: 1px solid #e0e0e0;
+  }
+  
+  .separator {
+    height: 45px;
+  }
+  
+  .success {
+    color: #107c41;
+  }
+  
+  .error {
+    color: #d13438;
+  }
+  

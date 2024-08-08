@@ -1,0 +1,19 @@
+<div class="col-12">
+
+    <div class="row top-buffer">
+        <div class="col-11">
+            <h4 class="card-title">{{ 'Asset.Assets' | translate }}
+            </h4>
+        </div>        <div class="col-1">
+            <button type="button" pButton pRipple icon="pi pi-file-pdf" id="btnExport" class="p-button-warning download"
+                pTooltip="PDF" tooltipPosition="bottom" (click)="downloadPdf()">
+            </button>
+        </div>
+    </div>
+    <div class="row top-buffer" id="contentToConvert">
+        <div class="col-12">
+            <p-chart type="bar" width="100hv" height="calc(100vh - 200px)" [data]="data1" [options]="chartOptions1"></p-chart>
+        </div>
+
+    </div>
+</div>

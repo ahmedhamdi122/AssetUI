@@ -1,0 +1,583 @@
+<div class="col-12">
+    <div class="row top-buffer">
+        <div class="col-7">
+            <h4 class="card-title"> {{'Asset.ManfacturerPMList' | translate }}
+            </h4>
+        </div>
+        <div class="col-1">
+            <a *ngIf="isBrandPMCalender" [routerLink]="['/dash/manfacturerPMAssets/manfacturerpmcalendar']">
+                <i class="fa fa-calendar fa-2x"></i>
+            </a>
+        </div>
+        <div class="col-2">
+            <a class="filterbutton" (click)="toggle()">
+                <i class="fa-solid fa-filter"></i> {{'Asset.Filter'|translate}}
+                <input type="hidden" value="{{buttonName}}" />
+            </a>
+        </div>
+        <div class="col-2">
+            <a class="addbutton" *ngIf="isAdmin" (click)="addAsset()"><i class="fa-solid fa-plus"></i>{{'Asset.Create' |
+                translate}}</a>
+        </div>
+    </div>
+
+    <div class="row top-buffer">
+        <div class="col-4">
+            <button mat-stroked-button name="btnAll" [matBadge]="totalcount" [ngClass]="{status: statusItem === 2}"
+                (click)="getAllAssetTimesIsDone(null,$event,2)">{{'Asset.All'
+                |translate}}</button>
+            <button mat-stroked-button name="btn" [matBadge]="countDone" [ngClass]="{status: statusItem === 1}"
+                (click)="getAllAssetTimesIsDone(true,$event,1)">{{'Asset.Done'
+                |translate}}</button>
+            <button mat-stroked-button name="btn2" [matBadge]="countNotDone" [ngClass]="{status: statusItem === 0}"
+                (click)="getAllAssetTimesIsDone(false,$event,0)">{{'Asset.NotDone'
+                |translate}}</button>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-7">
+            <mat-nav-list id="qurtr" *ngFor="let quarter of lstFiscalYears">
+                <a mat-list-item mat-stroked-button [ngClass]="{quarter: clickedItem === quarter.yearQuarter}"
+                    (click)="getAllAssetTimesByQuarter(quarter.yearQuarter,quarter.yearQuarter)">
+                    <span mat-line>
+                        {{quarter.quarterName}}- ({{quarter.year}}-{{quarter.yearValue}})
+                    </span>
+                </a>
+            </mat-nav-list>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-12">
+            <form #searchForm="ngForm" class="card-filter" (ngSubmit)="onSearch()">
+                <fieldset *ngIf="show">
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <label for="governorate" [translate]="'Asset.Governorates'">Governorate</label>
+                            <select class="form-control" id="governorate" [disabled]="isGov" name="governorate"
+                                #governorateId="ngModel" [value]="0" [(ngModel)]="searchObj.governorateId"
+                                (change)="getCitiesByGovId(searchObj.governorateId)">
+                                <option value="0"> </option>
+                                <option *ngFor="let gov of lstGovernorates" [value]="gov.id">
+                                    {{ lang == "en" ? gov.name : gov.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="cityId" [translate]="'Asset.Cities'">City</label>
+                            <select class="form-control" id="city" name="cityId" #cityId="ngModel"
+                                [(ngModel)]="searchObj.cityId" [disabled]="isCity">
+                                <option value="0"></option>
+                                <option *ngFor="let city of lstCities" [value]="city.id">
+                                    {{ lang == "en" ? city.name : city.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="organization" [translate]="'Asset.Organizations'">Organization</label>
+                            <select class="form-control" id="organization" [disabled]="isOrg" name="organization"
+                                [(ngModel)]="searchObj.organizationId" (change)="getSubOrgByOrgId($event)" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let org of lstOrganizations" [value]="org.id">
+                                    {{ lang == "en" ? org.name : org.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="organization" [translate]="'Asset.SubOrganizations'">Sub Organization</label>
+                            <select class="form-control" id="suborganization" name="suborganization" [value]="0"
+                                [disabled]="isSubOrg" (change)="getHospitalsBySubOrgId($event)"
+                                [(ngModel)]="searchObj.subOrganizationId" #suborganization="ngModel">
+                                <option value="0"></option>
+                                <option *ngFor="let suborg of lstSubOrganizations" [value]="suborg.id">
+                                    {{ lang == "en" ? suborg.name : suborg.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="hospitalId" [translate]="'Asset.Hospitals'">Hospitals</label>
+                            <select class="form-control" id="hospitalId" [disabled]="isHospital" name="hospitalId"
+                                [(ngModel)]="searchObj.hospitalId" [value]="0" (change)="getAssetsByHospitalId($event)">
+                                <option value="0"></option>
+                                <option *ngFor="let host of lstHospitals" [value]="host.id">
+                                    {{ lang == "en" ? host.name : host.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <label for="departmentId" [translate]="'Asset.Departments'">Departments</label>
+                            <select class="form-control" id="departmentId" name="departmentId"
+                                [(ngModel)]="searchObj.departmentId" [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let depart of lstDepartments" [value]="depart.id">
+                                    {{ lang == "en" ? depart.name : depart.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row top-buffer">
+                        <div class="col-2">
+                            <label for="barcode" [translate]="'Asset.Barcode'"></label>
+                            <p-autoComplete [(ngModel)]="assetBarCodeObj" type="search"
+                                [ngModelOptions]="{standalone: true}" [suggestions]="lstassetDetailBarcodes"
+                                name="barcode" id="barcode" autoWidth="true"
+                                (completeMethod)="onSelectionChanged($event)" (onSelect)="getBarCode($event)"
+                                field="name" [dropdown]="false" showClear="true">
+                                <ng-template let-assetBarCodeObj pTemplate="item">
+                                    {{assetBarCodeObj.barCode}}
+                                </ng-template>
+                                <ng-template let-assetBarCodeObj pTemplate="selectedItem">
+                                    {{assetBarCodeObj.barCode}}
+                                </ng-template>
+                            </p-autoComplete>
+
+                        </div>
+                        <!-- <div class="col-1">
+                        <button mat-icon-button color="primary" (click)="clearAssetBarCode()" title="clear">
+                            <mat-icon style="margin-top: 30px;vertical-align: middle;">close</mat-icon>
+                        </button>
+                    </div> -->
+                        <div class="col-2">
+                            <label for="serial" [translate]="'Asset.Serial'"></label>
+                            <p-autoComplete [(ngModel)]="assetSerailNumberObj" [ngModelOptions]="{standalone: true}"
+                                [suggestions]="lstAssetSerailNumberObj" name="serial" id="serial" autoWidth="true"
+                                (completeMethod)="onSerialNumberSelectionChanged($event)"
+                                (onSelect)="getSerialNumber($event)" field="serialNumber" [dropdown]="false"
+                                showClear="true">
+                                <ng-template let-assetSerailNumberObj pTemplate="item">
+                                    {{assetSerailNumberObj.serial}}
+                                </ng-template>
+                                <ng-template let-assetSerailNumberObj pTemplate="selectedItem">
+                                    {{assetSerailNumberObj.serial}}
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <!-- <div class="col-1">
+                        <button mat-icon-button color="primary" (click)="clearAssetSerailNumber()" title="View Contact">
+                            <mat-icon style="margin-top: 30px;vertical-align: middle;">close</mat-icon>
+                        </button>
+                    </div> -->
+                        <div class="col-2">
+                            <label for="modelNumber" [translate]="'Asset.Model'"></label>
+                            <input type="text" class="form-control" id="modelNumber" name="modelNumber"
+                                [(ngModel)]="searchObj.modelNumber" />
+                        </div>
+                        <div class="col-2">
+                            <label for="brandId" [translate]="'Asset.Brands'">Brands</label>
+                            <select class="form-control" id="brandId" name="brandId" [(ngModel)]="searchObj.brandId"
+                                [value]="0">
+                                <option value="0"></option>
+                                <option *ngFor="let brnd of lstBrands" [value]="brnd.id">
+                                    {{ lang == "en" ? brnd.name : brnd.nameAr }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-2"> </div>
+                        <div class="col-1"> <button class="btn searchIcon" value="save" type="submit">
+                                <i class="fa-solid fa-magnifying-glass fa-2xl"></i>
+                            </button></div>
+                        <div class="col-1"> <button class="btn reset" value="Reset" type="button" (click)="reset()">
+                                <i class="fa-solid fa-circle-xmark  fa-2xl"></i>
+                            </button></div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="col-12">
+            <p-table [value]="lstAssetTime" styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines"
+                responsiveLayout="scroll" [paginator]="true" [lazy]="true" [rows]="10" [totalRecords]="count"
+                pageLinks="10" (onLazyLoad)="clicktbl($event)" [loading]="loading" [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th [sortable]="true">
+                            {{ 'Asset.AssetName' | translate }}
+                            <p-sortIcon id="{{'Asset.AssetName'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.Barcode' | translate }}
+                            <p-sortIcon id="{{'Asset.Barcode'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.Serial' | translate }}
+                            <p-sortIcon id="{{'Asset.Serial'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.Model' | translate }}
+                            <p-sortIcon id="{{'Asset.Model'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.Done' | translate }}
+                            <p-sortIcon id="{{'Asset.Done'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.PMDate' | translate }}
+                            <p-sortIcon id="{{'Asset.PMDate'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.DoneDate' | translate }}
+                            <p-sortIcon id="{{'Asset.DoneDate'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th [sortable]="true">
+                            {{ 'Asset.DueDate' | translate }}
+                            <p-sortIcon id="{{'Asset.DueDate'| translate}}" (click)="sort($event)"
+                                style="cursor: pointer;">
+                            </p-sortIcon>
+                        </th>
+                        <th>{{ 'Asset.Actions' | translate }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                    <tr>
+                        <td>{{lang=="en" ?item.assetName:item.assetNameAr}}</td>
+                        <td>{{item.barCode}}</td>
+                        <td [ngStyle]="{'direction': lang === 'en' ? 'ltr': 'ltr'}"> {{item.serialNumber}}</td>
+                        <td>{{item.modelNumber}}</td>
+                        <td>{{item.isDone}}</td>
+                        <td>{{item.pmDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.doneDate | date:'dd-MM-yyyy'}}</td>
+                        <td>{{item.dueDate | date:'dd-MM-yyyy'}}</td>
+                        <td>
+                            <span pTooltip="{{'Asset.View' | translate }}" tooltipPosition="top"
+                                (click)="viewAssetTime(item.id)">
+                                <i class="fa-solid fa-eye" style="color: #61bb20; cursor: pointer;margin: 0px 5px;"></i>
+                            </span>
+                            <span pTooltip="{{'Asset.IsDoneTooltip'| translate}}" tooltipPosition="top"
+                                (click)="pmDone(item.id)" *ngIf="(!(item.isDone == true)) && isBrandPMFIX"><i
+                                    class="fa fa-wrench"
+                                    style="color:#307037;margin: 0px 5px; cursor: pointer;"></i></span>
+                            <span pTooltip="{{'Asset.DueDateTooltip'| translate}}" tooltipPosition="top"
+                                (click)="pmDelay(item.id)" *ngIf="(!(item.isDone == true)) && isBrandPMDelay"><i
+                                    class="fa fa-clock"
+                                    style="color:#660404;margin: 0px 5px; cursor: pointer;"></i></span>
+                            <span pTooltip="{{'Asset.Print'| translate}}" tooltipPosition="top"
+                                (click)="printAssetTime(item.id)">
+                                <i class="fa-solid fa-print"
+                                    style="color: #052e55;margin: 0px 5px;cursor: pointer;"></i>
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+
+<p-dialog appendTo="body" modal="true" [(visible)]="errorDisplay" [style]="{ width: '350px' }">
+    <p-header style="color: rgb(181, 4, 4)"> {{ 'Asset.Error' | translate }} </p-header>
+    <span style="color: rgb(181, 4, 4); font-weight: bold">
+        {{ errorMessage }}</span>
+</p-dialog>
+
+<p-dialog appendTo="body" modal="true" [(visible)]="displayAssetTimeObj" [style]="{ width: '1000px' }">
+    <button (click)="print()">{{'Asset.Print' | translate}}</button>
+    <button (click)="closePrint()" class="btn btn-outline-primary  btn-sm" id="non-printable"
+        style="margin: 0px 10px; margin-top: 0px;">{{'Asset.Close' | translate}}</button>
+
+    <div id="printable">
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer" style="direction: rtl;">
+            <div class="col-6"
+                style="text-align: right;font-weight: bold;font-size: 16pt;font-family:Arial;color: black;">قطاع
+                مشروعات الصحة</div>
+            <div class="col-6" style="text-align: left;color: black;">Report No. 1</div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer" style="text-align:center">
+            <div class="col-12" style="font-weight: bold;font-size:16px;color: black;font-family:Arial">Job Sheet /
+                تقرير عمل </div>
+        </div>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer"></div>
+        <table style="direction: rtl;border: 1px solid black;width: 100%;">
+            <tr>
+                <td>
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">العميل</td>
+                            <td style="font-family: Arial">
+
+                                {{lang =="en"?currentUser.strInsitute:currentUser.strInsituteAr}} -
+                                {{lang=="en"?assetTimeObj.hospitalName:assetTimeObj.hospitalNameAr}}
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Customer</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">العنوان</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Address</td>
+                        </tr>
+                        <tr>
+
+                            <td style="width: 120px;font-family: Arial">التاريخ</td>
+                            <td style="font-family:Arial"></td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Date</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="row top-buffer"></div>
+        <table style="direction: rtl;border: 1px solid black;width: 100%;">
+            <tr>
+                <td>
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">القسم</td>
+                            <td>{{lang =="en" ? assetTimeObj.departmentName:assetTimeObj.departmentName}}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Department</td>
+                        </tr>
+                        <tr>
+                            <td style="font-family: Arial">غرفة رقم</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Room No.</td>
+                        </tr>
+                        <tr>
+                            <td style="font-family: Arial">اسم المستخدم</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">User name</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="row top-buffer"></div>
+        <table style="direction: rtl;border: 1px solid black;width: 100%;">
+            <tr>
+                <td>
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">المصنع / المنتج</td>
+                            <td>{{lang=="en"?assetTimeObj.brandName:assetTimeObj.brandNameAr}}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Manufacture</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">الجهاز</td>
+                            <td>{{lang=="en"?assetTimeObj.assetName:assetTimeObj.assetNameAr}}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Equipment</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">رقم مسلسل</td>
+                            <td [ngStyle]="{'direction': lang === 'en' ? 'ltr': 'ltr'}">
+                                {{assetTimeObj.serialNumber}}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">S.N.</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">الموديل</td>
+                            <td>{{assetTimeObj.modelNumber}}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Model</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 120px;font-family: Arial">الرقم الكودي</td>
+                            <td>{{assetTimeObj.barCode}}</td>
+                            <td></td>
+                            <td></td>
+                            <td style="direction: ltr;width: 150px;text-align: left;">Barcode</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="row top-buffer"></div>
+        <div class="row top-buffer" style="text-align:center">
+            <div class="col-12" style="font-weight: bold;font-size:16px;font-family: Arial; color: black;">PM Steps /
+                خطوات الصيانة</div>
+        </div>
+        <table style="direction: rtl;border: 1px solid grey;width: 100%;font-family: Arial">
+            <tbody>
+                <tr *ngFor="let itm of assetTimeObj.listMasterAssetTasks; let i = index">
+                    <td>{{i + 1}} - {{lang =="en" ? itm.taskName:itm.taskNameAr}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row top-buffer"></div>
+        <table style="direction: rtl;border: 1px solid black;width: 100%;">
+            <tr>
+                <td>
+
+                    <table style="width:100%;direction: rtl; border-collapse: separate; border-spacing: 3px;">
+
+                        <tr>
+                            <td style="border: 1px solid black;padding:10px;text-align: center;font-family: Arial;color: black;"
+                                rowspan="2">
+                                الكمية / Qty </td>
+                            <td style="border: 1px solid black;padding:10px;text-align: center;font-family: Arial;color: black;"
+                                rowspan="2">
+                                الوصف / Description
+                            </td>
+                            <td style="border: 1px solid black;padding:10px;text-align: center;font-family: Arial;color: black;"
+                                rowspan="2">
+                                الكود / Code </td>
+                            <td
+                                style="border: 1px solid black;text-align: center;width:250px;font-family: Arial;color: black;">
+                                قطع
+                                الغيار / Spare
+                                Parts </td>
+                        </tr>
+                        <tr>
+
+                            <td style="text-align: right;direction: rtl; width: 100px;">
+                                <table style="border-collapse: separate; border-spacing: 1px;">
+                                    <tr>
+                                        <td
+                                            style="border: 1px solid black;text-align: center;width: 150px;height: 30px;color: black;font-family:Arial">
+                                            مطلوبة / Ordered </td>
+                                        <td
+                                            style="border: 1px solid black;text-align: center;width: 100px;height: 30px;color: black;font-family:Arial">
+                                            متوفر / Used </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td>
+                                <table style="border-collapse: separate; border-spacing: 1px;">
+                                    <tr>
+                                        <td
+                                            style="border: 1px dashed black;text-align: center;width: 150px;height: 30px;">
+                                        </td>
+                                        <td
+                                            style="border: 1px dashed black;text-align: center;width: 100px;height: 30px;">
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td>
+                                <table style="border-collapse: separate; border-spacing: 1px;">
+                                    <tr>
+                                        <td
+                                            style="border: 1px dashed black;text-align: center;width: 150px;height: 30px;">
+                                        </td>
+                                        <td
+                                            style="border: 1px dashed black;text-align: center;width: 100px;height: 30px;">
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td style="border: 1px dashed black;height: 25px; border-spacing:10px"></td>
+                            <td>
+                                <table style="border-collapse: separate; border-spacing: 1px;">
+                                    <tr>
+                                        <td
+                                            style="border: 1px dashed black;text-align: center;width: 150px;height: 30px;">
+                                        </td>
+                                        <td
+                                            style="border: 1px dashed black;text-align: center;width: 100px;height: 30px;">
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="row top-buffer"></div>
+
+        <table style="direction: rtl;border: 1px solid black;width: 100%;">
+            <tr>
+                <td>
+
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th style="color: black;font-family:Arial">
+                                    عن المستشفى
+                                </th>
+                                <th></th>
+                                <th style="color: black;font-family:Arial">مهندس الصيانة</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: bold;color: black;">{{thisYear}}- {{lastYear}} <br />
+                                    <span style="font-weight: normal;color: black;">
+                                        MOH
+                                    </span>
+                                </td>
+                                <td style="color: black;font-family:Arial">{{'Asset.Name'|translate }}
+                                    <br />
+                                    {{'Asset.Sign'|translate }}
+                                    <br />
+                                    {{'Asset.Date'|translate }}
+                                </td>
+                                <td></td>
+                                <td style="color: black;font-family:Arial">
+                                    {{'Asset.Name'|translate }}
+                                    <br />
+                                    {{'Asset.Sign'|translate }}
+                                    <br />
+                                    {{'Asset.Date'|translate}}
+                                    <div style="text-align:left ; margin-top: -15px;">
+                                        (HSF04-01)
+                                    </div>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</p-dialog>
